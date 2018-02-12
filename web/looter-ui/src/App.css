@@ -18,12 +18,20 @@
 @media (max-width: 799px) {
     .limiter {
         width: 100%;
-        padding: 0px;
+        padding: 20px 10px !important;
+    }
+
+    .table_center {
+        /*width: 100%;*/
     }
 
     .table_center td {
-        padding-left: 40px;
+        padding-left: 40px !important;
         display: block;
+    }
+
+    .table_center thead {
+        display: none;
     }
 }
 
