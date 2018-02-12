@@ -52,7 +52,7 @@ class App extends React.Component<Props, State> {
                         <a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>{d.card}</a>
                     </td>
                     <td className="cell100 column2">{d.owner}</td>
-                    <td className="cell100 column3">{moment(d.date).add(3, 'hours').format('DD-MM-YYYY, HH:mm:ss')}</td>
+                    <td className="cell100 column3">{moment(d.date).format('DD-MM-YYYY, HH:mm:ss')}</td>
                 </tr>
             ));
 
