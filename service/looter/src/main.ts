@@ -11,8 +11,24 @@ import FreeRoCardInfoExtractor = FreeRo.FreeRoCardInfoExtractor;
 import FreeRoCardLooter = FreeRo.FreeRoCardLooter;
 
 const dbConnection = {
-
+    host: process.env.LOOTER_DB_HOST,
+    user: process.env.LOOTER_DB_USER,
+    password: process.env.LOOTER_DB_PASSWORD,
+    database: process.env.LOOTER_DB_DBNAME
 };
+
+const con = mysql.createConnection(dbConnection);
+con.connect((e) => {
+    if (e) {
+        console.log(e);
+        throw e;
+    }
+
+    console.log('DB Connetion OK');
+    con.destroy();
+});
+
+
 
 const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: ['#FreeRO'], userName: st.config.IrcNick});
 // const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [], userName: st.config.IrcNick});
@@ -44,6 +60,3 @@ cardLooter.onCardDropped().subscribe((sender: ICardLooter, args: ICardDroppedEve
         );
     });
 });
-
-
-
