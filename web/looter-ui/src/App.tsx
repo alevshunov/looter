@@ -1,29 +1,58 @@
 import * as React from 'react';
 import './App.css';
+import * as moment from 'moment';
 
-class App extends React.Component {
+interface State {
+    data: Array<{
+        cardName: string,
+        owner: string,
+        date: Date
+    }>;
+}
+
+interface Props {
+
+}
+
+class App extends React.Component<Props, State> {
+
+    constructor(props: Props) {
+        super(props);
+
+        let data: Array<{
+            cardName: string,
+            owner: string,
+            date: Date
+        }> = [];
+
+        this.state = { data };
+    }
+
+    componentWillMount() {
+        const me = this;
+        fetch('/rest/cards')
+            .then((response) => {
+                try {
+                    return response.json();
+                } catch (e) {
+                    return [];
+                }
+            })
+            .then((data) => {
+                me.setState({ data });
+            });
+    }
+
     render() {
-
-        let data = [];
-
-        data.push({'cardName': 'Necromancer Card', 'owner': 'Адриэлуна', 'date': '2018-02-10T20:22:32.933Z'});
-
-        data.push({'cardName': 'Raydric Card', 'owner': 'Краб Михалыч', 'date': '2018-02-10T20:20:36.426Z'});
-
-        data.push({'cardName': 'Kasa Card', 'owner': 'Shinitakunai', 'date': '2018-02-10T20:13:55.754Z'});
-
-        data.push({'cardName': 'Ragged Zombie Card', 'owner': 'Rixas', 'date': '2018-02-10T19:41:26.211Z'});
-
-        data.push({'cardName': 'Zombie Slaughter Card', 'owner': 'From_The_Cradle',
-            'date': '2018-02-10T19:40:03.415Z'});
-        data.push({'cardName': 'Poring Card', 'owner': 'TwinkleBumblebee', 'date': '2018-02-10T19:24:14.532Z'});
-
+        let data  = this.state.data;
         let renderPart = data.map((d, index) =>
             (
                 <tr key={index}>
-                    <td className="cell100 column1">{d.cardName}</td>
+                    <td className="cell100 column1">
+                        <a href={'http://rodb.kudesnik.cc/item/?term=' + d.cardName}>{d.cardName}</a>
+                    </td>
                     <td className="cell100 column2">{d.owner}</td>
-                    <td className="cell100 column3">{d.date}</td>
+                    <td className="cell100 column3">{moment(d.date).add(3, 'hours').format('DD-MM-YYYY, HH:mm:ss')}</td>
                 </tr>
             ));
 
