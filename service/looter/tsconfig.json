@@ -2,8 +2,6 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "target": "es5",
-//    "outFile": "output.js",
-//    "module": "system",
-//    "sourceMap": true
+    "sourceMap": true
   }
 }

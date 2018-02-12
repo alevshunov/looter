@@ -5,7 +5,8 @@
   "main": "src/main.ts",
   "scripts": {
     "build": "gulp",
-    "test": "jest"
+    "test": "jest",
+    "start": "node dist/main.js"
   },
   "author": "",
   "license": "ISC",
