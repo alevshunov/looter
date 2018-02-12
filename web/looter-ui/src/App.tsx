@@ -62,8 +62,8 @@ class App extends React.Component<Props, State> {
                     <thead>
                         <tr>
                             <th className="column1">Card</th>
-                            <th>Player</th>
-                            <th>Time</th>
+                            <th className="column2">Player</th>
+                            <th className="column3">Time</th>
                         </tr>
                     </thead>
                     <tbody>
