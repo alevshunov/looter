@@ -5,7 +5,7 @@
   "main": "src/main.ts",
   "scripts": {
     "build": "gulp",
-    "test": "jest",
+    "test": "jest --env=node",
     "start": "node dist/main.js"
   },
   "author": "",
