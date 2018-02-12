@@ -1,18 +1,15 @@
 var gulp = require("gulp");
 var ts = require("gulp-typescript");
+var sourceMaps = require('gulp-sourcemaps');
 var tsProject = ts.createProject("tsconfig.json");
 
 gulp.task("default", function () {
-
-    // return gulp.src('src/**/*.ts')
-    //     .pipe(ts({
-    //         noImplicitAny: true,
-    //         outFile: 'output.js'
-    //     }))
-    //     .pipe(gulp.dest('dist'));
-
-
     return tsProject.src()
         .pipe(tsProject())
-        .js.pipe(gulp.dest("dist"));
+        .js
+        .pipe(sourceMaps.init())
+        .pipe(sourceMaps.write('.', {
+            sourceRoot: function(file){ return file.cwd + '/src'; }
+        }))
+        .pipe(gulp.dest("dist"));
 });

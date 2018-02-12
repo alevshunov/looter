@@ -2,24 +2,37 @@
   "name": "looter",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/irc": "^0.3.32",
     "@types/jest": "^22.1.2",
+    "@types/mysql": "^2.15.2",
     "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
     "gulp-typescript": "^4.0.1",
-    "ts-jest": "^22.0.3",
+    "jest": "^22.2.2",
+    "ts-jest": "^22.0.4",
     "typescript": "^2.7.1"
   },
   "dependencies": {
-    "@types/irc": "^0.3.32",
-    "@types/mysql": "^2.15.2",
     "irc": "^0.5.2",
     "mysql": "^2.15.0",
     "strongly-typed-events": "^1.0.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "\\.spec\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
   }
 }

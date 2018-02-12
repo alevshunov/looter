@@ -1,6 +1,3 @@
-/// <reference path="./core.ts" />
-/// <reference path="./freero.ts" />
-
 import {Client} from "irc";
 import * as st from "./static";
 import {Core} from "./core";
