@@ -7,11 +7,24 @@
     /*font-family: Lato-Bold;*/
     /*src: url('fonts/Lato-Bold.ttf');*/
 /*}*/
+@media (min-width: 800px) {
+    .limiter {
+        min-width: 700px;
+        /*width: 80%;*/
+        padding: 50px 100px;
+    }
+}
 
-.limiter {
-    min-width: 300px;
-    /*width: 80%;*/
-    padding: 50px 100px;
+@media (max-width: 799px) {
+    .limiter {
+        width: 100%;
+        padding: 0px;
+    }
+
+    .table_center td {
+        padding-left: 40px;
+        display: block;
+    }
 }
 
 a { color: gray; }
