@@ -4,7 +4,7 @@ import * as moment from 'moment';
 
 interface State {
     data: Array<{
-        cardName: string,
+        card: string,
         owner: string,
         date: Date
     }>;
@@ -20,7 +20,7 @@ class App extends React.Component<Props, State> {
         super(props);
 
         let data: Array<{
-            cardName: string,
+            card: string,
             owner: string,
             date: Date
         }> = [];
@@ -49,7 +49,7 @@ class App extends React.Component<Props, State> {
             (
                 <tr key={index}>
                     <td className="cell100 column1">
-                        <a href={'http://rodb.kudesnik.cc/item/?term=' + d.cardName}>{d.cardName}</a>
+                        <a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>{d.card}</a>
                     </td>
                     <td className="cell100 column2">{d.owner}</td>
                     <td className="cell100 column3">{moment(d.date).add(3, 'hours').format('DD-MM-YYYY, HH:mm:ss')}</td>
