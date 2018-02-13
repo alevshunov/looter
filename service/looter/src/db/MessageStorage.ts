@@ -18,8 +18,8 @@ export class MessageStorage {
                 throw e;
             }
 
-            con.query("insert into messages(owner, message, date, originalOwner, originalMessage) values (?,?,?,?,?);",
-                [message.owner, message.message, message.date, message.originalOwner, message.originalMessage],
+            con.query("insert into messages(owner, message, date, originalOwner, originalMessage, hub) values (?,?,?,?,?,?);",
+                [message.owner, message.message, message.date, message.originalOwner, message.originalMessage, message.source],
                 (err, result) => {
                     if (err) { console.log(err); throw err; }
                     console.log("Result: " + JSON.stringify(result));
