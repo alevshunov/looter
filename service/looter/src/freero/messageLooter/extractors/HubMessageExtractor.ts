@@ -10,7 +10,7 @@ export class HubMessageExtractor implements IMessageExtractor {
     }
 
     public extract(args: FreeRoEventArgs): Message {
-        const parts = /\[(.+)\] : (.+)/g.exec(args.message);
+        const parts = /^\[(.+?)\] :? ?(.+)$/g.exec(args.message);
 
         if (!parts || parts.length < 2) {
             return new Message('', '', args.date, this.hub, args.author, args.message);
