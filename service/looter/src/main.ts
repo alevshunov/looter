@@ -1,14 +1,12 @@
 import {Client} from "irc";
 import * as st from "./static";
-import {Core} from "./core";
-import {FreeRo} from "./freero";
-import * as mysql from "mysql";
-
-import FreeRoIrcHub = FreeRo.FreeRoIrcHub;
-import ICardLooter = Core.ICardLooter;
-import ICardDroppedEventArgs = Core.ICardDroppedEventArgs;
-import FreeRoCardInfoExtractor = FreeRo.FreeRoCardInfoExtractor;
-import FreeRoCardLooter = FreeRo.FreeRoCardLooter;
+import {FreeRoIrcHub} from "./freero/hub/FreeRoIrcHub";
+import {CardLooter} from "./freero/cardLooter/CardLooter";
+import {CardDrop} from "./freero/cardLooter/CardDrop";
+import {DbConnectionChecker} from "./tools/DbConnectionChecker";
+import {CardDropStorage} from "./db/CardDropStorage";
+import {MessageStorage} from "./db/MessageStorage";
+import {MessageLooter} from "./freero/messageLooter/MessageLooter";
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -17,46 +15,26 @@ const dbConnection = {
     database: process.env.LOOTER_DB_DBNAME
 };
 
-const con = mysql.createConnection(dbConnection);
-con.connect((e) => {
-    if (e) {
-        console.log(e);
-        throw e;
-    }
+DbConnectionChecker.tryConnect(dbConnection);
 
-    console.log('DB Connetion OK');
-    con.destroy();
-});
+const cardStorage = new CardDropStorage(dbConnection);
+const messageStorage = new MessageStorage(dbConnection);
 
+const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [st.config.IrcChannel], userName: st.config.IrcNick});
+const ircHub = new FreeRoIrcHub(ircClient);
+
+let cardLooter = new CardLooter(ircHub);
 
 
-const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: ['#FreeRO'], userName: st.config.IrcNick});
-// const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [], userName: st.config.IrcNick});
-
-let cardLooter = new FreeRoCardLooter(
-    new FreeRoIrcHub(ircClient),
-    new FreeRoCardInfoExtractor()
-);
-
-
-cardLooter.onCardDropped().subscribe((sender: ICardLooter, args: ICardDroppedEventArgs) => {
-    const drop = args.drop;
+cardLooter.onEvent().subscribe((sender: CardLooter, drop: CardDrop) => {
     console.log(JSON.stringify(drop));
-
-    const con = mysql.createConnection(dbConnection);
-    con.connect((e) => {
-        if(e) {
-            console.log(e);
-            throw e;
-        }
-
-        con.query("insert into card_drop(owner, card, date) values (?,?,?);",
-            [drop.owner, drop.cardName, drop.date],
-            (err, result) => {
-                if (err) { console.log(err); throw err; }
-                console.log("Result: " + JSON.stringify(result));
-                con.destroy();
-            }
-        );
-    });
+    cardStorage.add(drop);
 });
+
+let messageLooter = new MessageLooter(ircHub);
+messageLooter.onEvent().subscribe((sender, message) => {
+    console.log(JSON.stringify(message));
+    messageStorage.add(message);
+});
+
+console.log('Started...');

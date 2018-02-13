@@ -5,12 +5,13 @@
   "main": "src/main.ts",
   "scripts": {
     "build": "gulp",
-    "test": "jest --env=node",
+    "test": "jest --env=node --verbose --coverage",
     "start": "node dist/main.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/vinyl": "^2.0.2",
     "@types/irc": "^0.3.32",
     "@types/jest": "^22.1.2",
     "@types/mysql": "^2.15.2",

@@ -1,18 +1,12 @@
-import {FreeRo} from "./freero";
-import FreeRoCardInfoExtractor = FreeRo.FreeRoCardInfoExtractor;
+import {CardDropExtractor} from "./CardDropExtractor";
 
+describe('CardDropExtractor', () => {
+    const extractor = new CardDropExtractor();
 
-it('should work', () => {
-    expect(true).toBe(true);
-});
-
-describe('FreeRoCardInfoExtractor', () => {
-    const extractor = new FreeRoCardInfoExtractor();
-
-    it('should be applicable', () => {
+    it('should be applicable for correct drop message', () => {
         const args = {
             author: 'FreeRO',
-            message: '#main : [Server] \'ponoroshku\' выбил \'Hydra Card\'. Грац!',
+            message: "#main : [Server] 'ponoroshku' выбил 'Hydra Card'. Грац!",
             date: new Date()
         };
 
@@ -25,7 +19,7 @@ describe('FreeRoCardInfoExtractor', () => {
     it('should be not applicable for not server messages', () => {
         const args = {
             author: 'KudesniK',
-            message: '#main : [Server] \'ponoroshku\' выбил \'Hydra Card\'. Грац!',
+            message: "#main : [Server] 'ponoroshku' выбил 'Hydra Card'. Грац!",
             date: new Date()
         };
 
@@ -65,7 +59,7 @@ describe('FreeRoCardInfoExtractor', () => {
         const args = [
             {
                 author: 'FreeRO',
-                message: '#main : [Server] \'ponoroshku\' выбил \'Hydra Card\'. Грац!',
+                message: "#main : [Server] 'ponoroshku' выбил 'Hydra Card'. Грац!",
                 date: new Date()
             },
             {
@@ -75,12 +69,12 @@ describe('FreeRoCardInfoExtractor', () => {
             },
             {
                 author: 'KudesniK',
-                message: '#main : [Server] \'ponoroshku\' выбил \'Hydra Card\'. Грац!',
+                message: "#main : [Server] 'ponoroshku' выбил 'Hydra Card'. Грац!",
                 date: new Date()
             },
             {
                 author: 'FreeRO',
-                message: '#main : [Server] \'ponoroshku\' выбил \'Hydra Card\'. Грац!',
+                message: "#main : [Server] 'ponoroshku' выбил 'Hydra Card'. Грац!",
                 date: new Date()
             }
         ];
