@@ -5,6 +5,9 @@ export class Shop {
     public date: Date;
     public id: number;
     public fetchCount: number;
+    public fetched: boolean;
+    public lastFetch: Date;
+    public active: boolean;
 
     constructor(owner: string, name: string, location: string, date: Date) {
         this.owner = owner;

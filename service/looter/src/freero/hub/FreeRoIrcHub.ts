@@ -7,7 +7,7 @@ import {IIrcConnection} from "./IIrcConnection";
 export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     private _irc: IrcClient | IIrcConnection;
 
-    private IRC_MESSAGE_EVENT = 'message';
+    private IRC_MESSAGE_EVENT = 'message#FreeRO';
     private IRC_ERROR_EVENT = 'error';
 
     private _onEvent = new EventDispatcher<FreeRoIrcHub, FreeRoEventArgs>();

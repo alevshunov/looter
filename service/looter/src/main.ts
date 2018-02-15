@@ -8,6 +8,8 @@ import {MessageStorage} from "./db/MessageStorage";
 import {MessageLooter} from "./freero/messageLooter/MessageLooter";
 import {ShopLooter} from "./freero/shopLooter/ShopLooter";
 import {ShopStorage} from "./db/ShopStorage";
+import {ShopItemLooter} from "./freero/shopItemLooter/ShopItemLooter";
+import {ShopItemStorage} from "./db/ShopItemStorage";
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -21,6 +23,7 @@ DbConnectionChecker.tryConnect(dbConnection);
 const cardStorage = new CardDropStorage(dbConnection);
 const messageStorage = new MessageStorage(dbConnection);
 const shopStorage = new ShopStorage(dbConnection);
+const shopItemStorage = new ShopItemStorage(dbConnection);
 
 const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [st.config.IrcChannel], userName: st.config.IrcNick});
 const ircHub = new FreeRoIrcHub(ircClient);
@@ -45,5 +48,8 @@ shopLooter.onEvent().subscribe((sender, shop) => {
     console.log(JSON.stringify(shop));
     shopStorage.add(shop);
 });
+
+const shopItemLooter = new ShopItemLooter(shopItemStorage, shopStorage, ircClient);
+shopItemLooter.run();
 
 console.log('Started...');

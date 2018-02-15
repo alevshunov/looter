@@ -1,36 +1,49 @@
-import {ShopStorage} from "../../db/ShopStorage";
 import {ShopItemStorage} from "../../db/ShopItemStorage";
 import {IShopProvider} from "./IShopProvider";
+import {ShopItemProvider} from "./ShopItemProvider";
+import {Client as IrcClient} from "irc";
 
 export class ShopItemLooter {
-    private SCAN_INTERVAL: number = 10000;
+    private SCAN_INTERVAL: number = 30000;
 
     private _shopProvider: IShopProvider;
-    private _shopItemsStore: ShopItemStorage;
-    private _shopStorege: ShopStorage;
+    private _shopItemStorage: ShopItemStorage;
+    private _hub: IrcClient;
 
-    constructor(shopProvider: IShopProvider) {
+    constructor(shopItemStorage: ShopItemStorage, shopProvider: IShopProvider, hub: IrcClient) {
         this._shopProvider = shopProvider;
+        this._shopItemStorage = shopItemStorage;
+        this._hub = hub;
+    }
 
-        this.waitNext();
+    public run() {
+        this.tick();
     }
 
     private async tick() {
         try {
             const shop = await this._shopProvider.getNextShop();
+
             if (!shop) {
                 return this.waitNext();
             }
 
-            await this._shopStorege.deactivateOtherShops(shop);
-            await this._shopStorege.updateFetchIndex(shop);
+            console.log('SHOP DETECTED', shop.id, shop.owner);
 
-            const shopItems = await this._shopProvider.getShopItems(shop);
-            await this._shopItemsStore.add(shopItems);
+            console.log('DEACTIVATE OLD SHOP', shop.id, shop.owner);
+            await this._shopProvider.deactivateOtherShops(shop);
+
+            console.log('UPDATE SHOP FETCH INDEX', shop.id);
+            await this._shopProvider.updateFetchIndex(shop);
+
+            console.log('GET SHOP ITEMS', shop.id, shop.owner);
+            const shopItems = await new ShopItemProvider(shop, this._hub).getItems();
+            await this._shopItemStorage.add(shop, shopItems);
 
             this.waitNext();
 
         } catch (e) {
+            console.log('EXCEPTION', e);
             return this.waitNext();
         }
     }
@@ -39,3 +52,4 @@ export class ShopItemLooter {
         setTimeout(this.tick.bind(this), this.SCAN_INTERVAL);
     }
 }
+

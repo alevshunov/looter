@@ -25,7 +25,7 @@ export class ShopStorage implements IShopProvider {
         const conn = new MyConnection(this._dbConnection);
         await conn.open();
         await conn.query(
-            "update shops set fetch_count = ?, last_fetch = now() where active = 1 id = ?",
+            "update shops set fetch_count = ?, last_fetch = now() where active = 1 and id = ?",
             shop.fetchCount, shop.id);
 
         conn.close();
@@ -41,15 +41,31 @@ export class ShopStorage implements IShopProvider {
         conn.close();
     }
 
-    async getNextShop(): Promise<Shop> {
-        const conn = new MyConnection(this._dbConnection);
-        await conn.open();
-        const result = await conn.query(
-            "select * from shops where active order by last_fetch limit 1",
-            );
+    getNextShop(): Promise<Shop> {
+        return new Promise(async (resolve, reject) => {
+            const conn = new MyConnection(this._dbConnection);
+            await conn.open();
+            const result = await conn.query(
+                "select * from shops where active and (last_fetch < date_add(now(), interval -2 hour) or last_fetch is null) order by last_fetch asc, id desc limit 1",
+                );
 
-        conn.close();
-        return null;
+            conn.close();
+
+            if (result.length == 0) {
+                return resolve(null);
+            }
+
+            const s = result[0];
+            const shop = new Shop(s.owner, s.name, s.location, s.date);
+            shop.id = s.id;
+            shop.date = s.date;
+            shop.fetched = s.fetched;
+            shop.fetchCount = s.fetch_count;
+            shop.lastFetch = s.last_fetch;
+            shop.active = s.active;
+            resolve(shop);
+        });
+
     }
 
     getShopItems(shop: Shop): Promise<ShopItem[]> {

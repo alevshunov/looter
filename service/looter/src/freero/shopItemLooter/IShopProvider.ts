@@ -5,4 +5,8 @@ export interface IShopProvider {
     getNextShop() : Promise<Shop> ;
 
     getShopItems(shop: Shop): Promise<ShopItem[]>;
+
+    deactivateOtherShops(shop: Shop): void;
+
+    updateFetchIndex(shop: Shop): void;
 }

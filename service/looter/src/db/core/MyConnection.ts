@@ -23,6 +23,8 @@ export class MyConnection {
     }
 
     public async query(query: string, ...args: any[]): Promise<any> {
+        console.log('QUERY', query, JSON.stringify(args));
+
         return new Promise((resolve, reject) => {
             this._connection.query(query, args, (err, result) => {
                 if (err) {

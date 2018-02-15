@@ -11,7 +11,7 @@ describe('FreeRoIrcHub', () => {
         connect(retryCount?: number | handlers.IRaw, callback?: handlers.IRaw) {},
 
         doMessage(from: string, to: string, message: string) {
-            this._cb['message'](from, to, message);
+            this._cb['message#FreeRO'](from, to, message);
         },
 
         doError(msg: string) {
