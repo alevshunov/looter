@@ -13,7 +13,7 @@ export class CardDropExtractor implements IEventArgsExtractor<FreeRoEventArgs, C
             result = false;
         }
 
-        if (!/#main : \[Server\] '(.+?)'.*'(.+?)'. Грац!/g.test(args.message)) {
+        if (!/^#main : \[Server\] '(.+?)'.*'(.+?)'. Грац!$/g.test(args.message)) {
             result = false;
         }
 
@@ -21,7 +21,7 @@ export class CardDropExtractor implements IEventArgsExtractor<FreeRoEventArgs, C
     }
 
     public extract(args: FreeRoEventArgs): CardDrop {
-        const parts = /#main : \[Server\] '(.+?)'.*'(.+?)'. Грац!/g.exec(args.message);
+        const parts = /^#main : \[Server\] '(.+?)'.*'(.+?)'. Грац!$/g.exec(args.message);
 
         const owner = parts[1];
         const card = parts[2];

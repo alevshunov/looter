@@ -16,6 +16,19 @@ describe('CardDropExtractor', () => {
         expect(actual).toBe(expected);
     });
 
+    it('should be not applicable for quoting drop message by server', () => {
+        const args = {
+            author: 'FreeRO',
+            message: "#main : [Server] #main : [Server] 'ponoroshku' выбил 'Hydra Card'. Грац!",
+            date: new Date()
+        };
+
+        const actual = extractor.applicable(args);
+        const expected = false;
+
+        expect(actual).toBe(expected);
+    });
+
     it('should be not applicable for not server messages', () => {
         const args = {
             author: 'KudesniK',
