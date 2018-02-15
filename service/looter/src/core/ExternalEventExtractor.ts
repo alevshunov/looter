@@ -14,8 +14,6 @@ export class ExternalEventExtractor<TExternalEventArgs, TInternalEventArgs> impl
         this._argsExtractor = argsExtractor;
 
         this._eventSource.onEvent().subscribe(this.externalEventHandler.bind(this));
-
-        console.log(this, 'is alive.');
     }
 
     protected externalEventHandler(sender: IEventProvider<TExternalEventArgs>, args: TExternalEventArgs) {
