@@ -3,9 +3,9 @@ import {IEventProvider} from "./IEventProvider";
 import {IEventArgsExtractor} from "./IEventArgsExtractor";
 
 export class ExternalEventExtractor<TExternalEventArgs, TInternalEventArgs> implements IEventProvider<TInternalEventArgs> {
-    private _eventSource: IEventProvider<TExternalEventArgs>;
-    private _argsExtractor: IEventArgsExtractor<TExternalEventArgs, TInternalEventArgs>;
-    private _eventDispatcher = new EventDispatcher<IEventProvider<TInternalEventArgs>, TInternalEventArgs>();
+    protected _eventSource: IEventProvider<TExternalEventArgs>;
+    protected _argsExtractor: IEventArgsExtractor<TExternalEventArgs, TInternalEventArgs>;
+    protected _eventDispatcher = new EventDispatcher<IEventProvider<TInternalEventArgs>, TInternalEventArgs>();
 
     constructor(eventSource: IEventProvider<TExternalEventArgs>,
                 argsExtractor: IEventArgsExtractor<TExternalEventArgs, TInternalEventArgs>
@@ -14,6 +14,8 @@ export class ExternalEventExtractor<TExternalEventArgs, TInternalEventArgs> impl
         this._argsExtractor = argsExtractor;
 
         this._eventSource.onEvent().subscribe(this.externalEventHandler.bind(this));
+
+        console.log(this, 'is alive.');
     }
 
     protected externalEventHandler(sender: IEventProvider<TExternalEventArgs>, args: TExternalEventArgs) {

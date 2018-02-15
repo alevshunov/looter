@@ -4,7 +4,7 @@ import {IEventArgsExtractor} from "../../core/IEventArgsExtractor";
 
 export class CardDropExtractor implements IEventArgsExtractor<FreeRoEventArgs, CardDrop>{
     private SERVER: string = 'FreeRO';
-    // private CARD_EXP: RegExp = /#main : \[Server\] '(.+)'.*'(.+)'. Грац!/g;
+    private CARD_EXP: RegExp = /^#main : \[Server\] '(.+)'.*'(.+)'. Грац!$/;
 
     public applicable(args: FreeRoEventArgs): boolean {
         let result = true;
@@ -13,7 +13,7 @@ export class CardDropExtractor implements IEventArgsExtractor<FreeRoEventArgs, C
             result = false;
         }
 
-        if (!/^#main : \[Server\] '(.+?)'.*'(.+?)'. Грац!$/g.test(args.message)) {
+        if (!new RegExp(this.CARD_EXP).test(args.message)) {
             result = false;
         }
 
@@ -21,7 +21,7 @@ export class CardDropExtractor implements IEventArgsExtractor<FreeRoEventArgs, C
     }
 
     public extract(args: FreeRoEventArgs): CardDrop {
-        const parts = /^#main : \[Server\] '(.+?)'.*'(.+?)'. Грац!$/g.exec(args.message);
+        const parts = new RegExp(this.CARD_EXP).exec(args.message);
 
         const owner = parts[1];
         const card = parts[2];

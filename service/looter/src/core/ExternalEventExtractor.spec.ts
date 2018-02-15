@@ -4,9 +4,8 @@ import {SimpleEvent} from "./SimpleEvent";
 
 
 describe('ExternalEventExtractor', () => {
-    const simpleEvent = new SimpleEvent<any>();
-
     it('should call extract with correct args when applicable', () => {
+        const simpleEvent = new SimpleEvent<any>();
         const source : object = {a: 1};
 
         const mockExtract = jest.fn().mockReturnValue(expect);
@@ -25,6 +24,7 @@ describe('ExternalEventExtractor', () => {
     });
 
     it('should not call extract when not applicable', () => {
+        const simpleEvent = new SimpleEvent<any>();
         const source : object = {a: 1};
 
         const mockExtract = jest.fn().mockReturnValue(expect);
@@ -42,6 +42,7 @@ describe('ExternalEventExtractor', () => {
     });
 
     it('should dispatch with correct sender and value from extract when applicable', () => {
+        const simpleEvent = new SimpleEvent<any>();
         const result = {a: 1};
         const mockExtract = jest.fn().mockReturnValue(result);
         const mockCallback = jest.fn();
@@ -63,6 +64,7 @@ describe('ExternalEventExtractor', () => {
     });
 
     it('should not dispatch when not applicable', () => {
+        const simpleEvent = new SimpleEvent<any>();
         const result = {a: 1};
         const mockExtract = jest.fn().mockReturnValue(result);
         const mockCallback = jest.fn();

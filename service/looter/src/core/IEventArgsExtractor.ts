@@ -1,5 +1,11 @@
 export interface IEventArgsExtractor<TExternalEvent, TInternalEventArgs> {
-    applicable(event: TExternalEvent) : boolean;
+    applicable(args: TExternalEvent) : boolean;
 
-    extract(event: TExternalEvent) : TInternalEventArgs;
+    extract(args: TExternalEvent) : TInternalEventArgs;
+}
+
+export interface IEventArgsAsyncExtractor<TExternalEvent, TInternalEventArgs> {
+    applicable(args: TExternalEvent) : Promise<boolean>;
+
+    extract(args: TExternalEvent) : Promise<TInternalEventArgs>;
 }
