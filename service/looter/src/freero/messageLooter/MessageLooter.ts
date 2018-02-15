@@ -1,5 +1,5 @@
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
-import {Message} from "./Message";
+import {Message} from "../../model/Message";
 import {ExternalEventExtractor} from "../../core/ExternalEventExtractor";
 import {IEventProvider} from "../../core/IEventProvider";
 import {MessageExtractor} from "./MessageExtractor";

@@ -2,7 +2,6 @@ import {Client} from "irc";
 import * as st from "./static";
 import {FreeRoIrcHub} from "./freero/hub/FreeRoIrcHub";
 import {CardLooter} from "./freero/cardLooter/CardLooter";
-import {CardDrop} from "./freero/cardLooter/CardDrop";
 import {DbConnectionChecker} from "./tools/DbConnectionChecker";
 import {CardDropStorage} from "./db/CardDropStorage";
 import {MessageStorage} from "./db/MessageStorage";

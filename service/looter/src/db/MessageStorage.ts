@@ -1,6 +1,6 @@
 import {ConnectionConfig} from "mysql";
 import * as mysql from "mysql";
-import {Message} from "../freero/messageLooter/Message";
+import {Message} from "../model/Message";
 
 export class MessageStorage {
     private _dbConnection: ConnectionConfig;

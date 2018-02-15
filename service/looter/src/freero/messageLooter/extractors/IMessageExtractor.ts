@@ -1,4 +1,4 @@
-import {Message} from "../Message";
+import {Message} from "../../../model/Message";
 import {FreeRoEventArgs} from "../../hub/FreeRoEventArgs";
 
 export interface IMessageExtractor {

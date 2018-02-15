@@ -1,4 +1,4 @@
-import {Message} from "./Message";
+import {Message} from "../../model/Message";
 import {IMessageExtractor} from "./extractors/IMessageExtractor";
 import {IEventArgsExtractor} from "../../core/IEventArgsExtractor";
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";

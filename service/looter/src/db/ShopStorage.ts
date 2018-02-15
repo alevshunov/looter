@@ -1,12 +1,24 @@
-import {ConnectionConfig} from "mysql";
+import {Connection, ConnectionConfig} from "mysql";
 import * as mysql from "mysql";
-import {Shop} from "../freero/shopLooter/Shop";
+import {Shop} from "../model/Shop";
 
 export class ShopStorage {
     private _dbConnection: ConnectionConfig;
 
     constructor(dbConnection: ConnectionConfig) {
         this._dbConnection = dbConnection;
+    }
+
+    private makeConnection() : Promise<mysql.Connection> {
+        return new Promise((resolve, reject) => {
+            const connection = mysql.createConnection(this._dbConnection);
+            connection.connect((e) => {
+                if(e) {
+                    return reject();
+                }
+                resolve(connection);
+            });
+        });
     }
 
 
@@ -31,5 +43,11 @@ export class ShopStorage {
 
     updateFetchIndex(shop: Shop) {
 
+    }
+
+    async deactivateOtherShops(shop: Shop) {
+        const conn = await this.makeConnection();
+        conn.query("update shops set active = 0 where active = 1 and owner = ? and id != ?",
+            [shop.owner, shop.id]);
     }
 }

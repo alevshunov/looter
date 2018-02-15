@@ -1,5 +1,5 @@
-import {Shop} from "./Shop";
-import {ShopItem} from "./ShopItem";
+import {Shop} from "../../model/Shop";
+import {ShopItem} from "../../model/ShopItem";
 
 export interface IShopProvider {
     getNextShop() : Shop;

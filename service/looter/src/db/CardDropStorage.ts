@@ -1,6 +1,6 @@
 import {ConnectionConfig} from "mysql";
 import * as mysql from "mysql";
-import {CardDrop} from "../freero/cardLooter/CardDrop";
+import {CardDrop} from "../model/CardDrop";
 
 export class CardDropStorage {
     private _dbConnection: ConnectionConfig;

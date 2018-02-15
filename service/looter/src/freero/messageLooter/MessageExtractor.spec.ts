@@ -1,6 +1,6 @@
 import {MessageExtractor} from "./MessageExtractor";
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
-import {Message} from "./Message";
+import {Message} from "../../model/Message";
 
 describe('MessageExtractor', () => {
     it('should extract messages using real extractor by correct author and be applicable', () => {

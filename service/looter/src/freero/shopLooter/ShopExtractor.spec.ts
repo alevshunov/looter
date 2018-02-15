@@ -1,6 +1,6 @@
 import {ShopExtractor} from "./ShopExtractor";
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
-import {Shop} from "./Shop";
+import {Shop} from "../../model/Shop";
 
 describe('ShopExtractor', () => {
     it('should be applicable and correct for correct server message', () => {

@@ -1,6 +1,6 @@
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
 import {IEventProvider} from "../../core/IEventProvider";
-import {Shop} from "./Shop";
+import {Shop} from "../../model/Shop";
 import {ShopExtractor} from "./ShopExtractor";
 import {ExternalEventExtractor} from "../../core/ExternalEventExtractor";
 

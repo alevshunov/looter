@@ -1,5 +1,5 @@
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
-import {Shop} from "./Shop";
+import {Shop} from "../../model/Shop";
 import {IEventArgsExtractor} from "../../core/IEventArgsExtractor";
 
 export class ShopExtractor implements IEventArgsExtractor<FreeRoEventArgs, Shop> {

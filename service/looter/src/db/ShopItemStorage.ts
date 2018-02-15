@@ -1,4 +1,4 @@
-import {ShopItem} from "../freero/shopItemLooter/ShopItem";
+import {ShopItem} from "../model/ShopItem";
 
 export class ShopItemStorage {
 

@@ -1,4 +1,4 @@
-import {CardDrop} from "./CardDrop";
+import {CardDrop} from "../../model/CardDrop";
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
 import {IEventArgsExtractor} from "../../core/IEventArgsExtractor";
 

@@ -22,10 +22,10 @@ export class ShopItemLooter {
                 return this.waitNext();
             }
 
-            this._shopStorege.updateFetchIndex(shop);
+            await this._shopStorege.deactivateOtherShops(shop);
+            await this._shopStorege.updateFetchIndex(shop);
 
             const shopItems = await this._shopProvider.getShopItems(shop);
-
             await this._shopItemsStore.add(shopItems);
 
             this.waitNext();
