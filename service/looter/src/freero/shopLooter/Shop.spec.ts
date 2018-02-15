@@ -1,5 +1,4 @@
 import {Shop} from "./Shop";
-import {ShopItem} from "./ShopItem";
 
 describe('Shop', () => {
     it('should build correctly', () => {
