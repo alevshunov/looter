@@ -72,4 +72,16 @@ export class ShopStorage implements IShopProvider {
         return Promise.resolve(null);
     }
 
+    async deactivateShops(shop: Shop) {
+        shop.fetchCount++;
+
+        const conn = new MyConnection(this._dbConnection);
+        await conn.open();
+        await conn.query(
+            "update shops set fetch_count = ?, last_fetch = now() where active = 1 and id = ?",
+            shop.fetchCount, shop.id);
+
+        conn.close();
+    }
+
 }

@@ -9,4 +9,6 @@ export interface IShopProvider {
     deactivateOtherShops(shop: Shop): void;
 
     updateFetchIndex(shop: Shop): void;
+
+    deactivateShops(shop: Shop): void;
 }

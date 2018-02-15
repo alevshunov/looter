@@ -40,6 +40,11 @@ export class ShopItemLooter {
             const shopItems = await new ShopItemProvider(shop, this._hub).getItems();
             await this._shopItemStorage.add(shop, shopItems);
 
+            if (shopItems.length == 0) {
+                console.log('DEACTIVETE SHOP', shop.id);
+                await this._shopProvider.deactivateShops(shop);
+            }
+
             this.waitNext();
 
         } catch (e) {
