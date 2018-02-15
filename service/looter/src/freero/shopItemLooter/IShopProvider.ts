@@ -2,7 +2,7 @@ import {Shop} from "../../model/Shop";
 import {ShopItem} from "../../model/ShopItem";
 
 export interface IShopProvider {
-    getNextShop() : Shop;
+    getNextShop() : Promise<Shop> ;
 
-    getShopItems(shop: Shop): ShopItem[];
+    getShopItems(shop: Shop): Promise<ShopItem[]>;
 }

@@ -4,6 +4,7 @@ export class Shop {
     public location: string;
     public date: Date;
     public id: number;
+    public fetchCount: number;
 
     constructor(owner: string, name: string, location: string, date: Date) {
         this.owner = owner;
