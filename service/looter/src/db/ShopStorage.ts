@@ -14,7 +14,7 @@ export class ShopStorage implements IShopProvider {
     async add(shop: Shop) {
         const conn = new MyConnection(this._dbConnection);
         await conn.open();
-        await conn.query("insert into shops(owner, name, location, date) values (?,?,?);",
+        await conn.query("insert into shops(owner, name, location, date) values (?,?,?,?);",
             shop.owner, shop.name, shop.location, shop.date);
         conn.close();
     }
