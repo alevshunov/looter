@@ -4,7 +4,7 @@ import {ShopItemProvider} from "./ShopItemProvider";
 import {Client as IrcClient} from "irc";
 
 export class ShopItemLooter {
-    private SCAN_INTERVAL: number = 30000;
+    private SCAN_INTERVAL: number = 15000;
 
     private _shopProvider: IShopProvider;
     private _shopItemStorage: ShopItemStorage;
