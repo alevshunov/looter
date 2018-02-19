@@ -43,14 +43,6 @@ class Shops extends React.Component<Props, State> {
             });
     }
 
-    renderDelta(min: number, max: number) {
-        if (min === max) {
-            return <span>{min}</span>
-        } else {
-            return <span>{min} - {max}</span>
-        }
-    }
-
     render() {
         let data  = this.state.data;
         let renderPart = data.map((d, index) =>
@@ -60,7 +52,7 @@ class Shops extends React.Component<Props, State> {
                         <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>{d.name}</a>
                     </td>
                     <td className="cell100 column2">{d.count}</td>
-                    <td className="cell100 column3">{this.renderDelta(d.min, d.max)}</td>
+                    <td className="cell100 column3 right">{d.min} - {d.max}</td>
                 </tr>
             ));
 
