@@ -8,6 +8,7 @@ export class Shop {
     public fetched: boolean;
     public lastFetch: Date;
     public active: boolean;
+    public retryCount: number;
 
     constructor(owner: string, name: string, location: string, date: Date) {
         this.owner = owner;

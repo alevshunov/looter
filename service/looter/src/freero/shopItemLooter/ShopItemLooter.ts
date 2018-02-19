@@ -33,16 +33,27 @@ export class ShopItemLooter {
             console.log('DEACTIVATE OLD SHOP', shop.id, shop.owner);
             await this._shopProvider.deactivateOtherShops(shop);
 
-            console.log('UPDATE SHOP FETCH INDEX', shop.id);
-            await this._shopProvider.updateFetchIndex(shop);
-
             console.log('GET SHOP ITEMS', shop.id, shop.owner);
             const shopItems = await new ShopItemProvider(shop, this._hub).getItems();
-            await this._shopItemStorage.add(shop, shopItems);
+
+            if (shopItems.length > 0)
+            {
+                console.log('UPDATE SHOP FETCH INDEX', shop.id);
+                await this._shopProvider.updateFetchIndex(shop);
+
+                await this._shopItemStorage.add(shop, shopItems);
+
+                await this._shopProvider.updateRetryCount(shop, 0);
+            }
 
             if (shopItems.length == 0) {
-                console.log('DEACTIVETE SHOP', shop.id);
-                await this._shopProvider.deactivateShops(shop);
+                if (shop.retryCount > 3) {
+                    console.log('DEACTIVETE SHOP', shop.id);
+                    await this._shopProvider.deactivateShops(shop);
+                } else {
+                    console.log('RETRY LATER', shop.id);
+                    await this._shopProvider.updateRetryCount(shop, shop.retryCount + 1);
+                }
             }
 
             this.waitNext();

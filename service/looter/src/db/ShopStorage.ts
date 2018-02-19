@@ -63,6 +63,7 @@ export class ShopStorage implements IShopProvider {
             shop.fetchCount = s.fetch_count;
             shop.lastFetch = s.last_fetch;
             shop.active = s.active;
+            shop.retryCount = s.retry_count;
             resolve(shop);
         });
 
@@ -84,4 +85,15 @@ export class ShopStorage implements IShopProvider {
         conn.close();
     }
 
+    async updateRetryCount(shop: Shop, retryCounter: number) {
+        shop.fetchCount++;
+
+        const conn = new MyConnection(this._dbConnection);
+        await conn.open();
+        await conn.query(
+            "update shops set retry_count = ?, last_fetch = now() where id = ?",
+            retryCounter, shop.id);
+
+        conn.close();
+    }
 }

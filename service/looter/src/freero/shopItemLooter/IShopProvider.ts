@@ -11,4 +11,6 @@ export interface IShopProvider {
     updateFetchIndex(shop: Shop): void;
 
     deactivateShops(shop: Shop): void;
+
+    updateRetryCount(shop: Shop, retryCounter: number): void;
 }
