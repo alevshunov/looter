@@ -107,5 +107,5 @@ a { color: gray; }
 
 td.right {
   text-align: right;
-  margin-right: 50px;
+  padding-right: 50px;
 }
