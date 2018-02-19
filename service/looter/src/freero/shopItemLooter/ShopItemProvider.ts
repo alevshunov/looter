@@ -32,7 +32,7 @@ export class ShopItemProvider {
     private handlePm(from: string, message: string) {
         console.log('PM >> ', from, message);
 
-        if (message == 'Торговец не найден. Проверите никнейм?') {
+        if (message == 'Торговец не найден. Проверите никнейм?' || message == '[' + this._shop.owner + '] сейчас не держит открытый магазин.') {
             this._isNotFound = true;
             return;
         }
