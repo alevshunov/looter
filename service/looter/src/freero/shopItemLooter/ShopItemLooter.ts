@@ -38,6 +38,8 @@ export class ShopItemLooter {
 
             if (shopItems.length > 0)
             {
+                shop.fetchCount++;
+
                 console.log('UPDATE SHOP FETCH INDEX', shop.id);
                 await this._shopProvider.updateFetchIndex(shop);
 

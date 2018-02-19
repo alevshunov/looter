@@ -20,8 +20,6 @@ export class ShopStorage implements IShopProvider {
     }
 
     async updateFetchIndex(shop: Shop) {
-        shop.fetchCount++;
-
         const conn = new MyConnection(this._dbConnection);
         await conn.open();
         await conn.query(
