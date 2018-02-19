@@ -44,7 +44,7 @@ class Shops extends React.Component<Props, State> {
     }
 
     renderDelta(min: number, max: number) {
-        if (min == max) {
+        if (min === max) {
             return <span>{min}</span>
         } else {
             return <span>{min} - {max}</span>
