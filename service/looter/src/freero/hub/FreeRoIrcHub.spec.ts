@@ -10,8 +10,8 @@ describe('FreeRoIrcHub', () => {
 
         connect(retryCount?: number | handlers.IRaw, callback?: handlers.IRaw) {},
 
-        doMessage(from: string, to: string, message: string) {
-            this._cb['message'](from, to, message);
+        doMessage(from: string, message: string) {
+            this._cb['message#freero'](from, message);
         },
 
         doError(msg: string) {
@@ -29,7 +29,7 @@ describe('FreeRoIrcHub', () => {
         const hub = new FreeRoIrcHub(fakeIrc);
         hub.onEvent().subscribe(mockCallback);
 
-        fakeIrc.doMessage(from, to, msg);
+        fakeIrc.doMessage(from, msg);
 
         expect(mockCallback.mock.calls.length).toBe(1);
         expect(mockCallback.mock.calls[0][0]).toBe(hub);
