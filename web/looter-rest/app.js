@@ -89,7 +89,7 @@ router.get('/shops/active', function(req, res, next){
         }
 
         connection.query(`
-            select si.name, sum(si.count) as count, min(si.price) as min, min(si.price) as max
+            select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max
             from shops s inner join shop_items si on si.shop_id = s.id
             where s.active and s.fetch_count > 0 and si.fetch_index = s.fetch_count
             group by si.name
