@@ -47,7 +47,7 @@ router.get('/shops', function(req, res, next){
         }
 
         connection.query(`
-            select t1.name, t2.name, t1.c, t2.c, t1.c - ifnull(t2.c,0), t1.minp, t1.maxp
+            select t1.name, t1.c as count1, t2.c as count2, t1.c - ifnull(t2.c,0) as delta, t1.minp, t1.maxp
             from
             (
                 select si.name, sum(count) c, max(si.price) maxp, min(si.price) minp
