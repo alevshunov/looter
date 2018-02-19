@@ -4,7 +4,7 @@ var app        = express();
 app.use(express.static('build'));
 
 app.use(function(req, res) {
-    res.sendFile('/build/index.html');
+    res.sendFile(__dirname + '/build/index.html');
 });
 
 app.listen(process.env.LOOTER_UI_REST_PORT);
