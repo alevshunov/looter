@@ -23,7 +23,7 @@ export class ShopStorage implements IShopProvider {
         const conn = new MyConnection(this._dbConnection);
         await conn.open();
         await conn.query(
-            "update shops set fetch_count = ?, last_fetch = now() where active = 1 and id = ?",
+            "update shops set fetch_count = ?, last_fetch = now() where id = ?",
             shop.fetchCount, shop.id);
 
         conn.close();
@@ -72,20 +72,16 @@ export class ShopStorage implements IShopProvider {
     }
 
     async deactivateShops(shop: Shop) {
-        shop.fetchCount++;
-
         const conn = new MyConnection(this._dbConnection);
         await conn.open();
         await conn.query(
-            "update shops set fetch_count = ?, last_fetch = now(), active = 0 where active = 1 and id = ?",
-            shop.fetchCount, shop.id);
+            "update shops set last_fetch = now(), active = 0 where id = ?",
+            shop.id);
 
         conn.close();
     }
 
     async updateRetryCount(shop: Shop, retryCounter: number) {
-        shop.fetchCount++;
-
         const conn = new MyConnection(this._dbConnection);
         await conn.open();
         await conn.query(
