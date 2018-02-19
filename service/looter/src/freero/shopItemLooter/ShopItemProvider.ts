@@ -39,7 +39,7 @@ export class ShopItemProvider {
 
         const parts = new RegExp(this.ITEM_EXP).exec(message);
 
-        const shopItem = new ShopItem(parts[1], parseInt(parts[2]), parseInt(parts[3]), this._shop.fetchCount, new Date());
+        const shopItem = new ShopItem(parts[1], parseInt(parts[2]), parseInt(parts[3]), this._shop.fetchCount+1, new Date());
         this._data.push(shopItem);
     }
 
