@@ -99,7 +99,7 @@ router.get('/shops/all', function(req, res, next){
 
     getConnection(connection => {
         connection.query(`
-            select *
+            select s.id, s.name, s.location, s.owner, s.date
             from shops s
             where s.active and s.fetch_count > 0
             order by s.date desc
@@ -121,7 +121,7 @@ router.get('/shop/:id', function(req, res, next){
     getConnection(connection => {
         connection.query(
             `
-                select *
+                select s.id, s.name, s.location, s.owner, s.date
                 from shops s
                 where s.id = ?
             `,
@@ -134,7 +134,7 @@ router.get('/shop/:id', function(req, res, next){
 
                 connection.query(
                     `
-                        select si.*
+                        select si.id, si.name, si.price, si.count
                         from shops s inner join shop_items si on s.id = si.shop_id and s.fetch_count = si.fetch_index
                         where s.id = ?
                         order by si.id
