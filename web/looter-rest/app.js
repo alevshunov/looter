@@ -89,6 +89,8 @@ router.get('/shops/active', function(req, res, next){
         database: process.env.LOOTER_DB_DBNAME
     });
 
+    const term = req.query.term ? `%${req.query.term || ''}%` : '%';
+
     connection.connect((e) => {
         if(e) {
             console.log(e);
@@ -98,9 +100,10 @@ router.get('/shops/active', function(req, res, next){
         connection.query(`
             select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max
             from shops s inner join shop_items si on si.shop_id = s.id
-            where s.active and s.fetch_count > 0 and si.fetch_index = s.fetch_count
+            where s.active and s.fetch_count > 0 and si.fetch_index = s.fetch_count and si.name like ?
             group by si.name
         `,
+            [term],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
