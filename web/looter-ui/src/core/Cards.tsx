@@ -1,12 +1,17 @@
 import * as React from 'react';
 import './Cards.css';
 import * as moment from 'moment';
+import * as _ from 'underscore';
 
 interface State {
+    term: string;
+
+    loading: boolean;
+
     data: Array<{
         card: string,
         owner: string,
-        date: Date
+        date: Date,
     }>;
 }
 
@@ -19,18 +24,28 @@ class Cards extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        let data: Array<{
-            card: string,
-            owner: string,
-            date: Date
-        }> = [];
+        this.state = { term: '', data: [], loading: true };
+        this.handleTerm = this.handleTerm.bind(this);
 
-        this.state = { data };
+        this.updateSearch = _.debounce(
+            this.updateSearch,
+            500
+        );
     }
 
-    componentWillMount() {
+    handleTerm(e: { target: { value: string; }; }) {
+        this.setState({ term: e.target.value });
+        this.updateSearch();
+    }
+
+    updateSearch() {
+        console.log('Load by', this.state.term);
+        this.setState({loading: true, data: []});
+
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/cards')
+        fetch('https://free-ro.kudesnik.cc/rest/cards' +
+            (this.state.term ? '?term=' + encodeURIComponent(this.state.term) : '')
+        )
             .then((response) => {
                 try {
                     return response.json();
@@ -39,12 +54,19 @@ class Cards extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                me.setState({ data });
+                me.setState({ data, loading: false });
             });
+
+    }
+
+    componentWillMount() {
+        this.updateSearch();
     }
 
     render() {
         let data  = this.state.data;
+        let term = this.state.term;
+
         let renderPart = data.map((d, index) =>
             (
                 <tr key={index}>
@@ -58,6 +80,9 @@ class Cards extends React.Component<Props, State> {
 
         return (
             <div className="limiter">
+                <div className="input-container">
+                    <input type="text" placeholder="Search..." value={term} onChange={this.handleTerm}/>
+                </div>
                 <table className="table_center">
                     <thead>
                         <tr>
@@ -67,6 +92,7 @@ class Cards extends React.Component<Props, State> {
                         </tr>
                     </thead>
                     <tbody>
+                        {this.state.loading && <tr><td colSpan={3} className="cell100 column1">Loading...</td></tr>}
                         {renderPart}
                     </tbody>
                 </table>

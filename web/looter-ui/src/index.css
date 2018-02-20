@@ -4,16 +4,7 @@ body {
   font-family: sans-serif;
 }
 
-/*@font-face {*/
-/*font-family: Lato-Regular;*/
-/*src: url('fonts/Lato-Regular.ttf');*/
-/*}*/
-
-/*@font-face {*/
-/*font-family: Lato-Bold;*/
-/*src: url('fonts/Lato-Bold.ttf');*/
-/*}*/
-@media (min-width: 800px) {
+@media (min-width: 900px) {
   .limiter {
     min-width: 700px;
     /*width: 80%;*/
@@ -21,10 +12,15 @@ body {
   }
 }
 
-@media (max-width: 799px) {
+@media (max-width: 899px) {
   .limiter {
     width: 100%;
-    padding: 20px 10px !important;
+    padding: 0 !important;
+  }
+
+  .input-container {
+    margin: 0px auto 20px auto;
+    width: 100% !important;
   }
 
   .table_center {
@@ -47,6 +43,7 @@ a { color: gray; }
   font-family: "Comic Sans MS";
   color: #808080;
 
+  width: 795px;
 
 
   margin: 0 auto;
@@ -72,7 +69,6 @@ a { color: gray; }
 }
 
 .table_center th {
-  font-family: Lato-Bold;
   font-size: 18px;
   color: #fa4251;
   line-height: 1.4;
@@ -108,4 +104,27 @@ a { color: gray; }
 td.right {
   text-align: right;
   padding-right: 50px;
+}
+
+.input-container {
+  margin: 0px auto 20px auto;
+  width: 795px;
+
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+  -o-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+  -ms-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+
+  border-collapse: collapse;
+}
+
+input[type="text"] {
+  padding: 10px 36px;
+  width: 100%;
+  font-family: "Comic Sans MS";
+  font-size: 18px;
+  border: none;
 }

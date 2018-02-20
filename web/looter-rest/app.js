@@ -14,13 +14,16 @@ router.get('/cards', function(req, res, next){
         database: process.env.LOOTER_DB_DBNAME
     });
 
+    const term = req.query.term ? `%${req.query.term || ''}%` : '%';
+
     connection.connect((e) => {
         if(e) {
             console.log(e);
             throw e;
         }
 
-        connection.query("select owner, card, date from card_drop order by date desc limit 100;",
+        connection.query("select owner, card, date from card_drop where owner like ? or card like ? order by date desc limit 100",
+            [term, term],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
@@ -39,6 +42,8 @@ router.get('/shops', function(req, res, next){
         password: process.env.LOOTER_DB_PASSWORD,
         database: process.env.LOOTER_DB_DBNAME
     });
+
+    const term = req.query.term ? `%${req.query.term || ''}%` : '%';
 
     connection.connect((e) => {
         if(e) {
@@ -62,7 +67,9 @@ router.get('/shops', function(req, res, next){
                 where si.fetch_index = s.fetch_count 
                 group by si.name
             ) t2 on t1.name = t2.name
+            where t1.name like ?
         `,
+            [term],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
