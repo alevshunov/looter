@@ -4,6 +4,7 @@ import {ShopItemProvider} from "./ShopItemProvider";
 import {Client as IrcClient} from "irc";
 
 export class ShopItemLooter {
+    private SCAN_FIRST_INTERVAL: number = 60000;
     private SCAN_INTERVAL: number = 15000;
 
     private _shopProvider: IShopProvider;
@@ -17,7 +18,7 @@ export class ShopItemLooter {
     }
 
     public run() {
-        this.tick();
+        this.waitNext(true);
     }
 
     private async tick() {
@@ -64,8 +65,8 @@ export class ShopItemLooter {
         }
     }
 
-    private waitNext() {
-        setTimeout(this.tick.bind(this), this.SCAN_INTERVAL);
+    private waitNext(first: boolean = false) {
+        setTimeout(this.tick.bind(this), first ? this.SCAN_FIRST_INTERVAL : this.SCAN_INTERVAL);
     }
 }
 
