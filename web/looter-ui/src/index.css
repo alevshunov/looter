@@ -101,7 +101,7 @@ a { color: gray; }
   width: 250px;
 }
 
-td.right {
+td.right, th.right {
   text-align: right;
   padding-right: 50px;
 }

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './Cards.css';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 
@@ -21,25 +20,26 @@ interface Props {
 
 class Cards extends React.Component<Props, State> {
 
+    enqueueLoad: () => void;
+
     constructor(props: Props) {
         super(props);
 
         this.state = { term: '', data: [], loading: true };
         this.handleTerm = this.handleTerm.bind(this);
 
-        this.updateSearch = _.debounce(
-            this.updateSearch,
+        this.enqueueLoad = _.debounce(
+            this.doLoad,
             500
         );
     }
 
     handleTerm(e: { target: { value: string; }; }) {
         this.setState({ term: e.target.value });
-        this.updateSearch();
+        this.enqueueLoad();
     }
 
-    updateSearch() {
-        console.log('Load by', this.state.term);
+    doLoad() {
         this.setState({loading: true, data: []});
 
         const me = this;
@@ -60,7 +60,7 @@ class Cards extends React.Component<Props, State> {
     }
 
     componentWillMount() {
-        this.updateSearch();
+        this.doLoad();
     }
 
     render() {

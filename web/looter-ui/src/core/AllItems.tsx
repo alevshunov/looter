@@ -1,24 +1,32 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import * as _ from 'underscore';
 
 interface State {
-    loading: boolean;
-    data: Array<any>;
     term: string;
+
+    loading: boolean;
+
+    data: Array<{
+        name: string,
+        count: number,
+        min: number,
+        max: number
+    }>;
 }
 
 interface Props {
+
 }
 
-class Shops extends React.Component<Props, State> {
+class AllItems extends React.Component<Props, State> {
 
     enqueueLoad: () => void;
 
     constructor(props: Props) {
         super(props);
 
-        this.state = { term: '', data: [], loading: true };
+        this.state = { data: [], loading: true, term: '' };
+
         this.handleTerm = this.handleTerm.bind(this);
 
         this.enqueueLoad = _.debounce(
@@ -27,11 +35,16 @@ class Shops extends React.Component<Props, State> {
         );
     }
 
+    handleTerm(e: { target: { value: string; }; }) {
+        this.setState({ term: e.target.value });
+        this.enqueueLoad();
+    }
+
     doLoad() {
         this.setState({loading: true, data: []});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/shops/all' +
+        fetch('https://free-ro.kudesnik.cc/rest/shops/active' +
             (this.state.term ? '?term=' + encodeURIComponent(this.state.term) : '')
         )
             .then((response) => {
@@ -47,11 +60,6 @@ class Shops extends React.Component<Props, State> {
 
     }
 
-    handleTerm(e: { target: { value: string; }; }) {
-        this.setState({ term: e.target.value });
-        this.enqueueLoad();
-    }
-
     componentWillMount() {
         this.doLoad();
     }
@@ -64,10 +72,10 @@ class Shops extends React.Component<Props, State> {
             (
                 <tr key={index}>
                     <td className="cell100 column1">
-                        <Link to={'/shop/' + d.id}>{d.name}</Link>
+                        <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>{d.name}</a>
                     </td>
-                    <td className="cell100 column2">{d.location}</td>
-                    <td className="cell100 column3 right">{d.owner}</td>
+                    <td className="cell100 column2">{d.count}</td>
+                    <td className="cell100 column3 right">{d.min} - {d.max}</td>
                 </tr>
             ));
 
@@ -80,8 +88,8 @@ class Shops extends React.Component<Props, State> {
                     <thead>
                         <tr>
                             <th className="column1">Name</th>
-                            <th className="column2">Location</th>
-                            <th className="column3 right">Player</th>
+                            <th className="column2">Count</th>
+                            <th className="column3 right">Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -93,4 +101,4 @@ class Shops extends React.Component<Props, State> {
     }
 }
 
-export default Shops;
+export default AllItems;

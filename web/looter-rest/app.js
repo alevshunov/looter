@@ -95,17 +95,18 @@ router.get('/shops/active', function(req, res, next){
 });
 
 router.get('/shops/all', function(req, res, next){
-    const id = req.params.id;
+    const term = req.query.term ? `%${req.query.term || ''}%` : '%';
 
     getConnection(connection => {
         connection.query(`
             select s.id, s.name, s.location, s.owner, s.date
             from shops s
-            where s.active and s.fetch_count > 0
+            where s.active and s.fetch_count > 0 
+            and (s.name like ? or s.owner like ? or s.location like ?)
             order by s.date desc
             limit 100
         `,
-            [id],
+            [term, term, term],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
