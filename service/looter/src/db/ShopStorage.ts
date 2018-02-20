@@ -44,7 +44,7 @@ export class ShopStorage implements IShopProvider {
             const conn = new MyConnection(this._dbConnection);
             await conn.open();
             const result = await conn.query(
-                "select * from shops where active and (last_fetch < date_add(now(), interval -2 hour) or last_fetch is null) and date < date_add(now(), interval -1 minute) order by last_fetch asc, id desc limit 1",
+                "select * from shops where active and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) and date < date_add(now(), interval -1 minute) order by last_fetch asc, id desc limit 1",
                 );
 
             conn.close();
