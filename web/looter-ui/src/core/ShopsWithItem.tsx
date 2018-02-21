@@ -49,6 +49,8 @@ class ShopWithItem extends React.Component<Props, State> {
     }
 
     render() {
+        document.title = this.props.itemName ? 'FreeRO - Shops - ' + this.props.itemName : 'FreeRO - Shops';
+
         return (
             <div className="limiter">
                 <table className="table_center info">

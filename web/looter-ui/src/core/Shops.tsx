@@ -49,6 +49,8 @@ class Shops extends React.Component<Props, State> {
     }
 
     render() {
+        document.title = this.props.term ? 'FreeRO - Shops - ' + this.props.term : 'FreeRO - Shops';
+
         return (
             <div className="limiter">
                 <RedirectableSearch base="/shops/" term={this.props.term}/>

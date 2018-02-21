@@ -56,6 +56,8 @@ class Cards extends React.Component<Props, State> {
     }
 
     render() {
+        document.title = this.props.term ? 'FreeRO - Cards - ' + this.props.term : 'FreeRO - Cards';
+
         return (
             <div className="limiter">
                 <RedirectableSearch base="/cards/" term={this.props.term}/>

@@ -55,6 +55,8 @@ class ShopItems extends React.Component<Props, State> {
     }
 
     render() {
+        document.title = this.props.shopId ? 'FreeRO - Shops - #' + this.props.shopId : 'FreeRO - Shops';
+
         if (!this.state.data) {  return null; }
 
         return (

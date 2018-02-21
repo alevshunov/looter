@@ -53,6 +53,8 @@ class AllItems extends React.Component<Props, State> {
     }
 
     render() {
+        document.title = this.props.term ? 'FreeRO - Price - ' + this.props.term : 'FreeRO - Price list';
+
         return (
             <div className="limiter">
                 <RedirectableSearch base="/items/" term={this.props.term}/>
