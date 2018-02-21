@@ -126,7 +126,7 @@ router.get('/shops/with/:itemName', function(req, res, next){
             inner join shops s on s.id = si.shop_id and si.fetch_index = s.fetch_count
             where si.name = ? and s.active and s.fetch_count > 0 
             group by s.id
-            order by s.location
+            order by min asc
             limit 100
         `,
             [itemName],
