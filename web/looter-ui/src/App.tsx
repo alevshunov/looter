@@ -20,6 +20,12 @@ class App extends React.Component {
 
                     <Route
                         exact={true}
+                        path="/cards/"
+                        render={(props) => <Cards term=""/>}
+                    />
+
+                    <Route
+                        exact={true}
                         path="/cards/:term"
                         render={(props) => <Cards term={decodeURIComponent(props.match.params.term)}/>}
                     />
