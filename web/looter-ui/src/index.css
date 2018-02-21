@@ -24,16 +24,31 @@ body {
   }
 
   .table_center {
-    /*width: 100%;*/
+    width: 100% !important;
+  }
+
+  .table_center td:first-child {
+    padding-top: 20px !important;
+  }
+
+  .table_center td:last-child {
+    padding-bottom: 20px !important;
   }
 
   .table_center td {
-    padding-left: 40px !important;
+    /*padding-left: 40px !important;*/
+    padding: 10px 15px 10px 15px !important;
+    width: auto;
     display: block;
+    text-align: left !important;
   }
 
   .table_center thead {
     display: none;
+  }
+
+  input[type="text"] {
+    padding: 10px 15px !important;
   }
 }
 

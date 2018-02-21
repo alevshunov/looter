@@ -45,7 +45,7 @@ class ShopItems extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                me.setState({ data });
+                me.setState({ data, loading: false });
             });
 
     }
@@ -91,6 +91,9 @@ class ShopItems extends React.Component<Props, State> {
                         </tr>
                     </thead>
                     <tbody>
+                        {this.state.loading && <tr><td>Loading ...</td></tr>}
+                        {!this.state.loading && (!this.state.data.items || this.state.data.items.length === 0)
+                            && <tr><td>No data.</td></tr>}
                         {
                             this.state.data.items.map((d, index) =>
                                 (
