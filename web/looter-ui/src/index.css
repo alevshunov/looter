@@ -128,3 +128,9 @@ input[type="text"] {
   font-size: 18px;
   border: none;
 }
+
+.cell100 {
+  white-space: nowrap;
+  overflow: hidden;
+  /*text-overflow: ellipsis;*/
+}
