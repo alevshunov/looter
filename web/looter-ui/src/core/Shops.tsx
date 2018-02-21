@@ -68,7 +68,9 @@ class Shops extends React.Component<Props, State> {
                                         <td className="cell100 column1">
                                             <Link to={'/shop/' + d.id}>{d.name}</Link>
                                         </td>
-                                        <td className="cell100 column2">{d.location}</td>
+                                        <td className="cell100 column2">
+                                            <Link to={'/shop/' + d.id}>{d.location}</Link>
+                                        </td>
                                         <td className="cell100 column3 right">{d.owner}</td>
                                     </tr>
                                 ))

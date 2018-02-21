@@ -2,6 +2,7 @@ import * as React from 'react';
 import './ShopItems.css';
 import * as moment from 'moment';
 import { NavLink } from 'react-router-dom';
+import asPrice from './components/asPrice';
 
 interface State {
     loading: boolean;
@@ -54,20 +55,7 @@ class ShopItems extends React.Component<Props, State> {
     }
 
     render() {
-        let data  = this.state.data;
-
-        if (!data) {  return null; }
-
-        let renderPart = data.items.map((d, index) =>
-            (
-                <tr key={index}>
-                    <td className="cell100 column1">
-                        <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
-                    </td>
-                    <td className="cell100 column2">{d.count}</td>
-                    <td className="cell100 column3 right">{d.price}</td>
-                </tr>
-            ));
+        if (!this.state.data) {  return null; }
 
         return (
             <div className="limiter">
@@ -75,16 +63,18 @@ class ShopItems extends React.Component<Props, State> {
                     <table className="table_center info">
                         <tbody>
                             <tr>
-                                <td className="info-item">{data.name}</td>
+                                <td className="info-item">{this.state.data.name}</td>
                             </tr>
                             <tr>
-                                <td className="info-item">{data.owner}</td>
+                                <td className="info-item">{this.state.data.owner}</td>
                             </tr>
                             <tr>
-                                <td className="info-item">{data.location}</td>
+                                <td className="info-item">{this.state.data.location}</td>
                             </tr>
                             <tr>
-                                <td className="info-item">{moment(data.date).format('DD-MM-YYYY, HH:mm')}</td>
+                                <td className="info-item">
+                                    {moment(this.state.data.date).format('DD-MM-YYYY, HH:mm')}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -99,7 +89,18 @@ class ShopItems extends React.Component<Props, State> {
                         </tr>
                     </thead>
                     <tbody>
-                        {renderPart}
+                        {
+                            this.state.data.items.map((d, index) =>
+                                (
+                                    <tr key={index}>
+                                        <td className="cell100 column1">
+                                            <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
+                                        </td>
+                                        <td className="cell100 column2">{d.count}</td>
+                                        <td className="cell100 column3 right">{asPrice(d.price)}</td>
+                                    </tr>
+                                ))
+                        }
                     </tbody>
                 </table>
             </div>

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import asPrice from './components/asPrice';
 
 interface State {
     loading: boolean;
@@ -63,6 +64,7 @@ class ShopWithItem extends React.Component<Props, State> {
                             <th className="column1">Name</th>
                             <th className="column2">Location</th>
                             <th className="column3 right">Player</th>
+                            <th className="column4 right">Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,8 +75,11 @@ class ShopWithItem extends React.Component<Props, State> {
                                         <td className="cell100 column1">
                                             <Link to={'/shop/' + d.id}>{d.name}</Link>
                                         </td>
-                                        <td className="cell100 column2">{d.location}</td>
+                                        <td className="cell100 column2">
+                                            <Link to={'/shop/' + d.id}>{d.location}</Link>
+                                        </td>
                                         <td className="cell100 column3 right">{d.owner}</td>
+                                        <td className="cell100 column3 right">{asPrice(d.min, d.max)}</td>
                                     </tr>
                                 ))
                         }

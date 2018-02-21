@@ -1,6 +1,7 @@
 import * as React from 'react';
 import RedirectableSearch from './components/RedirectableSearch';
 import { NavLink } from 'react-router-dom';
+import asPrice from './components/asPrice';
 
 interface State {
     loading: boolean;
@@ -73,7 +74,7 @@ class AllItems extends React.Component<Props, State> {
                                         </td>
                                         <td className="cell100 column2">{d.count}</td>
                                         <td className="cell100 column3 right">
-                                            <NavLink to={'/shops/with/' + d.name}>{d.min} - {d.max}</NavLink>
+                                            <NavLink to={'/shops/with/' + d.name}>{asPrice(d.min, d.max)}</NavLink>
                                         </td>
                                     </tr>
                                 ))
