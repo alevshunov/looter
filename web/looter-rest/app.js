@@ -124,7 +124,7 @@ router.get('/shops/with/:itemName', function(req, res, next){
             select s.id, s.owner, s.location, s.name, min(si.price) min, max(si.price) max
             from shop_items si 
             inner join shops s on s.id = si.shop_id and si.fetch_index = s.fetch_count
-            where si.name = ?
+            where si.name = ? and s.active and s.fetch_count > 0 
             group by s.id
             order by s.location
             limit 100
