@@ -70,8 +70,13 @@ class ShopWithItem extends React.Component<Props, State> {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.loading && <tr><td>Loading ...</td></tr>}
-                        {!this.state.loading && this.state.data.length === 0 && <tr><td>No data.</td></tr>}
+                        {this.state.loading && <tr><td className="cell100 column1">Loading ...</td></tr>}
+                        {
+                            !this.state.loading && this.state.data.length === 0 &&
+                            <tr>
+                                <td className="cell100 column1">No data.</td>
+                            </tr>
+                        }
                         {
                             this.state.data.map((d, index) =>
                                 (
