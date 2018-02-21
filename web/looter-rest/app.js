@@ -121,13 +121,11 @@ router.get('/shops/with/:itemName', function(req, res, next){
 
     getConnection(connection => {
         connection.query(`
-            select s.id, s.owner, s.name, s.location, s.date
-            from shops s
-            where id in (
-                select distinct shop_id
-                from shop_items si
-                where si.name = ?
-            ) and s.active and s.fetch_count > 0
+            select s.id, s.owner, s.location, s.name, min(si.price) min, max(si.price) max
+            from shop_items si 
+            inner join shops s on s.id = si.shop_id and si.fetch_index = s.fetch_count
+            where si.name = ?
+            group by s.id
             order by s.location
             limit 100
         `,
