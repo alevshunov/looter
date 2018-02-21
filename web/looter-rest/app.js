@@ -116,6 +116,31 @@ router.get('/shops/all', function(req, res, next){
     });
 });
 
+router.get('/shops/with/:itemName', function(req, res, next){
+    const itemName = req.params.itemName;
+
+    getConnection(connection => {
+        connection.query(`
+            select s.id, s.owner, s.name, s.location, s.date
+            from shops s
+            where id in (
+                select distinct shop_id
+                from shop_items si
+                where si.name = ?
+            ) and s.active and s.fetch_count > 0
+            order by s.location
+            limit 100
+        `,
+            [itemName],
+            (err, result) => {
+                if (err) { console.log(err); throw err; }
+                res.json(result);
+                connection.destroy();
+            }
+        );
+    });
+});
+
 router.get('/shop/:id', function(req, res, next){
     const id = req.params.id;
 
@@ -158,6 +183,11 @@ router.get('/shop/:id', function(req, res, next){
 });
 
 app.use('/rest', router);
+
+app.use(function(err, req, res, next) {
+    console.error(new Date(), err);
+    res.status(404);
+});
 
 app.listen(process.env.LOOTER_REST_PORT);
 console.log('looter-rest started, port: ' + process.env.LOOTER_REST_PORT);

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './ShopItems.css';
 import * as moment from 'moment';
+import { NavLink } from 'react-router-dom';
 
 interface State {
     loading: boolean;
@@ -61,7 +62,7 @@ class ShopItems extends React.Component<Props, State> {
             (
                 <tr key={index}>
                     <td className="cell100 column1">
-                        <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>{d.name}</a>
+                        <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
                     </td>
                     <td className="cell100 column2">{d.count}</td>
                     <td className="cell100 column3 right">{d.price}</td>

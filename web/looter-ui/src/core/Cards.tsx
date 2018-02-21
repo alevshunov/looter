@@ -1,10 +1,9 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import * as _ from 'underscore';
+import RedirectableSearch from './components/RedirectableSearch';
+import { NavLink } from 'react-router-dom';
 
 interface State {
-    term: string;
-
     loading: boolean;
 
     data: Array<{
@@ -15,37 +14,34 @@ interface State {
 }
 
 interface Props {
-
+    term: string;
 }
 
 class Cards extends React.Component<Props, State> {
 
-    enqueueLoad: () => void;
-
     constructor(props: Props) {
         super(props);
 
-        this.state = { term: '', data: [], loading: true };
-        this.handleTerm = this.handleTerm.bind(this);
+        this.state = {
+            data: [],
+            loading: true
+        };
 
-        this.enqueueLoad = _.debounce(
-            this.doLoad,
-            500
-        );
     }
 
-    handleTerm(e: { target: { value: string; }; }) {
-        this.setState({ term: e.target.value });
-        this.enqueueLoad();
+    componentWillMount() {
+        this.doLoad();
+    }
+
+    componentWillReceiveProps(props: Props) {
+        setTimeout(this.doLoad.bind(this), 1);
     }
 
     doLoad() {
         this.setState({loading: true, data: []});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/cards' +
-            (this.state.term ? '?term=' + encodeURIComponent(this.state.term) : '')
-        )
+        fetch('https://free-ro.kudesnik.cc/rest/cards?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
                     return response.json();
@@ -59,30 +55,10 @@ class Cards extends React.Component<Props, State> {
 
     }
 
-    componentWillMount() {
-        this.doLoad();
-    }
-
     render() {
-        let data  = this.state.data;
-        let term = this.state.term;
-
-        let renderPart = data.map((d, index) =>
-            (
-                <tr key={index}>
-                    <td className="cell100 column1">
-                        <a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>{d.card}</a>
-                    </td>
-                    <td className="cell100 column2">{d.owner}</td>
-                    <td className="cell100 column3">{moment(d.date).format('DD-MM-YYYY, HH:mm')}</td>
-                </tr>
-            ));
-
         return (
             <div className="limiter">
-                <div className="input-container">
-                    <input type="text" placeholder="Search..." value={term} onChange={this.handleTerm}/>
-                </div>
+                <RedirectableSearch base="/cards/" term={this.props.term}/>
                 <table className="table_center">
                     <thead>
                         <tr>
@@ -93,7 +69,21 @@ class Cards extends React.Component<Props, State> {
                     </thead>
                     <tbody>
                         {this.state.loading && <tr><td colSpan={3} className="cell100 column1">Loading...</td></tr>}
-                        {renderPart}
+                        {
+                            this.state.data.map((d, index) =>
+                                (
+                                    <tr key={index}>
+                                        <td className="cell100 column1">
+                                            <NavLink to={'/items/' + d.card}>{d.card}</NavLink>
+                                            {/*<a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>{d.card}</a>*/}
+                                        </td>
+                                        <td className="cell100 column2">{d.owner}</td>
+                                        <td className="cell100 column3">
+                                            {moment(d.date).format('DD-MM-YYYY, HH:mm')}
+                                        </td>
+                                    </tr>
+                                ))
+                        }
                     </tbody>
                 </table>
             </div>

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import RedirectableSearch from './components/RedirectableSearch';
 
 interface State {
     loading: boolean;
@@ -8,10 +7,10 @@ interface State {
 }
 
 interface Props {
-    term: string;
+    itemName: string;
 }
 
-class Shops extends React.Component<Props, State> {
+class ShopWithItem extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -34,7 +33,7 @@ class Shops extends React.Component<Props, State> {
         this.setState({loading: true, data: []});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/shops/all?term=' + encodeURIComponent(this.props.term))
+        fetch('https://free-ro.kudesnik.cc/rest/shops/with/' + encodeURIComponent(this.props.itemName))
             .then((response) => {
                 try {
                     return response.json();
@@ -51,7 +50,13 @@ class Shops extends React.Component<Props, State> {
     render() {
         return (
             <div className="limiter">
-                <RedirectableSearch base="/shops/" term={this.props.term}/>
+                <table className="table_center info">
+                    <tbody>
+                    <tr>
+                        <td className="info-item">{this.props.itemName}</td>
+                    </tr>
+                    </tbody>
+                </table>
                 <table className="table_center">
                     <thead>
                         <tr>
@@ -80,4 +85,4 @@ class Shops extends React.Component<Props, State> {
     }
 }
 
-export default Shops;
+export default ShopWithItem;

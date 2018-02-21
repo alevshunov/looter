@@ -1,9 +1,8 @@
 import * as React from 'react';
-import * as _ from 'underscore';
+import RedirectableSearch from './components/RedirectableSearch';
+import { NavLink } from 'react-router-dom';
 
 interface State {
-    term: string;
-
     loading: boolean;
 
     data: Array<{
@@ -15,38 +14,30 @@ interface State {
 }
 
 interface Props {
-
+    term: string;
 }
 
 class AllItems extends React.Component<Props, State> {
 
-    enqueueLoad: () => void;
-
     constructor(props: Props) {
         super(props);
 
-        this.state = { data: [], loading: true, term: '' };
-
-        this.handleTerm = this.handleTerm.bind(this);
-
-        this.enqueueLoad = _.debounce(
-            this.doLoad,
-            500
-        );
+        this.state = { data: [], loading: true};
     }
 
-    handleTerm(e: { target: { value: string; }; }) {
-        this.setState({ term: e.target.value });
-        this.enqueueLoad();
+    componentWillMount() {
+        this.doLoad();
+    }
+
+    componentWillReceiveProps(props: Props) {
+        setTimeout(this.doLoad.bind(this), 1);
     }
 
     doLoad() {
         this.setState({loading: true, data: []});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/shops/active' +
-            (this.state.term ? '?term=' + encodeURIComponent(this.state.term) : '')
-        )
+        fetch('https://free-ro.kudesnik.cc/rest/shops/active?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
                     return response.json();
@@ -60,30 +51,10 @@ class AllItems extends React.Component<Props, State> {
 
     }
 
-    componentWillMount() {
-        this.doLoad();
-    }
-
     render() {
-        let data  = this.state.data;
-        let term = this.state.term;
-
-        let renderPart = data.map((d, index) =>
-            (
-                <tr key={index}>
-                    <td className="cell100 column1">
-                        <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>{d.name}</a>
-                    </td>
-                    <td className="cell100 column2">{d.count}</td>
-                    <td className="cell100 column3 right">{d.min} - {d.max}</td>
-                </tr>
-            ));
-
         return (
             <div className="limiter">
-                <div className="input-container">
-                    <input type="text" placeholder="Search..." value={term} onChange={this.handleTerm}/>
-                </div>
+                <RedirectableSearch base="/items/" term={this.props.term}/>
                 <table className="table_center">
                     <thead>
                         <tr>
@@ -93,7 +64,20 @@ class AllItems extends React.Component<Props, State> {
                         </tr>
                     </thead>
                     <tbody>
-                        {renderPart}
+                        {
+                            this.state.data.map((d, index) =>
+                                (
+                                    <tr key={index}>
+                                        <td className="cell100 column1">
+                                            <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>{d.name}</a>
+                                        </td>
+                                        <td className="cell100 column2">{d.count}</td>
+                                        <td className="cell100 column3 right">
+                                            <NavLink to={'/shops/with/' + d.name}>{d.min} - {d.max}</NavLink>
+                                        </td>
+                                    </tr>
+                                ))
+                        }
                     </tbody>
                 </table>
             </div>
