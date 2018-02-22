@@ -37,6 +37,20 @@ router.get('/cards', function(req, res, next){
     });
 });
 
+router.get('/report', function(req, res, next){
+    getConnection(connection => {
+        connection.query("select * from reports order by id desc limit 1",
+            (err, result) => {
+                if (err) { console.log(err); throw err; }
+                res(result[0].report);
+                connection.destroy();
+            }
+        );
+    });
+});
+
+
+
 //
 // router.get('/shops', function(req, res, next){
 //     console.log('GET /rest/shops', req.headers['x-forwarded-for'] || req.connection.remoteAddress);
