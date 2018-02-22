@@ -50,6 +50,11 @@ body {
   input[type="text"] {
     padding: 10px 15px !important;
   }
+
+  .nav {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+  }
 }
 
 a { color: gray; }
@@ -148,4 +153,8 @@ input[type="text"] {
   white-space: nowrap;
   overflow: hidden;
   /*text-overflow: ellipsis;*/
+}
+
+.nav {
+  margin-bottom: 40px;
 }

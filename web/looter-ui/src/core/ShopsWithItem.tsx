@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import asPrice from './components/asPrice';
+import MyNavigation from './components/MyNavigation';
 
 interface State {
     loading: boolean;
@@ -53,6 +54,7 @@ class ShopWithItem extends React.Component<Props, State> {
 
         return (
             <div className="limiter">
+                <MyNavigation active="shops"/>
                 <table className="table_center info">
                     <tbody>
                     <tr>

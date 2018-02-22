@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import RedirectableSearch from './components/RedirectableSearch';
+import MyNavigation from './components/MyNavigation';
 
 interface State {
     loading: boolean;
@@ -53,6 +54,7 @@ class Shops extends React.Component<Props, State> {
 
         return (
             <div className="limiter">
+                <MyNavigation active="shops"/>
                 <RedirectableSearch base="/shops/" term={this.props.term}/>
                 <table className="table_center">
                     <thead>

@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as moment from 'moment';
 import RedirectableSearch from './components/RedirectableSearch';
 import { NavLink } from 'react-router-dom';
+import MyNavigation from './components/MyNavigation';
 
 interface State {
     loading: boolean;
@@ -60,6 +61,7 @@ class Cards extends React.Component<Props, State> {
 
         return (
             <div className="limiter">
+                <MyNavigation active="cards"/>
                 <RedirectableSearch base="/cards/" term={this.props.term}/>
                 <table className="table_center">
                     <thead>

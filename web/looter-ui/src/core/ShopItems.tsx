@@ -3,6 +3,7 @@ import './ShopItems.css';
 import * as moment from 'moment';
 import { NavLink } from 'react-router-dom';
 import asPrice from './components/asPrice';
+import MyNavigation from './components/MyNavigation';
 
 interface State {
     loading: boolean;
@@ -61,6 +62,7 @@ class ShopItems extends React.Component<Props, State> {
 
         return (
             <div className="limiter">
+                <MyNavigation active="shops"/>
                 <div>
                     <table className="table_center info">
                         <tbody>
