@@ -42,7 +42,7 @@ router.get('/report', function(req, res, next){
         connection.query("select * from reports order by id desc limit 1",
             (err, result) => {
                 if (err) { console.log(err); throw err; }
-                res(result[0].report);
+                res.send(result[0].report);
                 connection.destroy();
             }
         );
