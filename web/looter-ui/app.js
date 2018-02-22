@@ -59,6 +59,14 @@ titleMapper = function(url) {
             Promise.resolve('FreeRO - Price - ' + decodeURIComponent(parts[1]))
     });
 
+
+    mappers.push({
+        exp: /^\/report\/?$/,
+        fn: (parts) =>
+            Promise.resolve('FreeRO - Weekly report')
+    });
+
+
     mappers.push({ exp: /^.*$/, fn: () => Promise.resolve('FreeRO - O_o')});
 
     for (let i=0; i<mappers.length; i++) {

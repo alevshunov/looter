@@ -5,6 +5,7 @@ import Shops from './core/Shops';
 import AllItems from './core/AllItems';
 import ShopItems from './core/ShopItems';
 import ShopWithItem from './core/ShopsWithItem';
+import Report from './core/Report';
 
 class App extends React.Component {
 
@@ -64,6 +65,12 @@ class App extends React.Component {
                         exact={true}
                         path="/items/:term"
                         render={(props) => <AllItems term={decodeURIComponent(props.match.params.term)}/>}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/report"
+                        render={(props) => <Report />}
                     />
                 </Switch>
             </BrowserRouter>
