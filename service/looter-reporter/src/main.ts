@@ -9,6 +9,7 @@ const dbConnection = {
 };
 
 class Report {
+    reportInfo: { start: Date; end: Date; date: Date; };
     cardOfAWeek: string;
     cardDropActivity: Array<number>;
     cardTopPlayer: Array<{owner: string; count: number}>;
@@ -30,8 +31,8 @@ class Report {
     shopMostExpensiveLots: Array<{name: string; price: number; shopName: string; shopOwner: string;}>;
 }
 
-const startDate = moment("2018-02-19", "YYYY-MM-DD").toDate();
-const endDate = moment("2018-02-19", "YYYY-MM-DD").add({ days: 7}).toDate();
+const startDate = moment(new Date()).add({ days: -7}).toDate();
+const endDate = new Date();
 
 const connection = new MyConnection(dbConnection);
 
@@ -39,6 +40,9 @@ const connection = new MyConnection(dbConnection);
 async function doReport(connection: MyConnection, start: Date, end: Date) {
     await connection.open();
     const report = new Report();
+
+    report.reportInfo = { date: new Date(), start: start, end: end };
+
     const limit = 10;
 
     function createZeroArray(len: number) {
@@ -167,7 +171,13 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
     async function chatStoryTellers() {
         let data = await connection.query(`
             select t.owner, round(t.avgLength) averageLength, 
-                (select message from messages m where t.owner = m.owner order by rand() limit 1) randomMessage
+                (
+                    select message 
+                    from messages m 
+                    where t.owner = m.owner and length(message) >= averageLength 
+                    order by rand() 
+                    limit 1
+                ) randomMessage
             from
                 (
                     select owner, avg(length(message)) avgLength, count(*) as c
@@ -185,7 +195,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
 
     async function shopOfAWeek() {
         let data = await connection.query(`
-            select owner, name, location
+            select id, owner, name, location
             from shops
             where fetch_count > 3 and date between ? and ?
             order by rand()
@@ -197,7 +207,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
 
     async function shopLotOfAWeek() {
         let data = await connection.query(`
-            select si.name, s.owner, s.name shopName, s.location
+            select s.id, si.name, s.owner, s.name shopName, s.location
             from shops s inner join shop_items si on s.id = si.shop_id
             where s.fetch_count > 3 and si.date between ? and ?
             order by rand()
@@ -209,33 +219,57 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
 
     async function shopMostExpensive() {
         let data = await connection.query(`
-            select s.id, s.owner, s.name, s.location, sum(si.price * si.count) totalPrice
-            from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-            where s.fetch_count > 3 and s.date between ? and ?
+            select s.id, s.owner, s.name, s.location, sum(si.price * si.count) totalPrice, s.date
+            from
+            (
+                select distinct s.owner
+                from shops s
+                where s.fetch_count > 3 and s.date between ? and ?
+            ) o inner join shops s on s.id = (
+                select s.id
+                from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
+                where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ?
+                group by s.id
+                order by sum(si.price * si.count) desc
+                limit 1
+            )
+            inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
             group by s.id
             order by totalPrice desc
             limit ${limit}
-        `, start, end);
+        `, start, end, start, end);
 
         return data;
     }
 
     async function shopMostCheapest() {
         let data = await connection.query(`
-            select s.id, s.owner, s.name, s.location, sum(si.price * si.count) totalPrice
-            from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-            where s.fetch_count > 3 and s.date between ? and ?
+            select s.id, s.owner, s.name, s.location, sum(si.price * si.count) totalPrice, s.date
+            from
+            (
+                select distinct s.owner
+                from shops s
+                where s.fetch_count > 3 and s.date between ? and ?
+            ) o inner join shops s on s.id = (
+                select s.id
+                from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
+                where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ?
+                group by s.id
+                order by sum(si.price * si.count) asc
+                limit 1
+            )
+            inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
             group by s.id
             order by totalPrice asc
             limit ${limit}
-        `, start, end);
+        `, start, end, start, end);
 
         return data;
     }
 
     async function shopMostUnstable() {
         let data = await connection.query(`
-            select owner, count(*) count
+            select max(id) id, owner, count(*) count
             from shops
             where date between ? and ?
             group by owner
@@ -248,7 +282,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
 
     async function shopMostExpensiveLots() {
         let data = await connection.query(`
-            select si.name, max(si.price) price
+            select max(s.id) id, si.name, min(si.price) price
             from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
             where s.fetch_count > 3 and s.date between ? and ?
             group by si.name

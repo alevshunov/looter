@@ -159,7 +159,7 @@ router.get('/shop/:id', function(req, res, next){
     getConnection(connection => {
         connection.query(
             `
-                select s.id, s.name, s.location, s.owner, s.date
+                select s.id, s.name, s.location, s.owner, s.date, s.last_fetch lastFetch, s.active
                 from shops s
                 where s.id = ?
             `,

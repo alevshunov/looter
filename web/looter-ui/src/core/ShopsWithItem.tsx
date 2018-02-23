@@ -65,18 +65,18 @@ class ShopWithItem extends React.Component<Props, State> {
                 <table className="table_center">
                     <thead>
                         <tr>
-                            <th className="column1">Name</th>
-                            <th className="column2">Location</th>
-                            <th className="column3 right">Player</th>
-                            <th className="column4 right">Price</th>
+                            <th className="column1">Название</th>
+                            <th className="column2">Игрок</th>
+                            <th className="column3 right">Цена</th>
+                            <th className="column4 right">Расположение</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Loading ...</td></tr>}
+                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
                         {
                             !this.state.loading && this.state.data.length === 0 &&
                             <tr>
-                                <td className="cell100 column1">No data.</td>
+                                <td className="cell100 column1">Ничего не найдено.</td>
                             </tr>
                         }
                         {
@@ -84,13 +84,13 @@ class ShopWithItem extends React.Component<Props, State> {
                                 (
                                     <tr key={index}>
                                         <td className="cell100 column1">
-                                            <Link to={'/shop/' + d.id}>{d.name}</Link>
+                                            {d.name}
                                         </td>
-                                        <td className="cell100 column2">
+                                        <td className="cell100 column2">{d.owner}</td>
+                                        <td className="cell100 column3 right">{asPrice(d.min, d.max)}</td>
+                                        <td className="cell100 column3 right">
                                             <Link to={'/shop/' + d.id}>{d.location}</Link>
                                         </td>
-                                        <td className="cell100 column3 right">{d.owner}</td>
-                                        <td className="cell100 column3 right">{asPrice(d.min, d.max)}</td>
                                     </tr>
                                 ))
                         }

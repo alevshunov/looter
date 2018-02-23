@@ -1,15 +1,67 @@
 .table-report-container {
-    padding: 20px 15px;
+    padding: 0px 0px;
+    width: 100%;
 }
 
 .table-report {
+    width: 100%;
+    border-collapse: collapse;
+}
 
+.table-report tr {
+    border-bottom: 1px solid #f2f2f2;
 }
 
 .table-report-cell.header  {
+    font-size: 18px;
+    color: #fa4251;
+    line-height: 1.4;
+    background-color: transparent;
 
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.table-report-cell.left {
+    text-align: left;
+}
+
+.table-report-cell.right {
+    text-align: right;
+}
+
+.table-report-cell.center {
+    text-align: center;
 }
 
 .table-report-cell  {
     padding: 5px 20px 5px 10px;
+    vertical-align: top;
+}
+
+.table-report-cell.dots {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 899px) {
+    .table-report-cell.header {
+        display: none;
+    }
+
+    .table-report-cell.data.index {
+        display: table-cell !important;
+    }
+
+    .table-report-cell {
+        display: block;
+        padding: 3px;
+        text-align: left !important;
+    }
+
+    .table-report-cell:first-child {
+        padding-top: 10px;
+        text-align: left !important;
+    }
 }

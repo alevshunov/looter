@@ -49,7 +49,7 @@ class Search extends React.Component<Props, State> {
     render() {
         return (
             <div className="input-container">
-                <input type="text" placeholder="Search..." value={this.state.term} onChange={this.handleTerm}/>
+                <input type="text" placeholder="Поиск" value={this.state.term} onChange={this.handleTerm}/>
             </div>
         );
     }

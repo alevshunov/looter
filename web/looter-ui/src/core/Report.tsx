@@ -2,9 +2,15 @@ import * as React from 'react';
 import MyNavigation from './components/MyNavigation';
 import Report24 from './components/Report24';
 import TableReport from './components/TableReport';
-// import * as moment from 'moment';
+import Container from './components/Container';
+import asPrice from './components/asPrice';
+import asNumber from './components/asNumber';
+import { NavLink } from 'react-router-dom';
+import * as moment from 'moment';
+import './Report.css';
 
 class ReportEntry {
+    reportInfo: { start: Date; end: Date; date: Date; };
     cardOfAWeek: string;
     cardDropActivity: Array<number>;
     cardTopPlayer: Array<{ owner: string; count: number }>;
@@ -30,10 +36,14 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
     constructor(props: {}, context: any) {
         super(props, context);
 
-        this.state = { loading: false, report: undefined};
+        this.state = { loading: false, report: window['__report']};
     }
 
     componentWillMount() {
+        if (this.state.report) {
+            return;
+        }
+
         this.setState({loading: true, report: undefined});
 
         const me = this;
@@ -46,11 +56,15 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 }
             })
             .then((report) => {
+                window['__report'] = report;
                 me.setState({ report, loading: false });
             });
     }
 
     render() {
+        const price = (x: any) => asPrice(x);
+        const digits = (x: any) => asNumber(x);
+
         document.title = 'FreeRO - Weekly report';
 
         if (!this.state.report) {
@@ -63,127 +77,234 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
             <div className="limiter">
                 <MyNavigation active="cards"/>
 
-                <div className="input-container">
-                    <Report24 data={this.state.report.cardDropActivity} /><br/>
-                    Card of the week: {report.cardOfAWeek}<br/>
-                    Top players:
+                <Container>
+                    <div style={{textAlign: 'center'}}>
+                        <i>
+                            {moment(report.reportInfo.start).format('DD-MM-YYYY, HH:mm')} - {' '}
+                            {moment(report.reportInfo.end).format('DD-MM-YYYY, HH:mm')}
+                        </i>
+                    </div>
+                </Container>
+
+                <Container>
+                    Картой недели выбрана <NavLink to={'/cards/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
+                </Container>
+
+                <Container>
+                    Фраза недели произнесена игроком <strong>{report.chatStoreOfAWeek.owner}</strong>:
+                    <blockquote><p>{report.chatStoreOfAWeek.message}</p></blockquote>
+                </Container>
+
+                <Container>
+                    Магазином недели признан
+                    {' '}<NavLink to={'/shops/' + report.shopOfAWeek.name}>{report.shopOfAWeek.name}</NavLink>
+                    {' '}выставленный
+                    {' '}<b>{report.shopOfAWeek.owner}</b> в
+                    {' '}<b>{report.shopOfAWeek.location}</b><br/>
+                </Container>
+
+                <Container>
+                    Товаром недели выбран
+                    {' '}<NavLink to={'/items/' + report.shopLotOfAWeek.name}>{report.shopLotOfAWeek.name}</NavLink>
+                    {' '}был доступен в магазине
+                    {' '}
+                    <NavLink to={'/shops/' + report.shopLotOfAWeek.shopName}>{report.shopLotOfAWeek.shopName}</NavLink>
+                    {' '}владельца
+                    {' '}<NavLink to={'/shops/' + report.shopLotOfAWeek.owner}>{report.shopLotOfAWeek.owner}</NavLink>
+                    {' '}в <b>{report.shopLotOfAWeek.location}</b>
+                </Container>
+
+                <Container>
+                    <Report24 data={this.state.report.cardDropActivity} title="Распределение выбивания карт по часам"/>
+                </Container>
+
+                <Container>
+                    Выбиватели карт:
                     <TableReport
                         cells={
                             [
-                                {title: 'Player', field: 'owner'},
-                                {title: 'Count', field: 'count'}
+                                {title: '', field: 'index', align: 'center'},
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner',
+                                    render: (name) => <NavLink to={'/cards/' + name}>{name}</NavLink>
+                                },
+                                {title: 'Выбил карт', field: 'count', align: 'right'}
                             ]
                         }
                         data={report.cardTopPlayer}
                     />
+                </Container>
 
-                    Top cards:
+                <Container>
+                    Популярность карт:
                     <TableReport
                         cells={
                             [
-                                {title: 'Card', field: 'card'},
-                                {title: 'Count', field: 'count'}
+                                {title: '', field: 'index', align: 'center'},
+                                {
+                                    title: 'Карта',
+                                    field: 'card',
+                                    render: (name) => <NavLink to={'/cards/' + name}>{name}</NavLink>
+                                },
+                                {title: 'Выбита раз', field: 'count', align: 'right'}
                             ]
                         }
                         data={report.cardTopDrop}
                     />
+                </Container>
 
-                    Lovely cards:
+                <Container>
+                    Наиболее часто выбиваемые карты игроками:
                     <TableReport
                         cells={
                             [
-                                {title: 'Player', field: 'owner'},
-                                {title: 'Card', field: 'card'},
-                                {title: 'Count', field: 'count'}
+                                {title: '', field: 'index', align: 'center'},
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner',
+                                    render: (name) => <NavLink to={'/cards/' + name}>{name}</NavLink>
+                                },
+                                {
+                                    title: 'Карта',
+                                    field: 'card',
+                                    render: (name) => <NavLink to={'/cards/' + name}>{name}</NavLink>
+                                },
+                                {title: 'Выбил раз', field: 'count', align: 'right'}
                             ]
                         }
                         data={report.cardLovelyPlaces}
                     />
-                </div>
+                </Container>
 
-                <div className="input-container">
-                    <Report24 data={this.state.report.chatActivity} />
-                    Story of the week: {report.chatStoreOfAWeek.message} by {report.chatStoreOfAWeek.owner}<br/>
-                    Top speakers:
+                <Container>
+                    <Report24
+                        data={this.state.report.chatActivity}
+                        title="Распределение сказанных фраз в #main по часам"
+                    />
+                </Container>
+
+                <Container>
+                    Наиболее говорящие в #main:
                     <TableReport
                         cells={
                             [
-                                {title: 'Player', field: 'owner'},
-                                {title: 'Count', field: 'count'},
-                                {title: 'Random message', field: 'randomMessage'}
+                                {title: '', field: 'index', align: 'center'},
+                                {title: 'Игрок', field: 'owner'},
+                                {title: 'Сообщений', field: 'count', align: 'right', render: digits},
+                                {title: 'Случайная фраза', field: 'randomMessage'}
                             ]
                         }
                         data={report.chatTopSpeakers}
                     />
+                </Container>
 
-                    Top story tellers:
+                <Container>
+                    Наиболее подробные сообщения оставляли:
                     <TableReport
                         cells={
                             [
-                                {title: 'Player', field: 'owner'},
-                                {title: 'Average length', field: 'averageLength'},
-                                {title: 'Random message', field: 'randomMessage'}
+                                {title: '', field: 'index', align: 'center'},
+                                {title: 'Игрок', field: 'owner'},
+                                // {title: 'Символов', field: 'averageLength', align: 'right'},
+                                {title: 'Случайная фраза', field: 'randomMessage'}
                             ]
                         }
                         data={report.chatStoryTellers}
                     />
+                </Container>
 
-                </div>
-                <div className="input-container">
-                    Shop of the week: {report.shopOfAWeek.name} by {report.shopOfAWeek.owner} at
-                    {' '}{report.shopOfAWeek.location}<br/>
-
-                    Lot of the week: {report.shopLotOfAWeek.name} available in {report.shopLotOfAWeek.shopName} by
-                    {' '}{report.shopLotOfAWeek.owner} at {report.shopLotOfAWeek.location}<br/>
-
-                    Most expensive shops:
+                <Container>
+                    Наиболее брендовые магазины:
                     <TableReport
                         cells={
                             [
-                                {title: 'Player', field: 'owner'},
-                                {title: 'Name', field: 'name'},
-                                {title: 'Total price', field: 'totalPrice'},
-                                {title: 'Location', field: 'location'}
+                                {title: '', field: 'index', align: 'center'},
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner',
+                                    render: (name) => <NavLink to={'/shops/' + name}>{name}</NavLink>
+                                },
+                                {
+                                    title: 'Имя',
+                                    field: 'name'
+                                },
+                                {
+                                    title: 'Сумммарная стоимость', field: 'totalPrice', align: 'right', render: price
+                                },
+                                {
+                                    title: 'Расположение',
+                                    field: 'location',
+                                    align: 'right',
+                                    render: (name, s) => <NavLink to={'/shop/' + s.id}>{name}</NavLink>
+                                }
                             ]
                         }
                         data={report.shopMostExpensive}
                     />
+                </Container>
 
-                    Most expensive lots:
+                <Container>
+                    Наиболее дорогие вещи:
                     <TableReport
                         cells={
                             [
-                                {title: 'Name', field: 'name'},
-                                {title: 'Price', field: 'price'}
+                                {title: '', field: 'index', align: 'center'},
+                                {
+                                    title: 'Название',
+                                    field: 'name',
+                                    render: (name) => <NavLink to={'/items/' + name}>{name}</NavLink>
+                                },
+                                {title: 'Цена', field: 'price', align: 'right', render: price}
                             ]
                         }
                         data={report.shopMostExpensiveLots}
                     />
+                </Container>
 
-                    Most cheapest shops:
+                <Container>
+                    Магазины для народа:
                     <TableReport
                         cells={
                             [
-                                {title: 'Player', field: 'owner'},
-                                {title: 'Name', field: 'name'},
-                                {title: 'Total price', field: 'totalPrice'},
-                                {title: 'Location', field: 'location'}
+                                {title: '', field: 'index', align: 'center'},
+                                {title: 'Название', field: 'name'},
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner',
+                                    render: (name) => <NavLink to={'/shop/' + name}>{name}</NavLink>
+                                },
+                                {
+                                    title: 'Суммарная стоимость',
+                                    field: 'totalPrice',
+                                    align: 'right',
+                                    render: price
+                                },
+                                {
+                                    title: 'Расположение',
+                                    field: 'location',
+                                    align: 'right',
+                                    render: (name, s) => <NavLink to={'/shop/' + s.id}>{name}</NavLink>
+                                }
                             ]
                         }
                         data={report.shopMostCheapest}
                     />
+                </Container>
 
-                    Most undetermined shops:
+                <Container>
+                    Чаще всего открывали магазин:
                     <TableReport
                         cells={
                             [
-                                {title: 'Player', field: 'owner'},
-                                {title: 'Changed', field: 'count'}
+                                {title: '', field: 'index', align: 'center'},
+                                {title: 'Игрок', field: 'owner'},
+                                {title: 'Открытий магазина', field: 'count', align: 'right'}
                             ]
                         }
                         data={report.shopMostUnstable}
                     />
-                </div>
+                </Container>
             </div>
         );
     }

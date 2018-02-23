@@ -17,7 +17,8 @@ interface State {
         name: string;
         location: string;
         owner: string;
-        date: Date;
+        lastFetch: Date;
+        active: boolean;
     };
 }
 
@@ -66,6 +67,14 @@ class ShopItems extends React.Component<Props, State> {
                 <div>
                     <table className="table_center info">
                         <tbody>
+                            {
+                                !this.state.data.active && <tr>
+                                    <td className="info-item shop-closed">
+                                        Магазин закрыт
+                                    </td>
+                                </tr>
+                            }
+
                             <tr>
                                 <td className="info-item">{this.state.data.name}</td>
                             </tr>
@@ -77,7 +86,7 @@ class ShopItems extends React.Component<Props, State> {
                             </tr>
                             <tr>
                                 <td className="info-item">
-                                    {moment(this.state.data.date).format('DD-MM-YYYY, HH:mm')}
+                                    {moment(this.state.data.lastFetch).format('DD-MM-YYYY, HH:mm')}
                                 </td>
                             </tr>
                         </tbody>
@@ -87,15 +96,15 @@ class ShopItems extends React.Component<Props, State> {
                 <table className="table_center">
                     <thead>
                         <tr>
-                            <th className="column1">Name</th>
-                            <th className="column2">Count</th>
-                            <th className="column3 right">Price</th>
+                            <th className="column1">Название</th>
+                            <th className="column2">Количество</th>
+                            <th className="column3 right">Цена</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Loading ...</td></tr>}
+                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
                         {!this.state.loading && (!this.state.data.items || this.state.data.items.length === 0)
-                            && <tr><td className="cell100 column1">No data.</td></tr>}
+                            && <tr><td className="cell100 column1">Данные отсутствуют.</td></tr>}
                         {
                             this.state.data.items.map((d, index) =>
                                 (

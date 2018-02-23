@@ -63,17 +63,17 @@ class AllItems extends React.Component<Props, State> {
                 <table className="table_center">
                     <thead>
                         <tr>
-                            <th className="column1">Name</th>
-                            <th className="column2">Count</th>
-                            <th className="column3 right">Price</th>
+                            <th className="column1">Название</th>
+                            <th className="column2">Количество</th>
+                            <th className="column3 right">Цена</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Loading ...</td></tr>}
+                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
                         {
                             !this.state.loading && this.state.data.length === 0 &&
                             <tr>
-                                <td className="cell100 column1">No data.</td>
+                                <td className="cell100 column1">В продаже отсутствует.</td>
                             </tr>
                         }
                         {

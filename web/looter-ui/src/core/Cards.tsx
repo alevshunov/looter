@@ -39,7 +39,7 @@ class Cards extends React.Component<Props, State> {
     }
 
     doLoad() {
-        this.setState({loading: true, data: []});
+        this.setState({loading: true});
 
         const me = this;
         fetch('https://free-ro.kudesnik.cc/rest/cards?term=' + encodeURIComponent(this.props.term))
@@ -66,17 +66,17 @@ class Cards extends React.Component<Props, State> {
                 <table className="table_center">
                     <thead>
                         <tr>
-                            <th className="column1">Card</th>
-                            <th className="column2">Player</th>
-                            <th className="column3">Time</th>
+                            <th className="column1">Название</th>
+                            <th className="column2">Игрок</th>
+                            <th className="column3 right">Время</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Loading ...</td></tr>}
+                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
                         {
                             !this.state.loading && this.state.data.length === 0 &&
                             <tr>
-                                <td className="cell100 column1">No data.</td>
+                                <td className="cell100 column1">Ничего не найдено.</td>
                             </tr>
                         }
                         {
@@ -88,7 +88,7 @@ class Cards extends React.Component<Props, State> {
                                             {/*<a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>{d.card}</a>*/}
                                         </td>
                                         <td className="cell100 column2">{d.owner}</td>
-                                        <td className="cell100 column3">
+                                        <td className="cell100 column3 right">
                                             {moment(d.date).format('DD-MM-YYYY, HH:mm')}
                                         </td>
                                     </tr>

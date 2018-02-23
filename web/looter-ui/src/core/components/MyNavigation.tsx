@@ -40,9 +40,9 @@ class MyNavigation extends React.Component<{active: string}, {redirect: string}>
                     showLabels={true}
                     onChange={this.handleChange}
                 >
-                    <BottomNavigationAction label="Cards" icon={<BookIcon />} />
-                    <BottomNavigationAction label="Shops" icon={<ShoppingCartIcon />} />
-                    <BottomNavigationAction label="Assortment" icon={<ViewListIcon />} />
+                    <BottomNavigationAction label="Выпавшие карты" icon={<BookIcon />} />
+                    <BottomNavigationAction label="Открытые магазины" icon={<ShoppingCartIcon />} />
+                    <BottomNavigationAction label="Товары" icon={<ViewListIcon />} />
                 </BottomNavigation>
             </div>
         );

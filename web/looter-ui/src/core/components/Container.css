@@ -1,0 +1,23 @@
+.container-shadow {
+    font-family: "Comic Sans MS";
+    color: #808080;
+    max-width: 800px;
+
+    margin: 0 auto;
+
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+    -o-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+    -ms-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
+
+    border-collapse: collapse;
+
+    padding: 20px;
+}
+
+.container-shadow + .container-shadow {
+    margin-top: 50px;
+}
