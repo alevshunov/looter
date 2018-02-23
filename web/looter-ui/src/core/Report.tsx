@@ -79,6 +79,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
 
                 <Container>
                     <div style={{textAlign: 'center'}}>
+                        Статистика за неделю:{' '}
                         <i>
                             {moment(report.reportInfo.start).format('DD-MM-YYYY, HH:mm')} - {' '}
                             {moment(report.reportInfo.end).format('DD-MM-YYYY, HH:mm')}
@@ -88,7 +89,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
 
                 {report.cardOfAWeek &&
                 <Container>
-                    Картой недели выбрана <NavLink to={'/cards/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
+                    Картой недели выбрана <NavLink to={'/items/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
                 </Container>
                 }
 
@@ -104,7 +105,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     Магазином недели признан
                     {' '}<strong>{report.shopOfAWeek.name}</strong>,
                     {' '}выставленный
-                    {' '}<NavLink to={'/shops/' + report.shopOfAWeek.owner}>{report.shopOfAWeek.owner}</NavLink> в
+                    {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.owner}</NavLink> в
                     {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
                 </Container>
                 }
@@ -116,7 +117,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     {' '}был доступен в магазине
                     {' '}<strong>{report.shopLotOfAWeek.shopName}</strong>,
                     {' '}владельца
-                    {' '}<NavLink to={'/shops/' + report.shopLotOfAWeek.owner}>{report.shopLotOfAWeek.owner}</NavLink>
+                    {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.owner}</NavLink>
                     {' '}в
                     {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.location}</NavLink>.
                 </Container>
@@ -223,7 +224,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Наиболее брендовые магазины:
+                    Брендовые магазины:
                     <TableReport
                         cells={
                             [
@@ -253,7 +254,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Наиболее дорогие вещи:
+                    Самые дорогие вещи:
                     <TableReport
                         cells={
                             [
@@ -280,7 +281,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                                 {
                                     title: 'Игрок',
                                     field: 'owner',
-                                    render: (name) => <NavLink to={'/shop/' + name}>{name}</NavLink>
+                                    render: (name) => <NavLink to={'/shops/' + name}>{name}</NavLink>
                                 },
                                 {
                                     title: 'Суммарная стоимость',
@@ -301,13 +302,17 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Наиболее активные торговцы:
+                    Чрезмерно активные торговцы:
                     <TableReport
                         cells={
                             [
                                 {title: '', field: 'index', align: 'center'},
-                                {title: 'Игрок', field: 'owner'},
-                                {title: 'Открывал магазина', field: 'count', align: 'right'}
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner',
+                                    render: (name) => <NavLink to={'/shops/' + name}>{name}</NavLink>
+                                },
+                                {title: 'Открывал магазин', field: 'count', align: 'right'}
                             ]
                         }
                         data={report.shopMostUnstable}
