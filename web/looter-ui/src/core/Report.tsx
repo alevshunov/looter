@@ -23,8 +23,8 @@ class ReportEntry {
     chatStoryTellers: Array<{ owner: string; averageLength: number; randomMessage: string; }>;
     // chatMostSmilest: Array<{owner: string; count: number; randomMessage: string;}>;
 
-    shopOfAWeek: { owner: string; name: string; location: string; };
-    shopLotOfAWeek: { name: string; owner: string; shopName: string; location: string; };
+    shopOfAWeek: { id: number; owner: string; name: string; location: string; };
+    shopLotOfAWeek: { id: number; name: string; owner: string; shopName: string; location: string; };
     shopMostExpensive: Array<{ owner: string; name: string; totalPrice: number; location: string; }>;
     shopMostCheapest: Array<{ owner: string; totalPrice: number; location: string; }>;
     shopMostUnstable: Array<{ owner: string; count: number; }>;
@@ -97,21 +97,21 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
 
                 <Container>
                     Магазином недели признан
-                    {' '}<NavLink to={'/shops/' + report.shopOfAWeek.name}>{report.shopOfAWeek.name}</NavLink>
+                    {' '}<strong>{report.shopOfAWeek.name}</strong>
                     {' '}выставленный
-                    {' '}<b>{report.shopOfAWeek.owner}</b> в
-                    {' '}<b>{report.shopOfAWeek.location}</b><br/>
+                    {' '}<NavLink to={'/shops/' + report.shopOfAWeek.owner}>{report.shopOfAWeek.owner}</NavLink> в
+                    {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
                 </Container>
 
                 <Container>
                     Товаром недели выбран
                     {' '}<NavLink to={'/items/' + report.shopLotOfAWeek.name}>{report.shopLotOfAWeek.name}</NavLink>
                     {' '}был доступен в магазине
-                    {' '}
-                    <NavLink to={'/shops/' + report.shopLotOfAWeek.shopName}>{report.shopLotOfAWeek.shopName}</NavLink>
+                    {' '}<strong>{report.shopLotOfAWeek.shopName}</strong>
                     {' '}владельца
                     {' '}<NavLink to={'/shops/' + report.shopLotOfAWeek.owner}>{report.shopLotOfAWeek.owner}</NavLink>
-                    {' '}в <b>{report.shopLotOfAWeek.location}</b>
+                    {' '}в
+                    {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.location}</NavLink>.
                 </Container>
 
                 <Container>
@@ -155,7 +155,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Наиболее часто выбиваемые карты игроками:
+                    Карточные задроты:
                     <TableReport
                         cells={
                             [
