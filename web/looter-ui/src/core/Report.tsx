@@ -105,7 +105,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     Магазином недели признан
                     {' '}<strong>{report.shopOfAWeek.name}</strong>,
                     {' '}выставленный
-                    {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.owner}</NavLink> в
+                    {' '}<NavLink to={'/shops/' + report.shopOfAWeek.owner}>{report.shopOfAWeek.owner}</NavLink> в
                     {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
                 </Container>
                 }
@@ -117,7 +117,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     {' '}был доступен в магазине
                     {' '}<strong>{report.shopLotOfAWeek.shopName}</strong>,
                     {' '}владельца
-                    {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.owner}</NavLink>
+                    {' '}<NavLink to={'/shops/' + report.shopLotOfAWeek.owner}>{report.shopLotOfAWeek.owner}</NavLink>
                     {' '}в
                     {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.location}</NavLink>.
                 </Container>
