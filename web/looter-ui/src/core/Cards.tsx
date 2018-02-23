@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import RedirectableSearch from './components/RedirectableSearch';
 import { NavLink } from 'react-router-dom';
 import MyNavigation from './components/MyNavigation';
+import InfoOutline from 'material-ui-icons/InfoOutline';
 
 interface State {
     loading: boolean;
@@ -85,7 +86,9 @@ class Cards extends React.Component<Props, State> {
                                     <tr key={index}>
                                         <td className="cell100 column1">
                                             <NavLink to={'/items/' + d.card}>{d.card}</NavLink>
-                                            {/*<a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>{d.card}</a>*/}
+                                            <a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>
+                                                <InfoOutline style={{height: '18px'}}/>
+                                            </a>
                                         </td>
                                         <td className="cell100 column2">{d.owner}</td>
                                         <td className="cell100 column3 right">

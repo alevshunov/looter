@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { NavLink } from 'react-router-dom';
 import asPrice from './components/asPrice';
 import MyNavigation from './components/MyNavigation';
+import InfoOutline from 'material-ui-icons/InfoOutline';
 
 interface State {
     loading: boolean;
@@ -111,6 +112,9 @@ class ShopItems extends React.Component<Props, State> {
                                     <tr key={index}>
                                         <td className="cell100 column1">
                                             <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
+                                            <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>
+                                                <InfoOutline style={{height: '18px'}}/>
+                                            </a>
                                         </td>
                                         <td className="cell100 column2">{d.count}</td>
                                         <td className="cell100 column3 right">{asPrice(d.price)}</td>
