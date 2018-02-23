@@ -39,7 +39,7 @@ const connection = new MyConnection(dbConnection);
 async function doReport(connection: MyConnection, start: Date, end: Date) {
     await connection.open();
     const report = new Report();
-    const limit = 5;
+    const limit = 10;
 
     function createZeroArray(len: number) {
         const a = new Array(len);
@@ -140,14 +140,8 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
 
         const a = createZeroArray(24);
 
-        let max = 0;
-
         for (let i=0; i<data.length; i++) {
-            max = Math.max(max, data[i].value);
-        }
-
-        for (let i=0; i<data.length; i++) {
-            a[data[i].hour] = Math.round(data[i].value * 100 / max);
+            a[data[i].hour] = data[i].value;
         }
 
         return a;
@@ -264,8 +258,6 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
 
         return data;
     }
-
-
 
     try {
         report.cardOfAWeek = await cardOfAWeek();
