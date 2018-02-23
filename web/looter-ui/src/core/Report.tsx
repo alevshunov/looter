@@ -91,7 +91,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Фраза недели произнесена игроком <strong>{report.chatStoreOfAWeek.owner}</strong>:
+                    Фраза недели, произнесенная игроком <strong>{report.chatStoreOfAWeek.owner}</strong>:
                     <blockquote><p>{report.chatStoreOfAWeek.message}</p></blockquote>
                 </Container>
 
