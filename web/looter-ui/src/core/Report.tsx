@@ -75,7 +75,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
 
         return (
             <div className="limiter">
-                <MyNavigation active="cards"/>
+                <MyNavigation active="report"/>
 
                 <Container>
                     <div style={{textAlign: 'center'}}>
