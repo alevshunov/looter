@@ -31,8 +31,8 @@ class Report {
     shopMostExpensiveLots: Array<{name: string; price: number; shopName: string; shopOwner: string;}>;
 }
 
-const startDate = moment(new Date()).add({ days: -7}).toDate();
-const endDate = new Date();
+const endDate = new Date(2018,1, 19, 0, 0);
+const startDate = moment(endDate).add({ days: -7}).toDate();
 
 const connection = new MyConnection(dbConnection);
 
@@ -126,7 +126,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         let data = await connection.query(`
             select owner, message, date
             from messages
-            where owner != '' and message != '' and owner != 'FreeRO-PM' and date between ? and ?
+            where owner != '' and message != '' and owner != 'FreeRO-PM' and length(message) > 60 and date between ? and ?
             order by rand()
             limit 1
         `, start, end);

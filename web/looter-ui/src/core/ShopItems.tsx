@@ -19,6 +19,7 @@ interface State {
         location: string;
         owner: string;
         lastFetch: Date;
+        date: Date;
         active: boolean;
     };
 }
@@ -87,6 +88,7 @@ class ShopItems extends React.Component<Props, State> {
                             </tr>
                             <tr>
                                 <td className="info-item">
+                                    {moment(this.state.data.date).format('DD-MM-YYYY, HH:mm')} -{' '}
                                     {moment(this.state.data.lastFetch).format('DD-MM-YYYY, HH:mm')}
                                 </td>
                             </tr>

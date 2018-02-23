@@ -86,15 +86,20 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     </div>
                 </Container>
 
+                {report.cardOfAWeek &&
                 <Container>
                     Картой недели выбрана <NavLink to={'/cards/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
                 </Container>
+                }
 
+                {report.chatStoreOfAWeek &&
                 <Container>
                     Фраза недели, произнесенная игроком <strong>{report.chatStoreOfAWeek.owner}</strong>:
                     <blockquote><p>{report.chatStoreOfAWeek.message}</p></blockquote>
                 </Container>
+                }
 
+                {report.shopOfAWeek &&
                 <Container>
                     Магазином недели признан
                     {' '}<strong>{report.shopOfAWeek.name}</strong>,
@@ -102,7 +107,9 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     {' '}<NavLink to={'/shops/' + report.shopOfAWeek.owner}>{report.shopOfAWeek.owner}</NavLink> в
                     {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
                 </Container>
+                }
 
+                {report.shopLotOfAWeek &&
                 <Container>
                     Товаром недели выбран
                     {' '}<NavLink to={'/items/' + report.shopLotOfAWeek.name}>{report.shopLotOfAWeek.name}</NavLink>,
@@ -113,6 +120,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     {' '}в
                     {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.location}</NavLink>.
                 </Container>
+                }
 
                 <Container>
                     <Report24 data={this.state.report.cardDropActivity} title="Распределение выбивания карт по часам"/>
@@ -293,13 +301,13 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Чаще всего открывали магазин:
+                    Наиболее активные торговцы:
                     <TableReport
                         cells={
                             [
                                 {title: '', field: 'index', align: 'center'},
                                 {title: 'Игрок', field: 'owner'},
-                                {title: 'Открытий магазина', field: 'count', align: 'right'}
+                                {title: 'Открывал магазина', field: 'count', align: 'right'}
                             ]
                         }
                         data={report.shopMostUnstable}
