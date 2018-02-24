@@ -25,7 +25,7 @@ describe('CardDropExtractor', () => {
         };
 
         expect(extractor.applicable(args)).toBeTruthy();
-        expect(extractor.extract(args)).toBe({
+        expect(extractor.extract(args)).toEqual({
             owner: 'Адри',
             card: 'Ogretooth Card',
             date: date
