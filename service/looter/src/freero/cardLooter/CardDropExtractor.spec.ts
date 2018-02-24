@@ -16,6 +16,22 @@ describe('CardDropExtractor', () => {
         expect(actual).toBe(expected);
     });
 
+    it('should be applicable for correct mvp drop message', () => {
+        const date = new Date();
+        const args = {
+            author: 'FreeRO',
+            message: "- #main : [Server] 'Адри' выбил 'Ogretooth Card'. Грац!",
+            date: date
+        };
+
+        expect(extractor.applicable(args)).toBeTruthy();
+        expect(extractor.extract(args)).toBe({
+            owner: 'Адри',
+            card: 'Ogretooth Card',
+            date: date
+        });
+    });
+
     it('should be not applicable for quoting drop message by server', () => {
         const args = {
             author: 'FreeRO',
