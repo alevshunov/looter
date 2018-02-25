@@ -96,7 +96,7 @@ router.get('/shops/active', function(req, res, next){
             select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type
             from shops s inner join shop_items si on si.shop_id = s.id
             where s.active and s.fetch_count > 0 and si.fetch_index = s.fetch_count and si.name like ?
-            group by si.name, st.type
+            group by si.name, s.type
         `,
             [term],
             (err, result) => {
