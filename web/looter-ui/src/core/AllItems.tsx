@@ -12,7 +12,8 @@ interface State {
         name: string,
         count: number,
         min: number,
-        max: number
+        max: number,
+        type: string
     }>;
 }
 
@@ -82,7 +83,7 @@ class AllItems extends React.Component<Props, State> {
                                 (
                                     <tr key={index}>
                                         <td className="cell100 column1">
-                                            {d.name}
+                                            {d.type === 'sell' ? 'S>' : 'B>'} {d.name}
                                             <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>
                                                 <InfoOutline style={{height: '18px'}}/>
                                             </a>

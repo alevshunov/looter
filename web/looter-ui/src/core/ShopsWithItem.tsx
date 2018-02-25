@@ -84,6 +84,7 @@ class ShopWithItem extends React.Component<Props, State> {
                                 (
                                     <tr key={index}>
                                         <td className="cell100 column1">
+                                            {d.type === 'sell' ? 'S> ' : 'B> '}
                                             {d.name}
                                         </td>
                                         <td className="cell100 column2">{d.owner}</td>

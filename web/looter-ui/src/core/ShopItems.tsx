@@ -11,9 +11,9 @@ interface State {
 
     data?: {
         items: Array<{
-            name: string,
-            count: number,
-            price: number
+            name: string;
+            count: number;
+            price: number;
         }>;
         name: string;
         location: string;
@@ -21,6 +21,7 @@ interface State {
         lastFetch: Date;
         date: Date;
         active: boolean;
+        type: string;
     };
 }
 
@@ -78,7 +79,10 @@ class ShopItems extends React.Component<Props, State> {
                             }
 
                             <tr>
-                                <td className="info-item">{this.state.data.name}</td>
+                                <td className="info-item">
+                                    {this.state.data.type === 'sell' ? 'S> ' : 'B> '}
+                                    {this.state.data.name}
+                                    </td>
                             </tr>
                             <tr>
                                 <td className="info-item">{this.state.data.owner}</td>

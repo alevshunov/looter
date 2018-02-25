@@ -77,6 +77,7 @@ class Shops extends React.Component<Props, State> {
                                 (
                                     <tr key={index}>
                                         <td className="cell100 column1">
+                                            {d.type === 'sell' ? 'S> ' : 'B> '}
                                             <Link to={'/shop/' + d.id}>{d.name}</Link>
                                         </td>
                                         <td className="cell100 column2">{d.owner}</td>
