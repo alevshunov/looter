@@ -88,17 +88,29 @@ router.get('/report', function(req, res, next){
 // });
 
 router.get('/shops/active', function(req, res, next){
-    const term = req.query.term ? `%${req.query.term || ''}%` : '%';
+    let realTerm= req.query.term;
+    let direction = '%';
+
+    if (/^[sSbB]\>.*/.test(realTerm)) {
+        direction = realTerm[0].toLowerCase() === 's' ? 'sell' : 'buy';
+        realTerm = realTerm.substring(2).trim();
+    }
+
+    realTerm = realTerm ? `%${realTerm || ''}%` : '%';
 
     getConnection(connection => {
-
         connection.query(`
             select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type
             from shops s inner join shop_items si on si.shop_id = s.id
-            where s.active and s.fetch_count > 0 and si.fetch_index = s.fetch_count and si.name like ?
+            where 
+                s.active 
+                and s.fetch_count > 0 
+                and si.fetch_index = s.fetch_count 
+                and si.name like ?
+                and s.type like ?
             group by si.name, s.type
         `,
-            [term],
+            [realTerm, direction],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
@@ -109,7 +121,15 @@ router.get('/shops/active', function(req, res, next){
 });
 
 router.get('/shops/all', function(req, res, next){
-    const term = req.query.term ? `%${req.query.term || ''}%` : '%';
+    let realTerm= req.query.term;
+    let direction = '%';
+
+    if (/^[sSbB]\>.*/.test(realTerm)) {
+        direction = realTerm[0].toLowerCase() === 's' ? 'sell' : 'buy';
+        realTerm = realTerm.substring(2).trim();
+    }
+
+    realTerm = realTerm ? `%${realTerm || ''}%` : '%';
 
     getConnection(connection => {
         connection.query(`
@@ -117,10 +137,11 @@ router.get('/shops/all', function(req, res, next){
             from shops s
             where s.active and s.fetch_count > 0 
             and (s.name like ? or s.owner like ? or s.location like ?)
+            and type like ?
             order by s.date desc
             limit 100
         `,
-            [term, term, term],
+            [realTerm, realTerm, realTerm, direction],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
