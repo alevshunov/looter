@@ -1,8 +1,8 @@
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
-import {Shop} from "../../model/Shop";
+import {Shop, ShopType} from "../../model/Shop";
 import {IEventArgsExtractor} from "../../core/IEventArgsExtractor";
 
-export class ShopExtractor implements IEventArgsExtractor<FreeRoEventArgs, Shop> {
+export class SellExtractor implements IEventArgsExtractor<FreeRoEventArgs, Shop> {
     private SHOP_EXP : RegExp = /^#main \: \[Server\] '(.+?)' открывает магазин '(.+?)' \(коорд\.\: (.+ <[0-9]+,[0-9]+>)\)\.$/;
     private SERVER: string = 'FreeRO';
 
@@ -29,7 +29,7 @@ export class ShopExtractor implements IEventArgsExtractor<FreeRoEventArgs, Shop>
         const name = parts[2];
         const location = parts[3];
 
-        return new Shop(owner, name, location, args.date);
+        return new Shop(owner, name, location, args.date, ShopType.Sell);
     }
 
 }

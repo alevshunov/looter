@@ -9,11 +9,18 @@ export class Shop {
     public lastFetch: Date;
     public active: boolean;
     public retryCount: number;
+    public type: ShopType;
 
-    constructor(owner: string, name: string, location: string, date: Date) {
+    constructor(owner: string, name: string, location: string, date: Date, type: ShopType) {
         this.owner = owner;
         this.name = name;
         this.location = location;
         this.date = date;
+        this.type = type;
     }
+}
+
+export enum ShopType {
+    Sell = 'sell',
+    Buy = 'buy'
 }

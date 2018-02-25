@@ -1,16 +1,17 @@
 import * as mysql from "mysql";
 import {ConnectionConfig} from "mysql";
+import {MyLogger} from "../core/MyLogger";
 
 export class DbConnectionChecker {
-    static tryConnect(dbConnection: ConnectionConfig) {
+    static tryConnect(dbConnection: ConnectionConfig, logger: MyLogger) {
         const con = mysql.createConnection(dbConnection);
         con.connect((e) => {
             if (e) {
-                console.log(e);
+                logger.log(e);
                 throw e;
             }
 
-            console.log('DB Connetion OK');
+            logger.log('DB Connetion OK');
             con.destroy();
         });
     }

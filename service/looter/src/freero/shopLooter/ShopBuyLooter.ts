@@ -1,11 +1,12 @@
 import {FreeRoEventArgs} from "../hub/FreeRoEventArgs";
 import {IEventProvider} from "../../core/IEventProvider";
 import {Shop} from "../../model/Shop";
-import {ShopExtractor} from "./ShopExtractor";
+import {SellExtractor} from "./SellExtractor";
 import {ExternalEventExtractor} from "../../core/ExternalEventExtractor";
+import {BuyExtractor} from "./BuyExtractor";
 
-export class ShopLooter extends ExternalEventExtractor<FreeRoEventArgs, Shop> {
+export class ShopBuyLooter extends ExternalEventExtractor<FreeRoEventArgs, Shop> {
     constructor(eventSource: IEventProvider<FreeRoEventArgs>) {
-        super(eventSource, new ShopExtractor());
+        super(eventSource, new BuyExtractor());
     }
 }

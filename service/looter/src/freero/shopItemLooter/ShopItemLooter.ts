@@ -1,20 +1,23 @@
 import {ShopItemStorage} from "../../db/ShopItemStorage";
 import {IShopProvider} from "./IShopProvider";
-import {ShopItemProvider} from "./ShopItemProvider";
+import {ShopItemLoader} from "./ShopItemLoader";
 import {Client as IrcClient} from "irc";
+import {MyLogger} from "../../core/MyLogger";
 
 export class ShopItemLooter {
     private SCAN_FIRST_INTERVAL: number = 60000;
-    private SCAN_INTERVAL: number = 15000;
+    private SCAN_INTERVAL: number = 30000;
 
     private _shopProvider: IShopProvider;
     private _shopItemStorage: ShopItemStorage;
     private _hub: IrcClient;
+    private _logger: MyLogger;
 
-    constructor(shopItemStorage: ShopItemStorage, shopProvider: IShopProvider, hub: IrcClient) {
+    constructor(shopItemStorage: ShopItemStorage, shopProvider: IShopProvider, hub: IrcClient, logger: MyLogger) {
         this._shopProvider = shopProvider;
         this._shopItemStorage = shopItemStorage;
         this._hub = hub;
+        this._logger = logger;
     }
 
     public run() {
@@ -29,30 +32,30 @@ export class ShopItemLooter {
                 return this.waitNext();
             }
 
-            console.log('SHOP DETECTED', shop.id, shop.owner);
+            this._logger.log('SHOP DETECTED', JSON.stringify(shop));
 
-            console.log('DEACTIVATE OLD SHOP', shop.id, shop.owner);
+            this._logger.log('DEACTIVATE OLD SHOP');
             await this._shopProvider.deactivateOtherShops(shop);
 
-            console.log('GET SHOP ITEMS', shop.id, shop.owner);
-            const searchResult = await new ShopItemProvider(shop, this._hub).getItems();
+            this._logger.log('GET SHOP ITEMS');
+            const searchResult = await new ShopItemLoader(shop, this._hub, this._logger).getItems();
 
             if (!searchResult.isNotFound && searchResult.items.length > 0)
             {
                 shop.fetchCount++;
 
-                console.log('UPDATE SHOP FETCH INDEX', shop.id);
+                this._logger.log('UPDATE SHOP FETCH INDEX');
                 await this._shopProvider.updateFetchIndex(shop);
 
                 await this._shopItemStorage.add(shop, searchResult.items);
 
                 await this._shopProvider.updateRetryCount(shop, 0);
             } else {
-                if (searchResult.isNotFound || shop.retryCount > 3) {
-                    console.log('DEACTIVATE SHOP', shop.id);
+                if (searchResult.isNotFound || shop.retryCount > 5) {
+                    this._logger.log('DEACTIVATE SHOP');
                     await this._shopProvider.deactivateShops(shop);
                 } else {
-                    console.log('RETRY LATER', shop.id);
+                    this._logger.log('RETRY LATER');
                     await this._shopProvider.updateRetryCount(shop, shop.retryCount + 1);
                 }
             }
@@ -60,7 +63,7 @@ export class ShopItemLooter {
             this.waitNext();
 
         } catch (e) {
-            console.log('EXCEPTION', e);
+            this._logger.log('EXCEPTION', e);
             return this.waitNext();
         }
     }

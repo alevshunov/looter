@@ -14,8 +14,8 @@ export class ShopStorage implements IShopProvider {
     async add(shop: Shop) {
         const conn = new MyConnection(this._dbConnection);
         await conn.open();
-        await conn.query("insert into shops(owner, name, location, date) values (?,?,?,?);",
-            shop.owner, shop.name, shop.location, shop.date);
+        await conn.query("insert into shops(owner, name, location, date, type) values (?,?,?,?,?);",
+            shop.owner, shop.name, shop.location, shop.date, shop.type);
         conn.close();
     }
 
@@ -54,7 +54,7 @@ export class ShopStorage implements IShopProvider {
             }
 
             const s = result[0];
-            const shop = new Shop(s.owner, s.name, s.location, s.date);
+            const shop = new Shop(s.owner, s.name, s.location, s.date, s.type);
             shop.id = s.id;
             shop.date = s.date;
             shop.fetched = s.fetched;
@@ -64,11 +64,6 @@ export class ShopStorage implements IShopProvider {
             shop.retryCount = s.retry_count;
             resolve(shop);
         });
-
-    }
-
-    getShopItems(shop: Shop): Promise<ShopItem[]> {
-        return Promise.resolve(null);
     }
 
     async deactivateShops(shop: Shop) {

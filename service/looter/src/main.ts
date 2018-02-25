@@ -6,10 +6,12 @@ import {DbConnectionChecker} from "./tools/DbConnectionChecker";
 import {CardDropStorage} from "./db/CardDropStorage";
 import {MessageStorage} from "./db/MessageStorage";
 import {MessageLooter} from "./freero/messageLooter/MessageLooter";
-import {ShopLooter} from "./freero/shopLooter/ShopLooter";
+import {ShopSellLooter} from "./freero/shopLooter/ShopSellLooter";
 import {ShopStorage} from "./db/ShopStorage";
 import {ShopItemLooter} from "./freero/shopItemLooter/ShopItemLooter";
 import {ShopItemStorage} from "./db/ShopItemStorage";
+import {ShopBuyLooter} from "./freero/shopLooter/ShopBuyLooter";
+import {MyLogger} from "./core/MyLogger";
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -18,7 +20,9 @@ const dbConnection = {
     database: process.env.LOOTER_DB_DBNAME
 };
 
-DbConnectionChecker.tryConnect(dbConnection);
+const logger = new MyLogger();
+
+DbConnectionChecker.tryConnect(dbConnection, logger);
 
 const cardStorage = new CardDropStorage(dbConnection);
 const messageStorage = new MessageStorage(dbConnection);
@@ -30,26 +34,30 @@ const ircHub = new FreeRoIrcHub(ircClient);
 
 let cardLooter = new CardLooter(ircHub);
 let messageLooter = new MessageLooter(ircHub);
-let shopLooter = new ShopLooter(ircHub);
+let shopSellLooter = new ShopSellLooter(ircHub);
+let shopBuyLooter = new ShopBuyLooter(ircHub);
 
-cardLooter.onEvent().subscribe((sender, drop) => {
-    console.log(JSON.stringify(drop));
-    cardStorage.add(drop);
+cardLooter.onEvent().subscribe(async (sender, drop) => {
+    logger.log(JSON.stringify(drop));
+    await cardStorage.add(drop);
 });
 
-
-messageLooter.onEvent().subscribe((sender, message) => {
-    console.log(JSON.stringify(message));
-    messageStorage.add(message);
+messageLooter.onEvent().subscribe(async (sender, message) => {
+    logger.log(JSON.stringify(message));
+    await messageStorage.add(message);
 });
 
-
-shopLooter.onEvent().subscribe((sender, shop) => {
-    console.log(JSON.stringify(shop));
-    shopStorage.add(shop);
+shopSellLooter.onEvent().subscribe(async (sender, shop) => {
+    logger.log(JSON.stringify(shop));
+    await shopStorage.add(shop);
 });
 
-const shopItemLooter = new ShopItemLooter(shopItemStorage, shopStorage, ircClient);
+shopBuyLooter.onEvent().subscribe(async (sender, shop) => {
+    logger.log(JSON.stringify(shop));
+    await shopStorage.add(shop);
+});
+
+const shopItemLooter = new ShopItemLooter(shopItemStorage, shopStorage, ircClient, logger);
 shopItemLooter.run();
 
-console.log('Started...');
+logger.log('Started...');
