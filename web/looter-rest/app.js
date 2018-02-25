@@ -93,7 +93,7 @@ router.get('/shops/active', function(req, res, next){
     getConnection(connection => {
 
         connection.query(`
-            select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max
+            select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type
             from shops s inner join shop_items si on si.shop_id = s.id
             where s.active and s.fetch_count > 0 and si.fetch_index = s.fetch_count and si.name like ?
             group by si.name
@@ -113,7 +113,7 @@ router.get('/shops/all', function(req, res, next){
 
     getConnection(connection => {
         connection.query(`
-            select s.id, s.name, s.location, s.owner, s.date
+            select s.id, s.name, s.location, s.owner, s.date, s.type
             from shops s
             where s.active and s.fetch_count > 0 
             and (s.name like ? or s.owner like ? or s.location like ?)
@@ -135,7 +135,7 @@ router.get('/shops/with/:itemName', function(req, res, next){
 
     getConnection(connection => {
         connection.query(`
-            select s.id, s.owner, s.location, s.name, min(si.price) min, max(si.price) max
+            select s.id, s.owner, s.location, s.name, min(si.price) min, max(si.price) max, s.type
             from shop_items si 
             inner join shops s on s.id = si.shop_id and si.fetch_index = s.fetch_count
             where si.name = ? and s.active and s.fetch_count > 0 
@@ -159,7 +159,7 @@ router.get('/shop/:id', function(req, res, next){
     getConnection(connection => {
         connection.query(
             `
-                select s.id, s.name, s.location, s.owner, s.date, s.last_fetch lastFetch, s.active
+                select s.id, s.name, s.location, s.owner, s.date, s.last_fetch lastFetch, s.active, s.type
                 from shops s
                 where s.id = ?
             `,
