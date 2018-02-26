@@ -29,7 +29,7 @@ export class MyConnection {
         const me = this;
 
         return new Promise((resolve, reject) => {
-            me._logger.log('QUERY', query, JSON.stringify(args));
+            this._logger.log('QUERY', query.replace(/( +)|\t|\n/g, ' '), JSON.stringify(args));
 
             me._connection.query(query, args, (err, result) => {
                 if (err) {
