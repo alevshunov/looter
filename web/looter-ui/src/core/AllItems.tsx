@@ -13,7 +13,8 @@ interface State {
         count: number,
         min: number,
         max: number,
-        type: string
+        type: string,
+        ids: string
     }>;
 }
 
@@ -84,9 +85,15 @@ class AllItems extends React.Component<Props, State> {
                                     <tr key={index}>
                                         <td className="cell100 column1">
                                             {d.type === 'sell' ? 'S>' : 'B>'} {d.name}
-                                            <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>
-                                                <InfoOutline style={{height: '18px'}}/>
-                                            </a>
+                                            {' '}
+                                            <span className="item_db-ids">
+                                                {d.ids}
+                                                <a
+                                                    href={'http://rodb.kudesnik.cc/item/?term=' + d.name}
+                                                >
+                                                    <InfoOutline style={{height: '11px'}}/>
+                                                </a>
+                                            </span>
                                         </td>
                                         <td className="cell100 column2">{d.count}</td>
                                         <td className="cell100 column3 right">

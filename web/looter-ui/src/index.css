@@ -56,6 +56,10 @@ body {
     margin-top: 10px !important;
     margin-bottom: 10px !important;
   }
+
+  .item_db-ids {
+    display: none;
+  }
 }
 
 a { color: gray; }
@@ -186,4 +190,17 @@ blockquote p {
 .shop-closed {
   background-color: #fa4251;
   color: white;
+}
+
+.item_db-ids {
+  font-size: 10px;
+  margin-left: 5px;
+  color: #9f9f9f;
+  position: relative;
+  display: inline-block;
+  top: -10px;
+}
+
+.item_db-ids a svg {
+  madding-top: 3px;
 }

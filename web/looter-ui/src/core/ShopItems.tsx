@@ -14,6 +14,7 @@ interface State {
             name: string;
             count: number;
             price: number;
+            ids: string;
         }>;
         name: string;
         location: string;
@@ -118,9 +119,14 @@ class ShopItems extends React.Component<Props, State> {
                                     <tr key={index}>
                                         <td className="cell100 column1">
                                             <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
-                                            <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>
-                                                <InfoOutline style={{height: '18px'}}/>
-                                            </a>
+                                            <span className="item_db-ids">
+                                                {d.ids}
+                                                <a
+                                                    href={'http://rodb.kudesnik.cc/item/?term=' + d.name}
+                                                >
+                                                    <InfoOutline style={{height: '11px'}}/>
+                                                </a>
+                                            </span>
                                         </td>
                                         <td className="cell100 column2">{d.count}</td>
                                         <td className="cell100 column3 right">{asPrice(d.price)}</td>
