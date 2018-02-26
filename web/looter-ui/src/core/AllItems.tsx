@@ -86,14 +86,14 @@ class AllItems extends React.Component<Props, State> {
                                         <td className="cell100 column1">
                                             {d.type === 'sell' ? 'S>' : 'B>'} {d.name}
                                             {' '}
-                                            <span className="item_db-ids">
+                                            {d.ids && <span className="item_db-ids">
                                                 id: {d.ids}
                                                 <a
                                                     href={'http://rodb.kudesnik.cc/item/?term=' + d.name}
                                                 >
                                                     <InfoOutline style={{height: '11px'}}/>
                                                 </a>
-                                            </span>
+                                            </span> }
                                         </td>
                                         <td className="cell100 column2">{d.count}</td>
                                         <td className="cell100 column3 right">
