@@ -102,8 +102,10 @@ router.get('/shops/active', function(req, res, next){
 
     getConnection(connection => {
         connection.query(`
-            select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type
+            select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type,
+            group_concat(distinct i.id order by i.id separator ', ') ids
             from shops s inner join shop_items si on si.shop_id = s.id
+            left join item_db i on i.name_japanese = si.name
             where 
                 s.active = 1
                 and s.fetch_count > 0 
