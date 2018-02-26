@@ -26,7 +26,14 @@ router.get('/cards', function(req, res, next){
     const term = req.query.term ? `%${req.query.term || ''}%` : '%';
 
     getConnection(connection => {
-        connection.query("select owner, card, date from card_drop where owner like ? or card like ? order by date desc limit 100",
+        connection.query(`
+            select owner, card, date, group_concat(distinct i.id order by i.id separator ', ') ids
+            from card_drop left join item_db i on i.name_japanese = card
+            where owner like ? or card like ? 
+            group by card_drop.id
+            order by date desc 
+            limit 100
+        `,
             [term, term],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
