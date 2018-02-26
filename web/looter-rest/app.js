@@ -110,11 +110,11 @@ router.get('/shops/active', function(req, res, next){
                 s.active = 1
                 and s.fetch_count > 0 
                 and si.fetch_index = s.fetch_count 
-                and si.name like ?
+                and (si.name like ? or i.id like ?)
                 and s.type like ?
             group by si.name, s.type
         `,
-            [realTerm, direction],
+            [realTerm, realTerm, direction],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
@@ -197,9 +197,11 @@ router.get('/shop/:id', function(req, res, next){
 
                 connection.query(
                     `
-                        select si.id, si.name, si.price, si.count
+                        select si.id, si.name, si.price, si.count, group_concat(distinct i.id order by i.id separator ', ') ids
                         from shops s inner join shop_items si on s.id = si.shop_id and s.fetch_count = si.fetch_index
+                        left join item_db i on i.name_japanese = si.name
                         where s.id = ?
+                        group by si.id
                         order by si.id
                     `,
                     [id],
