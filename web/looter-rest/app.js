@@ -88,6 +88,8 @@ router.get('/report', function(req, res, next){
 // });
 
 router.get('/shops/active', function(req, res, next){
+    res.setHeader('Cache-Control', 'public, max-age=120');
+
     let realTerm= req.query.term;
     let direction = '%';
 
