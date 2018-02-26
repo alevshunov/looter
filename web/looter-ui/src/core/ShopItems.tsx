@@ -120,7 +120,7 @@ class ShopItems extends React.Component<Props, State> {
                                         <td className="cell100 column1">
                                             <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
                                             <span className="item_db-ids">
-                                                {d.ids}
+                                                id: {d.ids}
                                                 <a
                                                     href={'http://rodb.kudesnik.cc/item/?term=' + d.name}
                                                 >

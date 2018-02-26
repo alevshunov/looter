@@ -87,7 +87,7 @@ class AllItems extends React.Component<Props, State> {
                                             {d.type === 'sell' ? 'S>' : 'B>'} {d.name}
                                             {' '}
                                             <span className="item_db-ids">
-                                                {d.ids}
+                                                id: {d.ids}
                                                 <a
                                                     href={'http://rodb.kudesnik.cc/item/?term=' + d.name}
                                                 >
