@@ -3,6 +3,7 @@ import {Client as IrcClient} from "irc";
 import {FreeRoEventArgs} from "./FreeRoEventArgs";
 import {IEventProvider} from "../../core/IEventProvider";
 import {IIrcConnection} from "./IIrcConnection";
+import {MyLogger} from '../../core/MyLogger';
 
 export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     private _irc: IrcClient | IIrcConnection;
@@ -12,9 +13,11 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     private IRC_ERROR_EVENT = 'error';
 
     private _onEvent = new EventDispatcher<FreeRoIrcHub, FreeRoEventArgs>();
+    private _logger: MyLogger;
 
-    constructor(irc: IrcClient | IIrcConnection) {
+    constructor(irc: IrcClient | IIrcConnection, logger: MyLogger) {
         this._irc = irc;
+        this._logger = logger;
         this.init();
     }
 
@@ -25,8 +28,8 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     }
 
     private ircDirectMessageHandler(from: string, message: string, extra: any) {
-        console.log('MSG >> ', from, '>', message);
-        console.log('MSG >> ', JSON.stringify(extra));
+        this._logger.log('MSG >> ', from, '>', message);
+        this._logger.log('MSG >> ', JSON.stringify(extra));
 
         const freeRoEvent = new FreeRoEventArgs('FreeRO-PM', message, new Date());
 
@@ -34,8 +37,8 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     }
 
     private ircMessageHandler(from: string, message: string, extra: any) {
-        console.log('MSG >> ', from, '>', message);
-        console.log('MSG >> ', JSON.stringify(extra));
+        this._logger.log('MSG >> ', from, '>', message);
+        this._logger.log('MSG >> ', JSON.stringify(extra));
 
         const freeRoEvent = new FreeRoEventArgs(from, message, new Date());
 
@@ -43,7 +46,7 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     }
 
     private ircErrorHandler(message: string) {
-        console.log(new Date(), 'Error:', message);
+        this._logger.log(new Date(), 'Error:', message);
         this._irc.connect(10);
     }
 

@@ -3,16 +3,19 @@ import {Shop} from "../model/Shop";
 import {MyConnection} from "./core/MyConnection";
 import {IShopProvider} from "../freero/shopItemLooter/IShopProvider";
 import {ShopItem} from "../model/ShopItem";
+import {MyLogger} from '../core/MyLogger';
 
 export class ShopStorage implements IShopProvider {
     private _dbConnection: ConnectionConfig;
+    private _logger: MyLogger;
 
-    constructor(dbConnection: ConnectionConfig) {
+    constructor(dbConnection: ConnectionConfig, logger: MyLogger) {
         this._dbConnection = dbConnection;
+        this._logger = logger;
     }
 
     async add(shop: Shop) {
-        const conn = new MyConnection(this._dbConnection);
+        const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query("insert into shops(owner, name, location, date, type) values (?,?,?,?,?);",
             shop.owner, shop.name, shop.location, shop.date, shop.type);
@@ -20,7 +23,7 @@ export class ShopStorage implements IShopProvider {
     }
 
     async updateFetchIndex(shop: Shop) {
-        const conn = new MyConnection(this._dbConnection);
+        const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
             "update shops set fetch_count = ?, last_fetch = now() where id = ?",
@@ -30,7 +33,7 @@ export class ShopStorage implements IShopProvider {
     }
 
     async deactivateOtherShops(shop: Shop) {
-        const conn = new MyConnection(this._dbConnection);
+        const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
             "update shops set active = 0 where active = 1 and owner = ? and id != ?",
@@ -41,10 +44,18 @@ export class ShopStorage implements IShopProvider {
 
     getNextShop(): Promise<Shop> {
         return new Promise(async (resolve, reject) => {
-            const conn = new MyConnection(this._dbConnection);
+            const conn = new MyConnection(this._dbConnection, this._logger);
             await conn.open();
             const result = await conn.query(
-                "select * from shops where active and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) and date < date_add(now(), interval -1 minute) order by last_fetch asc, id desc limit 1",
+                `
+                    select * 
+                    from shops 
+                    where active 
+                    and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) 
+                    and date < date_add(now(), interval -1 minute) 
+                    order by last_fetch asc, id desc 
+                    limit 1
+                `,
                 );
 
             conn.close();
@@ -67,7 +78,7 @@ export class ShopStorage implements IShopProvider {
     }
 
     async deactivateShops(shop: Shop) {
-        const conn = new MyConnection(this._dbConnection);
+        const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
             "update shops set last_fetch = now(), active = 0 where id = ?",
@@ -77,7 +88,7 @@ export class ShopStorage implements IShopProvider {
     }
 
     async updateRetryCount(shop: Shop, retryCounter: number) {
-        const conn = new MyConnection(this._dbConnection);
+        const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
             "update shops set retry_count = ?, last_fetch = now() where id = ?",

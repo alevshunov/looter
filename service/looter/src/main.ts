@@ -24,13 +24,13 @@ const logger = new MyLogger();
 
 DbConnectionChecker.tryConnect(dbConnection, logger);
 
-const cardStorage = new CardDropStorage(dbConnection);
-const messageStorage = new MessageStorage(dbConnection);
-const shopStorage = new ShopStorage(dbConnection);
-const shopItemStorage = new ShopItemStorage(dbConnection);
+const cardStorage = new CardDropStorage(dbConnection, logger);
+const messageStorage = new MessageStorage(dbConnection, logger);
+const shopStorage = new ShopStorage(dbConnection, logger);
+const shopItemStorage = new ShopItemStorage(dbConnection, logger);
 
 const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [st.config.IrcChannel], userName: st.config.IrcNick});
-const ircHub = new FreeRoIrcHub(ircClient);
+const ircHub = new FreeRoIrcHub(ircClient, logger);
 
 let cardLooter = new CardLooter(ircHub);
 let messageLooter = new MessageLooter(ircHub);
