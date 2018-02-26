@@ -29,12 +29,12 @@ router.get('/cards', function(req, res, next){
         connection.query(`
             select owner, card, date, group_concat(distinct i.id order by i.id separator ', ') ids
             from card_drop left join item_db i on i.name_japanese = card
-            where owner like ? or card like ? 
+            where owner like ? or card like ? or i.id like ?
             group by card_drop.id
             order by date desc 
             limit 100
         `,
-            [term, term],
+            [term, term, term],
             (err, result) => {
                 if (err) { console.log(err); throw err; }
                 res.json(result);
