@@ -118,6 +118,7 @@ class ShopItems extends React.Component<Props, State> {
                                 (
                                     <tr key={index}>
                                         <td className="cell100 column1">
+                                            {this.state.data && this.state.data.type === 'sell' ? 'S> ' : 'B> '}
                                             <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
                                             {d.ids && <span className="item_db-ids">
                                                 id: {d.ids}

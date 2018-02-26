@@ -9,9 +9,10 @@ interface State {
     loading: boolean;
 
     data: Array<{
-        card: string,
-        owner: string,
-        date: Date,
+        card: string;
+        owner: string;
+        date: Date;
+        ids: string;
     }>;
 }
 
@@ -86,9 +87,15 @@ class Cards extends React.Component<Props, State> {
                                     <tr key={index}>
                                         <td className="cell100 column1">
                                             <NavLink to={'/items/' + d.card}>{d.card}</NavLink>
-                                            <a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>
-                                                <InfoOutline style={{height: '18px'}}/>
-                                            </a>
+                                            {' '}
+                                            {d.ids && <span className="item_db-ids">
+                                                id: {d.ids}
+                                                <a
+                                                    href={'http://rodb.kudesnik.cc/item/?term=' + d.card}
+                                                >
+                                                    <InfoOutline style={{height: '11px'}}/>
+                                                </a>
+                                            </span> }
                                         </td>
                                         <td className="cell100 column2">{d.owner}</td>
                                         <td className="cell100 column3 right">
