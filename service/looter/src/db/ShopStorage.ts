@@ -48,7 +48,7 @@ export class ShopStorage implements IShopProvider {
                 `
                     select * 
                     from shops 
-                    where active 
+                    where active = 1
                     and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) 
                     order by last_fetch asc, date desc, id desc 
                     limit 1
