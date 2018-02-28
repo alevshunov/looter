@@ -12,6 +12,7 @@ export class ReportEntry {
     chatStoryTellers: Array<{ owner: string; averageLength: number; randomMessage: string; }>;
     // chatMostSmilest: Array<{owner: string; count: number; randomMessage: string;}>;
 
+    shopActivity: Array<number>;
     shopOfAWeek: { id: number; owner: string; name: string; location: string; };
     shopLotOfAWeek: { id: number; name: string; owner: string; shopName: string; location: string; };
     shopMostExpensive: Array<{ owner: string; name: string; totalPrice: number; location: string; }>;

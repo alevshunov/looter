@@ -201,6 +201,14 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     />
                 </Container>
 
+                {this.state.report.shopActivity &&
+                <Container>
+                    <Report24
+                        data={this.state.report.shopActivity}
+                        title="Распределение открытия магазинов и скупок по часам"
+                    />
+                </Container>}
+
                 <Container>
                     Брендовые магазины:
                     <TableReport

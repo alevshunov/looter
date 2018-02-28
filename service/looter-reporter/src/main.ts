@@ -171,11 +171,28 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         return data;
     }
 
+    async function shopActivity() {
+        let data = await connection.query(`
+            select hour(date) as hour, count(*) as value
+            from shops
+            where date between ? and ?
+            group by hour(date)
+        `, start, end);
+
+        const a = createZeroArray(24);
+
+        for (let i=0; i<data.length; i++) {
+            a[data[i].hour] = data[i].value;
+        }
+
+        return a;
+    }
+
     async function shopOfAWeek() {
         let data = await connection.query(`
             select id, owner, name, location
             from shops
-            where fetch_count > 3 and date between ? and ?
+            where fetch_count > 3 and date between ? and ? and type = 'sell'
             order by rand()
             limit 1
         `, start, end);
@@ -187,7 +204,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         let data = await connection.query(`
             select s.id, si.name, s.owner, s.name shopName, s.location
             from shops s inner join shop_items si on s.id = si.shop_id
-            where s.fetch_count > 3 and si.date between ? and ?
+            where s.fetch_count > 3 and si.date between ? and ? and s.type = 'sell'
             order by rand()
             limit 1
         `, start, end);
@@ -202,11 +219,11 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
             (
                 select distinct s.owner
                 from shops s
-                where s.fetch_count > 3 and s.date between ? and ?
+                where s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
             ) o inner join shops s on s.id = (
                 select s.id
                 from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-                where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ?
+                where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
                 group by s.id
                 order by sum(si.price * si.count) desc
                 limit 1
@@ -227,11 +244,11 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
             (
                 select distinct s.owner
                 from shops s
-                where s.fetch_count > 3 and s.date between ? and ?
+                where s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
             ) o inner join shops s on s.id = (
                 select s.id
                 from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-                where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ?
+                where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
                 group by s.id
                 order by sum(si.price * si.count) asc
                 limit 1
@@ -249,7 +266,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         let data = await connection.query(`
             select max(id) id, owner, count(*) count
             from shops
-            where date between ? and ?
+            where date between ? and ? and type = 'sell'
             group by owner
             order by count desc
             limit ${limit}
@@ -262,7 +279,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         let data = await connection.query(`
             select max(s.id) id, si.name, min(si.price) price
             from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-            where s.fetch_count > 3 and s.date between ? and ?
+            where s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
             group by si.name
             order by price desc
             limit ${limit}
@@ -283,6 +300,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         report.chatTopSpeakers = await chatTopSpeakers();
         report.chatStoryTellers = await chatStoryTellers();
 
+        report.shopActivity = await shopActivity();
         report.shopOfAWeek = await shopOfAWeek();
         report.shopLotOfAWeek = await shopLotOfAWeek();
         report.shopMostExpensive = await shopMostExpensive();
@@ -290,7 +308,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         report.shopMostUnstable = await shopMostUnstable();
         report.shopMostExpensiveLots = await shopMostExpensiveLots();
 
-        await connection.query('insert into reports(date, report) values(?,?)', new Date(), JSON.stringify(report));
+        // await connection.query('insert into reports(date, report) values(?,?)', new Date(), JSON.stringify(report));
 
     } finally {
         await connection.close();
