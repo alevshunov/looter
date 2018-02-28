@@ -64,7 +64,7 @@ router.get('/report', async (req, res, next) => {
     const connection = await getConnection();
     const data = await connection.query(`select * from reports order by id desc limit 1`);
     connection.close();
-    res.json(data);
+    res.json(data[0].report);
 
     next();
 });
