@@ -1,5 +1,6 @@
 import moment = require('moment');
 import { MyConnection, MyLogger } from 'my-core';
+import { ReportEntry } from 'my-models/Report';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -8,30 +9,7 @@ const dbConnection = {
     database: process.env.LOOTER_DB_DBNAME
 };
 
-class Report {
-    reportInfo: { start: Date; end: Date; date: Date; };
-    cardOfAWeek: string;
-    cardDropActivity: Array<number>;
-    cardTopPlayer: Array<{owner: string; count: number}>;
-    cardTopDrop: Array<{card: string; count: number}>;
-    cardLovelyPlaces: Array<{card: string; owner: string; count: number}>;
-
-    chatStoreOfAWeek: {owner: string; message: string; date: Date;};
-    chatActivity: Array<number>;
-    chatTopSpeakers: Array<{owner: string; count: number; randomMessage: string;}>;
-    chatStoryTellers: Array<{owner: string; averageLength: number; randomMessage: string;}>;
-    // chatMostSmilest: Array<{owner: string; count: number; randomMessage: string;}>;
-
-    shopOfAWeek: {owner: string; name: string; location: string; };
-    shopLotOfAWeek: {name: string;owner: string; shopName: string; location: string; };
-    shopMostExpensive: Array<{owner: string; name: string; totalPrice: number; location: string; }>;
-    shopMostCheapest: Array<{owner: string; totalPrice: number; location: string; }>;
-    shopMostUnstable: Array<{owner: string; count: number; }>;
-    // shopMostSellableItems: Array<{name: string; count: number; totalValue: number}>;
-    shopMostExpensiveLots: Array<{name: string; price: number; shopName: string; shopOwner: string;}>;
-}
-
-const endDate = new Date(2018,1, 19, 0, 0);
+const endDate = new Date(2018,2, 2, 0, 0);
 const startDate = moment(endDate).add({ days: -7}).toDate();
 
 const connection = new MyConnection(dbConnection, new MyLogger());
@@ -39,7 +17,7 @@ const connection = new MyConnection(dbConnection, new MyLogger());
 
 async function doReport(connection: MyConnection, start: Date, end: Date) {
     await connection.open();
-    const report = new Report();
+    const report = new ReportEntry();
 
     report.reportInfo = { date: new Date(), start: start, end: end };
 
