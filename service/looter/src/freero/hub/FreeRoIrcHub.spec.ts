@@ -26,7 +26,7 @@ describe('FreeRoIrcHub', () => {
         const to = '#FreeRO';
         const msg = 'Hello world';
 
-        const hub = new FreeRoIrcHub(fakeIrc, { log: () => {} });
+        const hub = new FreeRoIrcHub(fakeIrc, { log: () => {}, error: () => {} });
         hub.onEvent().subscribe(mockCallback);
 
         fakeIrc.doMessage(from, msg);

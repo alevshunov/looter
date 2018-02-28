@@ -2,7 +2,7 @@ import {ShopItem} from "../../model/ShopItem";
 import {Client as IrcClient} from "irc";
 import {Shop, ShopType} from "../../model/Shop";
 import {ShopItemsLoadResult} from "./ShopItemsLoadResult";
-import {MyLogger} from "../../core/MyLogger";
+import {MyLogger} from "my-core";
 
 export class ShopItemLoader {
     private _hub: IrcClient;

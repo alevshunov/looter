@@ -1,8 +1,7 @@
 import {ShopItem} from "../model/ShopItem";
 import {ConnectionConfig} from "mysql";
-import {MyConnection} from "./core/MyConnection";
 import {Shop} from "../model/Shop";
-import {MyLogger} from '../core/MyLogger';
+import {MyConnection, MyLogger} from "my-core";
 
 export class ShopItemStorage {
     private _dbConnection: ConnectionConfig;

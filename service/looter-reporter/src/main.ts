@@ -1,5 +1,5 @@
 import moment = require('moment');
-import { MyConnection } from './MyConnection';
+import { MyConnection, MyLogger } from 'my-core';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -34,7 +34,7 @@ class Report {
 const endDate = new Date(2018,1, 19, 0, 0);
 const startDate = moment(endDate).add({ days: -7}).toDate();
 
-const connection = new MyConnection(dbConnection);
+const connection = new MyConnection(dbConnection, new MyLogger());
 
 
 async function doReport(connection: MyConnection, start: Date, end: Date) {

@@ -1,9 +1,7 @@
-import {Connection, ConnectionConfig} from "mysql";
+import {ConnectionConfig} from "mysql";
 import {Shop} from "../model/Shop";
-import {MyConnection} from "./core/MyConnection";
 import {IShopProvider} from "../freero/shopItemLooter/IShopProvider";
-import {ShopItem} from "../model/ShopItem";
-import {MyLogger} from '../core/MyLogger';
+import {MyConnection, MyLogger} from "my-core";
 
 export class ShopStorage implements IShopProvider {
     private _dbConnection: ConnectionConfig;

@@ -11,7 +11,7 @@ import {ShopStorage} from "./db/ShopStorage";
 import {ShopItemLooter} from "./freero/shopItemLooter/ShopItemLooter";
 import {ShopItemStorage} from "./db/ShopItemStorage";
 import {ShopBuyLooter} from "./freero/shopLooter/ShopBuyLooter";
-import {MyLogger} from "./core/MyLogger";
+import {MyLogger} from "my-core";
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,

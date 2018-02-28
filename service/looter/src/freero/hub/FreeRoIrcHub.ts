@@ -3,7 +3,7 @@ import {Client as IrcClient} from "irc";
 import {FreeRoEventArgs} from "./FreeRoEventArgs";
 import {IEventProvider} from "../../core/IEventProvider";
 import {IIrcConnection} from "./IIrcConnection";
-import {MyLogger} from '../../core/MyLogger';
+import {MyLogger} from 'my-core';
 
 export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     private _irc: IrcClient | IIrcConnection;

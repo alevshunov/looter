@@ -1,7 +1,6 @@
 import {ConnectionConfig} from "mysql";
 import {Message} from "../model/Message";
-import {MyConnection} from "./core/MyConnection";
-import {MyLogger} from '../core/MyLogger';
+import {MyConnection, MyLogger} from "my-core";
 
 export class MessageStorage {
     private _dbConnection: ConnectionConfig;

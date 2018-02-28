@@ -4,12 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rm -rf ./dist && gulp",
+    "start": "node ./dist/app"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/express": "^4.11.1",
+    "@types/mysql": "^2.15.2",
     "express": "^4.16.2",
-    "mysql": "^2.15.0"
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-typescript": "^4.0.1",
+    "my-core": "file:../../local_modules/my-core",
+    "mysql": "^2.15.0",
+    "typescript": "^2.7.2"
   }
 }

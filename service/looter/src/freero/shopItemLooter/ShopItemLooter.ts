@@ -2,7 +2,7 @@ import {ShopItemStorage} from "../../db/ShopItemStorage";
 import {IShopProvider} from "./IShopProvider";
 import {ShopItemLoader} from "./ShopItemLoader";
 import {Client as IrcClient} from "irc";
-import {MyLogger} from "../../core/MyLogger";
+import {MyLogger} from "my-core";
 
 export class ShopItemLooter {
     private SCAN_FIRST_INTERVAL: number = 60000;

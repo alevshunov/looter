@@ -1,6 +1,6 @@
 import * as mysql from "mysql";
 import {ConnectionConfig} from "mysql";
-import {MyLogger} from "../core/MyLogger";
+import {MyLogger} from "my-core";
 
 export class DbConnectionChecker {
     static tryConnect(dbConnection: ConnectionConfig, logger: MyLogger) {

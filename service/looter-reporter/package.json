@@ -28,6 +28,7 @@
     "@types/moment": "^2.13.0",
     "irc": "^0.5.2",
     "moment": "^2.20.1",
+    "my-core": "file:../../local_modules/my-core",
     "mysql": "^2.15.0",
     "strongly-typed-events": "^1.0.1"
   },

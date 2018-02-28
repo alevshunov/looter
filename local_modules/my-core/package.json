@@ -1,0 +1,19 @@
+{
+  "name": "my-core",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Looter core",
+  "main": "",
+  "scripts": {
+    "build": "gulp"
+  },
+  "author": "Anton Levshunov",
+  "license": "MIT",
+  "dependencies": {
+    "@types/mysql": "^2.15.2",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^4.0.1",
+    "mysql": "^2.15.0",
+    "typescript": "^2.7.2"
+  }
+}

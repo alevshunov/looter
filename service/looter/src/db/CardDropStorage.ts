@@ -1,7 +1,6 @@
 import {ConnectionConfig} from "mysql";
 import {CardDrop} from "../model/CardDrop";
-import {MyConnection} from "./core/MyConnection";
-import {MyLogger} from '../core/MyLogger';
+import {MyConnection, MyLogger} from "my-core";
 
 export class CardDropStorage {
     private _dbConnection: ConnectionConfig;
