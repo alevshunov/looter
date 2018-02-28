@@ -51,7 +51,7 @@ export class ShopStorage implements IShopProvider {
                     where active 
                     and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) 
                     -- and date < date_add(now(), interval -1 minute) 
-                    order by last_fetch asc, id desc 
+                    order by last_fetch asc, date desc, id desc 
                     limit 1
                 `,
                 );
