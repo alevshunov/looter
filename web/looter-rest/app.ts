@@ -62,7 +62,7 @@ router.get('/cards', async (req, res, next) => {
 
 router.get('/report', async (req, res, next) => {
     const connection = await getConnection();
-    const data = await connection.query(`select * from reports order by id desc limit 1`);
+    const data = await connection.query(`select * from reports where active = 1 order by id desc limit 1`);
     connection.close();
     res.json(JSON.parse(data[0].report));
 
