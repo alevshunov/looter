@@ -9,6 +9,7 @@ import { NavLink } from 'react-router-dom';
 import * as moment from 'moment';
 import { ReportEntry } from 'my-models/Report';
 import './Report.css';
+import 'moment/locale/ru';
 
 class Report extends React.Component<{}, { loading: boolean, report?: ReportEntry}> {
     constructor(props: {}, context: any) {
@@ -57,11 +58,16 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
 
                 <Container>
                     <div style={{textAlign: 'center'}}>
-                        Статистика за неделю:{' '}
-                        <i>
-                            {moment(report.reportInfo.start).format('DD-MM-YYYY, HH:mm')} - {' '}
-                            {moment(report.reportInfo.end).format('DD-MM-YYYY, HH:mm')}
-                        </i>
+                        Статистика за неделю:<br/>
+                        <strong>
+                            {moment(report.reportInfo.start)
+                                .locale('ru')
+                                .format('DD MMMM YYYY, HH:mm')} - {' '}
+                            {moment(report.reportInfo.end)
+                                .locale('ru')
+                                .add({ second: -1 })
+                                .format('DD MMMM YYYY, HH:mm')}
+                        </strong>
                     </div>
                 </Container>
 
