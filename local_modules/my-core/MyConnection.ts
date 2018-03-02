@@ -41,7 +41,13 @@ export class MyConnection {
                     me._logger.log('Query Error', JSON.stringify(err));
                     return reject (err);
                 } else {
-                    me._logger.log('Query Success', `Fetched ${result.length} lines`);
+                    if (result.length > 0) {
+                        me._logger.log('Query Success', `Fetched ${result.length} lines.`);
+                    } if (result.length === 0) {
+                        me._logger.log('Query Success', `Fetched ${result.length} lines.`);
+                    } else {
+                        me._logger.log('Query Success', `affectedRows: ${result.affectedRows}, insertId: ${result.insertId}.`);
+                    }
                     return resolve(result);
                 }
             });
