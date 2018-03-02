@@ -323,7 +323,7 @@ class ReportGenerator {
 
         try {
             const r = await doReport(connection, startDate, endDate);
-            logger.log(r);
+            console.log(JSON.stringify(r, null, 2));
         } catch(e) {
             logger.error(e, e.stack);
         }
