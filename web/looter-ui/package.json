@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts-ts start",
-    "build": "rm -rf ./build && react-scripts-ts build",
+    "build": "rm -rf ./build && react-scripts-ts build && rm -f ./build/static/css/*.map ./build/static/js/*.map",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },

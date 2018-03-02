@@ -216,11 +216,6 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                             [
                                 {title: '', field: 'index', align: 'center'},
                                 {
-                                    title: 'Игрок',
-                                    field: 'owner',
-                                    render: (name) => <NavLink to={'/shops/' + name}>{name}</NavLink>
-                                },
-                                {
                                     title: 'Имя',
                                     field: 'name'
                                 },
@@ -264,11 +259,6 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                             [
                                 {title: '', field: 'index', align: 'center'},
                                 {title: 'Название', field: 'name'},
-                                {
-                                    title: 'Игрок',
-                                    field: 'owner',
-                                    render: (name) => <NavLink to={'/shops/' + name}>{name}</NavLink>
-                                },
                                 {
                                     title: 'Суммарная стоимость',
                                     field: 'totalPrice',
