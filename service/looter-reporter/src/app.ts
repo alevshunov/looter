@@ -134,7 +134,8 @@ class ReportGenerator {
 
             async function chatTopSpeakers() {
                 let data = await connection.query(`
-                    select t.owner, t.count, (select message from messages m where t.owner = m.owner order by rand() limit 1) randomMessage
+                    select t.owner, t.count, 
+                    (select message from messages m where t.owner = m.owner and date between ? and ? order by rand() limit 1) randomMessage
                     from
                         (
                             select owner, count(*) count
@@ -144,7 +145,7 @@ class ReportGenerator {
                             order by count desc
                             limit ${limit}
                         ) t
-                `, start, end);
+                `, start, end, start, end);
 
                 return data;
             }
@@ -155,7 +156,9 @@ class ReportGenerator {
                         (
                             select message 
                             from messages m 
-                            where t.owner = m.owner and length(message) >= averageLength 
+                            where t.owner = m.owner 
+                            and length(message) >= averageLength 
+                            and date between ? and ?
                             order by rand() 
                             limit 1
                         ) randomMessage
@@ -169,7 +172,7 @@ class ReportGenerator {
                             order by avgLength desc
                             limit ${limit}
                         ) t
-                `, start, end);
+                `, start, end, start, end);
 
                 return data;
             }
