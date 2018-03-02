@@ -69,7 +69,7 @@ class Shops extends React.Component<Props, State> {
                         {
                             !this.state.loading && this.state.data.length === 0 &&
                             <tr>
-                                <td className="cell100 column1">
+                                <td className="column1" colSpan={3}>
                                     Открытых магазинов по поиску <strong>{this.props.term}</strong> не найдено.
                                 </td>
                             </tr>
