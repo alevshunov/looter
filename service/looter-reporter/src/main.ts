@@ -1,4 +1,4 @@
-import moment = require('moment');
+import * as moment from 'moment';
 import { MyConnection, MyLogger } from 'my-core';
 import { ReportEntry } from 'my-models/Report';
 
@@ -308,7 +308,7 @@ async function doReport(connection: MyConnection, start: Date, end: Date) {
         report.shopMostUnstable = await shopMostUnstable();
         report.shopMostExpensiveLots = await shopMostExpensiveLots();
 
-        // await connection.query('insert into reports(date, report) values(?,?)', new Date(), JSON.stringify(report));
+        await connection.query('insert into reports(date, report) values(?,?)', new Date(), JSON.stringify(report));
 
     } finally {
         await connection.close();
