@@ -174,5 +174,9 @@ app.use((req, res, next) => {
 
 app.use('/rest', router);
 
+if (!process.env.LOOTER_REST_PORT) {
+    throw 'LOOTER_REST_PORT is requred';
+}
+
 app.listen(process.env.LOOTER_REST_PORT);
 logger.log('looter-rest started, port: ' + process.env.LOOTER_REST_PORT);

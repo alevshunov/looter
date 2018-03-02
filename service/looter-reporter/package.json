@@ -2,16 +2,14 @@
   "name": "looter-reporter",
   "version": "1.0.0",
   "description": "",
-  "main": "",
+  "main": "src/app.ts",
   "scripts": {
     "start": "ts-node src/app"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^9.4.6"
-  },
   "dependencies": {
+    "@types/node": "^9.4.6",
     "moment": "^2.20.1",
     "my-core": "file:../../local_modules/my-core",
     "my-models": "file:../../local_modules/my-models",
