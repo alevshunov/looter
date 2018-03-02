@@ -1,8 +1,23 @@
 {
   "compilerOptions": {
+    "lib": ["es2015"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "target": "es2015",
     "noImplicitAny": false,
-    "target": "es5",
-    "sourceMap": false,
-    "lib": [ "es2015" ]
-  }
+    "suppressImplicitAnyIndexErrors": true,
+    "typeRoots": [ "node_modules/@types" ]
+  },
+
+//  "compilerOptions": {
+//    "noImplicitAny": true,
+//    "target": "es6",
+//    "sourceMap": true,
+//    "lib": [ "es2015" ],
+////    "outDir": "dist"
+//  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }

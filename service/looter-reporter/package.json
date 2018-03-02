@@ -2,25 +2,20 @@
   "name": "looter-reporter",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.ts",
+  "main": "",
   "scripts": {
-    "build": "gulp",
-    "test": "jest --env=node",
-    "test:watch": "jest --env=node --watch",
-    "test:verbose": "jest --env=node --verbose --coverage",
-    "start": "gulp && node dist/main.js"
+    "start": "ts-node src/app"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^9.4.6",
-    "gulp-typescript": "^4.0.1",
     "typescript": "^2.7.2"
   },
   "dependencies": {
-    "gulp": "^3.9.1",
     "moment": "^2.20.1",
     "my-core": "file:../../local_modules/my-core",
-    "my-models": "file:../../local_modules/my-models"
+    "my-models": "file:../../local_modules/my-models",
+    "ts-node": "^5.0.1"
   }
 }
