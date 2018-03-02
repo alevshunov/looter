@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/moment": "^2.13.0",
     "@types/vinyl": "^2.0.2",
     "@types/irc": "^0.3.32",
     "@types/jest": "^22.1.2",
@@ -25,22 +26,11 @@
     "typescript": "^2.7.1"
   },
   "dependencies": {
-    "@types/moment": "^2.13.0",
     "irc": "^0.5.2",
     "moment": "^2.20.1",
     "my-core": "file:../../local_modules/my-core",
     "my-models": "file:../../local_modules/my-models",
     "mysql": "^2.15.0",
     "strongly-typed-events": "^1.0.1"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "\\.spec\\.ts$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ]
   }
 }
