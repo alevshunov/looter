@@ -172,7 +172,7 @@ app.use(async (req, res, next) => {
 
     const connection = await getConnection();
     await connection.query(`insert into logs(date, type, ip, url) values(?, ?, ?, ?);`,
-        new Date(), 'rest', req.headers["X-Real-IP"], req.path);
+        new Date(), 'rest', req.headers["X-Real-IP"] || '', req.path);
 
     connection.close();
 
