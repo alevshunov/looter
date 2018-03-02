@@ -1,3 +1,7 @@
 .data.location, .data.owner {
     white-space: nowrap;
 }
+
+.data.index {
+    width: 25px !important;
+}
