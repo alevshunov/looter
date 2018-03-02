@@ -78,7 +78,7 @@ class Cards extends React.Component<Props, State> {
                         {
                             !this.state.loading && this.state.data.length === 0 &&
                             <tr>
-                                <td className="cell100 column1">Ничего не найдено.</td>
+                                <td className="cell100 column1">Искомую карту никто не выбивал.</td>
                             </tr>
                         }
                         {

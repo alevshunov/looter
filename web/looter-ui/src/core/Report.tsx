@@ -73,7 +73,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
 
                 {report.cardOfAWeek &&
                 <Container>
-                    Картой недели выбрана <NavLink to={'/items/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
+                    Картой недели выбрана <NavLink to={'/cards/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
                 </Container>
                 }
 
