@@ -167,8 +167,15 @@ router.get('/shop/:id', async (req, res, next) => {
     next();
 });
 
-app.use((req, res, next) => {
-    logger.log(req.path, req.ip);
+app.use(async (req, res, next) => {
+    logger.log(req.headers["X-Real-IP"], req.path);
+
+    const connection = await getConnection();
+    await connection.query(`insert into logs(date, type, ip, url) values(?, ?, ?, ?);`,
+        new Date(), 'rest', req.headers["X-Real-IP"], req.path);
+
+    connection.close();
+
     next();
 });
 
