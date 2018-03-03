@@ -1,7 +1,9 @@
 export default function () {
     const last = window['last'] || (location.pathname + location.search);
 
-    if (window['ga'] && typeof window['ga'] === 'function') {
+    if (window['ga']
+        && typeof window['ga'] === 'function'
+        && typeof window['ga'].create === 'function') {
         const tracker = window['tracker'] || window['ga'].create('UA-115035514-1');
 
         if (last !== location.pathname + location.search) {
