@@ -73,17 +73,21 @@ router.get('/shops/active', async (req, res, next) => {
     const args = extractTermWithDirection(req.query.term);
     const connection = await getConnection();
     const data = await connection.query(`
-            select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type,
-            group_concat(distinct i.id order by i.id separator ', ') ids
+            select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type, i.ids
             from shops s inner join shop_items si on si.shop_id = s.id
-            left join item_db i on i.name_japanese = si.name
+            left join (
+                select name_japanese, group_concat(distinct id order by id separator ', ') ids 
+                from item_db
+                group by name_japanese
+            ) i
+            on i.name_japanese = si.name
             where 
                 s.active = 1
                 and s.fetch_count > 0 
                 and si.fetch_index = s.fetch_count 
-                and (si.name like ? or i.id like ?)
+                and (si.name like ? or i.ids like ?)
                 and s.type like ?
-            group by si.name, s.type
+            group by si.name, s.type;
         `,
         args.term, args.term, args.direction,
     );
