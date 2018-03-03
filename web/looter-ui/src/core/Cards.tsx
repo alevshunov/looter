@@ -10,7 +10,7 @@ import TableReport from './components/TableReport';
 interface State {
     loading: boolean;
 
-    data: Array<{
+    data?: Array<{
         card: string;
         owner: string;
         date: Date;
@@ -28,7 +28,7 @@ class Cards extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            data: [],
+            data: undefined,
             loading: true
         };
 

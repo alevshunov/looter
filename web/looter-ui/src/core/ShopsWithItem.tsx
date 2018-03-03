@@ -7,7 +7,7 @@ import TableReport from './components/TableReport';
 
 interface State {
     loading: boolean;
-    data: Array<any>;
+    data?: Array<any>;
 }
 
 interface Props {
@@ -20,7 +20,7 @@ class ShopWithItem extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            data: [],
+            data: undefined,
             loading: false
         };
     }
