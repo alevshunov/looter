@@ -8,6 +8,7 @@ import InfoOutline from 'material-ui-icons/InfoOutline';
 import asShopCount from './components/asShopCount';
 import TableReport from './components/TableReport';
 import Container from './components/Container';
+import GA from './extra/GA';
 
 interface State {
     loading: boolean;
@@ -65,6 +66,8 @@ class ShopItems extends React.Component<Props, State> {
 
     render() {
         document.title = this.props.shopId ? 'FreeRO - Shops - #' + this.props.shopId : 'FreeRO - Shops';
+        GA();
+
         if (!this.state.data) {  return null; }
 
         const shopType = this.state.data.type;

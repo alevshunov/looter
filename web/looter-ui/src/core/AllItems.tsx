@@ -8,6 +8,7 @@ import Container from './components/Container';
 import TableReport from './components/TableReport';
 import asNumber from './components/asNumber';
 import './AllItems.css';
+import GA from './extra/GA';
 
 interface State {
     loading: boolean;
@@ -62,6 +63,7 @@ class AllItems extends React.Component<Props, State> {
 
     render() {
         document.title = this.props.term ? 'FreeRO - Price - ' + this.props.term : 'FreeRO - Price list';
+        GA();
 
         return (
             <div className="limiter area-allitems">

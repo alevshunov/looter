@@ -5,6 +5,7 @@ import MyNavigation from './components/MyNavigation';
 import Container from './components/Container';
 import TableReport from './components/TableReport';
 import './Shops.css';
+import GA from './extra/GA';
 
 interface State {
     loading: boolean;
@@ -54,6 +55,7 @@ class Shops extends React.Component<Props, State> {
 
     render() {
         document.title = this.props.term ? 'FreeRO - Shops - ' + this.props.term : 'FreeRO - Shops';
+        GA();
 
         return (
             <div className="limiter area-shops">

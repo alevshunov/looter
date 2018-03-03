@@ -11,6 +11,7 @@ import { ReportEntry } from 'my-models/Report';
 import './Report.css';
 import 'moment/locale/ru';
 import ContainerText from './components/ContainerText';
+import GA from './extra/GA';
 
 class Report extends React.Component<{}, { loading: boolean, report?: ReportEntry}> {
     constructor(props: {}, context: any) {
@@ -42,15 +43,15 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
     }
 
     render() {
-        const price = (x: any) => asPrice(x);
-        const digits = (x: any) => asNumber(x);
-
         document.title = 'FreeRO - Weekly report';
+        GA();
 
         if (!this.state.report) {
             return null;
         }
 
+        const price = (x: any) => asPrice(x);
+        const digits = (x: any) => asNumber(x);
         const report = this.state.report;
 
         return (

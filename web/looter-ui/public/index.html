@@ -18,18 +18,7 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'UA-115035514-1');
-
-        try {
-            history.listen(function (location) {
-                try {
-                    window.ga('set', 'page', location.pathname + location.search);
-                    window.ga('send', 'pageview', location.pathname + location.search);
-                } catch (e) {
-                }
-            });
-        } catch(e) {}
     </script>
   </body>
 </html>

@@ -4,6 +4,7 @@ import asPrice from './components/asPrice';
 import MyNavigation from './components/MyNavigation';
 import Container from './components/Container';
 import TableReport from './components/TableReport';
+import GA from './extra/GA';
 
 interface State {
     loading: boolean;
@@ -53,6 +54,7 @@ class ShopWithItem extends React.Component<Props, State> {
 
     render() {
         document.title = this.props.itemName ? 'FreeRO - Shops - ' + this.props.itemName : 'FreeRO - Shops';
+        GA();
 
         return (
             <div className="limiter">

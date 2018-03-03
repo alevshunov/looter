@@ -6,6 +6,7 @@ import MyNavigation from './components/MyNavigation';
 import InfoOutline from 'material-ui-icons/InfoOutline';
 import Container from './components/Container';
 import TableReport from './components/TableReport';
+import GA from './extra/GA';
 
 interface State {
     loading: boolean;
@@ -62,6 +63,7 @@ class Cards extends React.Component<Props, State> {
 
     render() {
         document.title = this.props.term ? 'FreeRO - Cards - ' + this.props.term : 'FreeRO - Cards';
+        GA();
 
         return (
             <div className="limiter area-cards">
