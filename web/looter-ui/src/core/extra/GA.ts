@@ -1,17 +1,22 @@
 export default function () {
-    // const last = window['last'] || (location.pathname + location.search);
-    // if (window['ga'] && typeof window['ga'] === 'function') {
-    //     if (last !== location.pathname + location.search) {
-    //         try {
-    //             window['ga']('set', 'page', location.pathname + location.search);
-    //             window['ga']('send', 'pageview');
-    //         } catch (e) {
-    //             console.warn(e);
-    //         }
-    //     }
-    // } else {
-    //     console.warn('window.ga is undefined');
-    // }
-    //
-    // window['last'] = location.pathname + location.search;
+    const last = window['last'] || (location.pathname + location.search);
+
+    if (window['ga'] && typeof window['ga'] === 'function') {
+        const tracker = window['tracker'] || window['ga'].create('UA-115035514-1');
+
+        if (last !== location.pathname + location.search) {
+            try {
+                tracker.set('page', location.pathname + location.search);
+                tracker.send('pageview');
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        window['tracker'] = tracker;
+    } else {
+        console.warn('window.ga is undefined');
+    }
+
+    window['last'] = location.pathname + location.search;
 }
