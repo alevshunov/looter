@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import asPrice from './components/asPrice';
 import MyNavigation from './components/MyNavigation';
+import Container from './components/Container';
+import TableReport from './components/TableReport';
 
 interface State {
     loading: boolean;
@@ -55,48 +57,45 @@ class ShopWithItem extends React.Component<Props, State> {
         return (
             <div className="limiter">
                 <MyNavigation active="shops"/>
-                <table className="table_center info">
-                    <tbody>
-                    <tr>
-                        <td className="info-item">{this.props.itemName}</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <table className="table_center">
-                    <thead>
+                <Container>
+                    <table className="table-report info">
+                        <tbody>
                         <tr>
-                            <th className="column1">Название</th>
-                            <th className="column2">Игрок</th>
-                            <th className="column3 right">Цена</th>
-                            <th className="column4 right">Расположение</th>
+                            <td className="info-item table-report-cell shop-item-name">{this.props.itemName}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
-                        {
-                            !this.state.loading && this.state.data.length === 0 &&
-                            <tr>
-                                <td className="cell100 column1">Ничего не найдено.</td>
-                            </tr>
+                        </tbody>
+                    </table>
+                </Container>
+
+                <Container>
+                    <TableReport
+                        cells={
+                            [
+                                {
+                                    title: 'Магазин',
+                                    field: 'name',
+                                    render: (name, d) => (
+                                        <span>{d.type === 'sell' ? 'S> ' : 'B> '}{d.name}</span>
+                                    )
+                                },
+                                {
+                                    title: 'Цена',
+                                    field: 'price',
+                                    align: 'right',
+                                    render: (price, d) => asPrice(d.min, d.max)
+                                },
+                                {
+                                    title: 'Расположение',
+                                    field: 'location',
+                                    align: 'right',
+                                    render: (price, d) => <Link to={'/shop/' + d.id}>{d.location}</Link>
+                                },
+                            ]
                         }
-                        {
-                            this.state.data.map((d, index) =>
-                                (
-                                    <tr key={index}>
-                                        <td className="cell100 column1">
-                                            {d.type === 'sell' ? 'S> ' : 'B> '}
-                                            {d.name}
-                                        </td>
-                                        <td className="cell100 column2">{d.owner}</td>
-                                        <td className="cell100 column3 right">{asPrice(d.min, d.max)}</td>
-                                        <td className="cell100 column3 right">
-                                            <Link to={'/shop/' + d.id}>{d.location}</Link>
-                                        </td>
-                                    </tr>
-                                ))
-                        }
-                    </tbody>
-                </table>
+                        emptyMessage="Отсутствуют магазины с этим предметом"
+                        data={this.state.data}
+                    />
+                </Container>
             </div>
         );
     }

@@ -1,7 +1,7 @@
 .container-shadow {
     font-family: "Comic Sans MS";
     color: #808080;
-    max-width: 800px;
+    max-width: 795px;
 
     margin: 0 auto;
 
@@ -15,9 +15,19 @@
 
     border-collapse: collapse;
 
+    padding: 0px;
+}
+
+.container-shadow.text {
     padding: 20px;
 }
 
 .container-shadow + .container-shadow {
-    margin-top: 50px;
+    margin-top: 40px;
+}
+
+@media (max-width: 899px) {
+    .container-shadow + .container-shadow {
+        margin-top: 20px;
+    }
 }

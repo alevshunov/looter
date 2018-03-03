@@ -4,6 +4,8 @@ import RedirectableSearch from './components/RedirectableSearch';
 import { NavLink } from 'react-router-dom';
 import MyNavigation from './components/MyNavigation';
 import InfoOutline from 'material-ui-icons/InfoOutline';
+import Container from './components/Container';
+import TableReport from './components/TableReport';
 
 interface State {
     loading: boolean;
@@ -62,50 +64,48 @@ class Cards extends React.Component<Props, State> {
         document.title = this.props.term ? 'FreeRO - Cards - ' + this.props.term : 'FreeRO - Cards';
 
         return (
-            <div className="limiter">
+            <div className="limiter area-cards">
                 <MyNavigation active="cards"/>
-                <RedirectableSearch base="/cards/" term={this.props.term}/>
-                <table className="table_center">
-                    <thead>
-                        <tr>
-                            <th className="column1">Название</th>
-                            <th className="column2">Игрок</th>
-                            <th className="column3 right">Время</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
-                        {
-                            !this.state.loading && this.state.data.length === 0 &&
-                            <tr>
-                                <td className="cell100 column1">Искомую карту никто не выбивал.</td>
-                            </tr>
-                        }
-                        {
-                            this.state.data.map((d, index) =>
-                                (
-                                    <tr key={index}>
-                                        <td className="cell100 column1">
+                <Container>
+                    <RedirectableSearch base="/cards/" term={this.props.term}/>
+                </Container>
+                <Container>
+                    <TableReport
+                        cells={
+                            [
+                                {
+                                    title: 'Название карты',
+                                    field: 'card',
+                                    render: (card, d) => (
+                                        <span>
                                             <NavLink to={'/items/' + d.card}>{d.card}</NavLink>
                                             {' '}
-                                            {d.ids && <span className="item_db-ids">
-                                                id: {d.ids}
-                                                <a
-                                                    href={'http://rodb.kudesnik.cc/item/?term=' + d.card}
-                                                >
-                                                    <InfoOutline style={{height: '11px'}}/>
-                                                </a>
-                                            </span> }
-                                        </td>
-                                        <td className="cell100 column2">{d.owner}</td>
-                                        <td className="cell100 column3 right">
-                                            {moment(d.date).format('DD-MM-YYYY, HH:mm')}
-                                        </td>
-                                    </tr>
-                                ))
+                                            {d.ids &&
+                                                <span className="item_db-ids">id: {d.ids}
+                                                    <a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>
+                                                        <InfoOutline style={{height: '11px'}}/>
+                                                    </a>
+                                                </span>
+                                            }
+                                        </span>
+                                    )
+                                },
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner'
+                                },
+                                {
+                                    title: 'Время',
+                                    field: 'date',
+                                    align: 'right',
+                                    render: (date) => moment(date).format('DD-MM-YYYY, HH:mm')
+                                }
+                            ]
                         }
-                    </tbody>
-                </table>
+                        data={this.state.data}
+                        emptyMessage="Искомую карту никто не выбивал."
+                    />
+                </Container>
             </div>
         );
     }

@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { ReportEntry } from 'my-models/Report';
 import './Report.css';
 import 'moment/locale/ru';
+import ContainerText from './components/ContainerText';
 
 class Report extends React.Component<{}, { loading: boolean, report?: ReportEntry}> {
     constructor(props: {}, context: any) {
@@ -57,45 +58,54 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 <MyNavigation active="report"/>
 
                 <Container>
-                    <div style={{textAlign: 'center'}}>
-                        Статистика за неделю:<br/>
-                        <strong>
-                            {moment(report.reportInfo.start)
-                                .locale('ru')
-                                .format('DD MMMM YYYY, HH:mm')} - {' '}
-                            {moment(report.reportInfo.end)
-                                .locale('ru')
-                                .add({ second: -1 })
-                                .format('DD MMMM YYYY, HH:mm')}
-                        </strong>
-                    </div>
+                    <ContainerText>
+                        <div style={{textAlign: 'center'}}>
+                            Статистика за неделю:<br/>
+                            <strong>
+                                {moment(report.reportInfo.start)
+                                    .locale('ru')
+                                    .format('DD MMMM YYYY, HH:mm')} - {' '}
+                                {moment(report.reportInfo.end)
+                                    .locale('ru')
+                                    .add({ second: -1 })
+                                    .format('DD MMMM YYYY, HH:mm')}
+                            </strong>
+                        </div>
+                    </ContainerText>
                 </Container>
 
                 {report.cardOfAWeek &&
                 <Container>
+                    <ContainerText>
                     Картой недели выбрана <NavLink to={'/cards/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
+                    </ContainerText>
                 </Container>
                 }
 
                 {report.chatStoreOfAWeek &&
                 <Container>
-                    Фраза недели, произнесенная игроком <strong>{report.chatStoreOfAWeek.owner}</strong>:
-                    <blockquote><p>{report.chatStoreOfAWeek.message}</p></blockquote>
+                    <ContainerText>
+                        Фраза недели, произнесенная игроком <strong>{report.chatStoreOfAWeek.owner}</strong>:
+                        <blockquote><p>{report.chatStoreOfAWeek.message}</p></blockquote>
+                    </ContainerText>
                 </Container>
                 }
 
                 {report.shopOfAWeek &&
                 <Container>
-                    Магазином недели признан
-                    {' '}<strong>{report.shopOfAWeek.name}</strong>,
-                    {' '}выставленный
-                    {' '}<NavLink to={'/shops/' + report.shopOfAWeek.owner}>{report.shopOfAWeek.owner}</NavLink> в
-                    {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
+                    <ContainerText>
+                        Магазином недели признан
+                        {' '}<strong>{report.shopOfAWeek.name}</strong>,
+                        {' '}выставленный
+                        {' '}<NavLink to={'/shops/' + report.shopOfAWeek.owner}>{report.shopOfAWeek.owner}</NavLink> в
+                        {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
+                    </ContainerText>
                 </Container>
                 }
 
                 {report.shopLotOfAWeek &&
                 <Container>
+                    <ContainerText>
                     Товаром недели выбран
                     {' '}<NavLink to={'/items/' + report.shopLotOfAWeek.name}>{report.shopLotOfAWeek.name}</NavLink>,
                     {' '}был доступен в магазине
@@ -104,15 +114,20 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                     {' '}<NavLink to={'/shops/' + report.shopLotOfAWeek.owner}>{report.shopLotOfAWeek.owner}</NavLink>
                     {' '}в
                     {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.location}</NavLink>.
+                    </ContainerText>
                 </Container>
                 }
 
                 <Container>
+                    <ContainerText>
                     <Report24 data={this.state.report.cardDropActivity} title="Распределение выбивания карт по часам"/>
+                    </ContainerText>
                 </Container>
 
                 <Container>
-                    Выбиватели карт:
+                    <ContainerText>
+                        Выбиватели карт:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -130,7 +145,9 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Популярность карт:
+                    <ContainerText>
+                        Популярность карт:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -148,7 +165,9 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Карточные задроты:
+                    <ContainerText>
+                        Карточные задроты:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -171,14 +190,18 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    <Report24
-                        data={this.state.report.chatActivity}
-                        title="Распределение сказанных фраз в #main по часам"
-                    />
+                    <ContainerText>
+                        <Report24
+                            data={this.state.report.chatActivity}
+                            title="Распределение сказанных фраз в #main по часам"
+                        />
+                    </ContainerText>
                 </Container>
 
                 <Container>
-                    Наиболее говорящие в #main:
+                    <ContainerText>
+                        Наиболее говорящие в #main:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -193,7 +216,9 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Наиболее подробные сообщения оставляли:
+                    <ContainerText>
+                        Наиболее подробные сообщения оставляли:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -209,14 +234,18 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
 
                 {this.state.report.shopActivity &&
                 <Container>
+                    <ContainerText>
                     <Report24
                         data={this.state.report.shopActivity}
                         title="Распределение открытия магазинов и скупок по часам"
                     />
+                    </ContainerText>
                 </Container>}
 
                 <Container>
-                    Брендовые магазины:
+                    <ContainerText>
+                        Брендовые магазины:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -241,7 +270,9 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Самые дорогие вещи:
+                    <ContainerText>
+                        Самые дорогие вещи:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -259,7 +290,9 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Магазины для народа:
+                    <ContainerText>
+                        Магазины для народа:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [
@@ -284,7 +317,9 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 </Container>
 
                 <Container>
-                    Чрезмерно активные торговцы:
+                    <ContainerText>
+                        Чрезмерно активные торговцы:
+                    </ContainerText>
                     <TableReport
                         cells={
                             [

@@ -5,6 +5,9 @@ import { NavLink } from 'react-router-dom';
 import asPrice from './components/asPrice';
 import MyNavigation from './components/MyNavigation';
 import InfoOutline from 'material-ui-icons/InfoOutline';
+import asShopCount from './components/asShopCount';
+import TableReport from './components/TableReport';
+import Container from './components/Container';
 
 interface State {
     loading: boolean;
@@ -12,7 +15,7 @@ interface State {
     data?: {
         items: Array<{
             name: string;
-            count: number;
+            count: { start: number, end: number };
             price: number;
             ids: string;
         }>;
@@ -62,80 +65,105 @@ class ShopItems extends React.Component<Props, State> {
 
     render() {
         document.title = this.props.shopId ? 'FreeRO - Shops - #' + this.props.shopId : 'FreeRO - Shops';
-
         if (!this.state.data) {  return null; }
+
+        const shopType = this.state.data.type;
 
         return (
             <div className="limiter">
                 <MyNavigation active="shops"/>
-                <div>
-                    <table className="table_center info">
+                <Container>
+                    <table className="table-report info">
                         <tbody>
                             {
                                 !this.state.data.active && <tr>
-                                    <td className="info-item shop-closed">
+                                    <td className="info-item shop-closed table-report-cell">
                                         Магазин закрыт
                                     </td>
                                 </tr>
                             }
 
+                            {
+                                !!this.state.data.active && <tr>
+                                    <td className="info-item shop-opened table-report-cell">
+                                        Магазин открыт
+                                    </td>
+                                </tr>
+                            }
+
                             <tr>
-                                <td className="info-item">
+                                <td className="info-item table-report-cell">
                                     {this.state.data.type === 'sell' ? 'S> ' : 'B> '}
                                     {this.state.data.name}
                                     </td>
                             </tr>
                             <tr>
-                                <td className="info-item">{this.state.data.owner}</td>
+                                <td className="info-item table-report-cell">{this.state.data.owner}</td>
                             </tr>
                             <tr>
-                                <td className="info-item">{this.state.data.location}</td>
+                                <td className="info-item table-report-cell">{this.state.data.location}</td>
                             </tr>
                             <tr>
-                                <td className="info-item">
+                                <td className="info-item table-report-cell">
                                     {moment(this.state.data.date).format('DD-MM-YYYY, HH:mm')} -{' '}
                                     {moment(this.state.data.lastFetch).format('DD-MM-YYYY, HH:mm')}
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </Container>
 
-                <table className="table_center">
-                    <thead>
-                        <tr>
-                            <th className="column1">Название</th>
-                            <th className="column2">Количество</th>
-                            <th className="column3 right">Цена</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
-                        {!this.state.loading && (!this.state.data.items || this.state.data.items.length === 0)
-                            && <tr><td className="cell100 column1">Данные отсутствуют.</td></tr>}
-                        {
-                            this.state.data.items.map((d, index) =>
-                                (
-                                    <tr key={index}>
-                                        <td className="cell100 column1">
-                                            {this.state.data && this.state.data.type === 'sell' ? 'S> ' : 'B> '}
-                                            <NavLink to={'/shops/with/' + d.name}>{d.name}</NavLink>
-                                            {d.ids && <span className="item_db-ids">
-                                                id: {d.ids}
-                                                <a
-                                                    href={'http://rodb.kudesnik.cc/item/?term=' + d.name}
-                                                >
-                                                    <InfoOutline style={{height: '11px'}}/>
-                                                </a>
-                                            </span> }
-                                        </td>
-                                        <td className="cell100 column2">{d.count}</td>
-                                        <td className="cell100 column3 right">{asPrice(d.price)}</td>
-                                    </tr>
-                                ))
-                        }
-                    </tbody>
-                </table>
+                {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
+                {!this.state.loading && (!this.state.data.items || this.state.data.items.length === 0)
+                && <tr><td className="cell100 column1">Данные отсутствуют.</td></tr>}
+
+                {this.state.data.items &&
+                    <Container>
+                        <TableReport
+                            cells={[
+                                {
+                                    title: '',
+                                    field: 'index'
+                                },
+                                {
+                                    title: 'Дооступный товар',
+                                    field: 'name',
+                                    render: (name, o) => (
+                                        <span>
+                                            <span>{shopType === 'sell' ? 'S> ' : 'B> '}</span>
+                                            <NavLink to={'/shops/with/' + o.name}>{o.name}</NavLink>
+                                            {o.ids &&
+                                                <span className="item_db-ids">id: {o.ids}
+                                                    <a href={'http://rodb.kudesnik.cc/item/?term=' + o.name}>
+                                                        <InfoOutline style={{height: '11px'}}/>
+                                                    </a>
+                                                </span>
+                                            }
+                                        </span>
+                                    )
+                                },
+                                {
+                                    title: 'Количество',
+                                    field: 'count',
+                                    align: 'right',
+                                    render: (count) => asShopCount(
+                                        count.start,
+                                        count.end,
+                                        shopType === 'sell' ? 'проданы' : 'куплены'
+                                    )
+                                },
+                                {
+                                    title: 'Цена',
+                                    field: 'price',
+                                    align: 'right',
+                                    render: (price) => asPrice(price)
+                                }
+                            ]}
+                            rowExtraClass={(o, index) => o.count.end === 0 ? 'sold' : ''}
+                            data={this.state.data.items}
+                        />
+                    </Container>
+                }
             </div>
         );
     }

@@ -2,6 +2,14 @@
     white-space: nowrap;
 }
 
-.data.index {
-    width: 25px !important;
+.container-shadow .container-text + .table-report {
+    margin: -10px 0px 20px 0px;
+}
+
+.container-shadow .container-text + .table-report .table-report-cell {
+    padding: 5px 20px;
+}
+
+.container-shadow .container-text + .table-report .table-report-cell:last-child {
+    padding-right: 40px;
 }

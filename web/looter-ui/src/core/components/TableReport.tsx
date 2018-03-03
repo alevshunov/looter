@@ -3,7 +3,11 @@ import './TableReport.css';
 
 interface Props {
     cells: Array<{ title: string; field: string; align?: string; render?: (value: any, obj?: any) => any}>;
-    data: Array<Object>;
+    data: Array<Object> | undefined;
+    rowExtraClass?: (obj?: any, index?: number) => string;
+    title?: string;
+    emptyMessage?: string;
+    loadingMessage?: string;
 }
 
 class TableReport extends React.Component<Props, {}> {
@@ -12,6 +16,16 @@ class TableReport extends React.Component<Props, {}> {
         return (
             <table className="table-report">
                 <thead>
+                    {this.props.title &&
+                        <tr>
+                            <th
+                                colSpan={this.props.cells.length}
+                                className={'table-report-cell header title'}
+                            >
+                                {this.props.title}
+                            </th>
+                        </tr>
+                    }
                     <tr>
                         {this.props.cells.map((cell, index) => (
                             <th
@@ -26,8 +40,24 @@ class TableReport extends React.Component<Props, {}> {
                 </thead>
                 <tbody>
                     {
+                        !this.props.data &&
+                        <tr className="table-row no-data">
+                            <td colSpan={this.props.cells.length} className="table-report-cell">
+                                {this.props.loadingMessage || 'Загрузка...'}
+                            </td>
+                        </tr>
+                    }
+                    {
+                        this.props.data && this.props.data.length === 0 &&
+                        <tr className="table-row no-data">
+                            <td colSpan={this.props.cells.length} className="table-report-cell">
+                                {this.props.emptyMessage || 'Данные отсутствуют'}
+                            </td>
+                        </tr>
+                    }
+                    {
                         this.props.data && this.props.data.map((item, index) => (
-                            <tr key={index}>
+                            <tr key={index} className={(this.props.rowExtraClass || (() => ''))(item, index)}>
                                 {
                                     this.props.cells.map((cell, index2) => (
                                         <td

@@ -148,17 +148,40 @@ router.get('/shop/:id', async (req, res, next) => {
     if (data.length > 0) {
         shop = data[0];
 
-        data = await connection.query(`
+        const dataStart = await connection.query(`
+            select si.id, si.name, si.price, si.count, group_concat(distinct i.id order by i.id separator ', ') ids
+            from shops s inner join shop_items si on s.id = si.shop_id and 1 = si.fetch_index
+            left join item_db i on i.name_japanese = si.name
+            where s.id = ?
+            group by si.id
+            order by si.id -- si.name, si.price, si.id
+        `,
+            id);
+
+        const dataCurrent = await connection.query(`
             select si.id, si.name, si.price, si.count, group_concat(distinct i.id order by i.id separator ', ') ids
             from shops s inner join shop_items si on s.id = si.shop_id and s.fetch_count = si.fetch_index
             left join item_db i on i.name_japanese = si.name
             where s.id = ?
             group by si.id
-            order by si.id
+            order by si.id -- si.name, si.price, si.id
         `,
             id);
 
-        shop.items = data;
+        let i=0, j=0;
+
+        while (i<dataStart.length) {
+            if (dataCurrent[j] && dataStart[i].name === dataCurrent[j].name && dataStart[i].price === dataCurrent[j].price) {
+                dataStart[i].count = { start: dataStart[i].count, end: dataCurrent[j].count };
+                i++;
+                j++;
+            } else {
+                dataStart[i].count = { start: dataStart[i].count, end: 0 };
+                i++;
+            }
+        }
+
+        shop.items = dataStart;
     }
 
     connection.close();
@@ -168,11 +191,13 @@ router.get('/shop/:id', async (req, res, next) => {
 });
 
 app.use(async (req, res, next) => {
-    logger.log(req.headers["x-real-ip"], req.path);
+    logger.log(req.headers["x-real-ip"], req.originalUrl || req.url || req.path || '');
+
+    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
     const connection = await getConnection();
     await connection.query(`insert into logs(date, type, ip, url) values(?, ?, ?, ?);`,
-        new Date(), 'rest', req.headers["x-real-ip"] || '', req.path);
+        new Date(), 'rest', req.headers["x-real-ip"] || '', req.originalUrl || req.url || req.path || '');
 
     connection.close();
 

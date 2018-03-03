@@ -1,0 +1,10 @@
+.area-allitems .table-report-cell.price {
+    /*width: 230px;*/
+    white-space: nowrap;
+}
+
+.area-allitems .table-report-cell.name {
+    /*max-width: 250px;*/
+    white-space: nowrap;
+    /*overflow: hidden;*/
+}

@@ -2,6 +2,9 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import RedirectableSearch from './components/RedirectableSearch';
 import MyNavigation from './components/MyNavigation';
+import Container from './components/Container';
+import TableReport from './components/TableReport';
+import './Shops.css';
 
 interface State {
     loading: boolean;
@@ -53,44 +56,41 @@ class Shops extends React.Component<Props, State> {
         document.title = this.props.term ? 'FreeRO - Shops - ' + this.props.term : 'FreeRO - Shops';
 
         return (
-            <div className="limiter">
+            <div className="limiter area-shops">
                 <MyNavigation active="shops"/>
-                <RedirectableSearch base="/shops/" term={this.props.term}/>
-                <table className="table_center">
-                    <thead>
-                        <tr>
-                            <th className="column1">Название</th>
-                            <th className="column2">Игрок</th>
-                            <th className="column3 right">Расположение</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
-                        {
-                            !this.state.loading && this.state.data.length === 0 &&
-                            <tr>
-                                <td className="column1" colSpan={3}>
-                                    Открытых магазинов по поиску <strong>{this.props.term}</strong> не найдено.
-                                </td>
-                            </tr>
-                        }
-                        {
-                            this.state.data.map((d, index) =>
-                                (
-                                    <tr key={index}>
-                                        <td className="cell100 column1">
+                <Container>
+                    <RedirectableSearch base="/shops/" term={this.props.term}/>
+                </Container>
+                <Container>
+                    <TableReport
+                        cells={
+                            [
+                                {
+                                    title: 'Название магазина',
+                                    field: 'name',
+                                    render: (name, d) => (
+                                        <span>
                                             {d.type === 'sell' ? 'S> ' : 'B> '}
-                                            <Link to={'/shop/' + d.id}>{d.name}</Link>
-                                        </td>
-                                        <td className="cell100 column2">{d.owner}</td>
-                                        <td className="cell100 column3 right">
-                                            <Link to={'/shop/' + d.id}>{d.location}</Link>
-                                        </td>
-                                    </tr>
-                                ))
+                                            {d.name}
+                                        </span>
+                                    )
+                                },
+                                {
+                                    title: 'Владелец',
+                                    field: 'owner'
+                                },
+                                {
+                                    title: 'Расположение',
+                                    field: 'location',
+                                    align: 'right',
+                                    render: (location, d) =>  <Link to={'/shop/' + d.id}>{d.location}</Link>
+                                }
+                            ]
                         }
-                    </tbody>
-                </table>
+                        data={this.state.data}
+                        emptyMessage="Открытых магазинов по данному поиску не найдено."
+                    />
+                </Container>
             </div>
         );
     }
