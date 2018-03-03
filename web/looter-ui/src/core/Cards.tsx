@@ -78,7 +78,7 @@ class Cards extends React.Component<Props, State> {
                                     field: 'card',
                                     render: (card, d) => (
                                         <span>
-                                            <NavLink to={'/items/' + d.card}>{d.card}</NavLink>
+                                            <NavLink to={'/shops/with/' + d.card}>{d.card}</NavLink>
                                             {' '}
                                             {d.ids &&
                                                 <span className="item_db-ids">id: {d.ids}
