@@ -57,7 +57,7 @@ shopBuyLooter.onEvent().subscribe(async (sender, shop) => {
     await shopStorage.add(shop);
 });
 
-// const shopItemLooter = new ShopItemLooter(shopItemStorage, shopStorage, ircClient, logger);
-// shopItemLooter.run();
+const shopItemLooter = new ShopItemLooter(shopItemStorage, shopStorage, ircClient, logger);
+shopItemLooter.run();
 
 logger.log('Started...');
