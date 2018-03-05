@@ -6,6 +6,7 @@ import Container from './components/Container';
 import TableReport from './components/TableReport';
 import './Shops.css';
 import GA from './extra/GA';
+import TimeCachedStore from './extra/TimeCachedStore';
 
 interface State {
     loading: boolean;
@@ -37,8 +38,14 @@ class Shops extends React.Component<Props, State> {
 
     doLoad() {
         this.setState({loading: true});
-
         const me = this;
+
+        const cacheData = TimeCachedStore.instance().get(`shops/${this.props.term}`);
+        if (cacheData) {
+            me.setState({ data: cacheData, loading: false });
+            return;
+        }
+
         fetch('https://free-ro.kudesnik.cc/rest/shops/all?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
@@ -48,6 +55,7 @@ class Shops extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
+                TimeCachedStore.instance().set(`shops/${me.props.term}`, data);
                 me.setState({data, loading: false} );
             });
 

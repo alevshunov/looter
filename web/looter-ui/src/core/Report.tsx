@@ -12,22 +12,25 @@ import './Report.css';
 import 'moment/locale/ru';
 import ContainerText from './components/ContainerText';
 import GA from './extra/GA';
+import TimeCachedStore from './extra/TimeCachedStore';
 
 class Report extends React.Component<{}, { loading: boolean, report?: ReportEntry}> {
     constructor(props: {}, context: any) {
         super(props, context);
 
-        this.state = { loading: false, report: window['__report']};
+        this.state = { loading: false };
     }
 
     componentWillMount() {
-        if (this.state.report) {
+        this.setState({loading: true});
+        const me = this;
+
+        const cacheData = TimeCachedStore.instance().get(`report`);
+        if (cacheData) {
+            me.setState({ report: cacheData, loading: false });
             return;
         }
 
-        this.setState({loading: true, report: undefined});
-
-        const me = this;
         fetch('https://free-ro.kudesnik.cc/rest/report')
             .then((response) => {
                 try {
@@ -37,7 +40,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
                 }
             })
             .then((report) => {
-                window['__report'] = report;
+                TimeCachedStore.instance().set(`report`, report, moment().add({day: 1}).toDate());
                 me.setState({ report, loading: false });
             });
     }
@@ -47,7 +50,14 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
         GA();
 
         if (!this.state.report) {
-            return null;
+            return (
+                <div className="limiter">
+                    <MyNavigation active="report"/>
+                    <Container>
+                        <ContainerText>Загрузка...</ContainerText>
+                    </Container>
+                </div>
+            );
         }
 
         const price = (x: any) => asPrice(x);

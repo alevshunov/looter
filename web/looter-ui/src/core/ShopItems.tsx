@@ -129,7 +129,7 @@ class ShopItems extends React.Component<Props, State> {
                                     field: 'index'
                                 },
                                 {
-                                    title: 'Дооступный товар',
+                                    title: 'Доступный товар',
                                     field: 'name',
                                     render: (name, o) => (
                                         <span>

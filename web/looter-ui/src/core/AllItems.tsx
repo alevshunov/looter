@@ -9,6 +9,7 @@ import TableReport from './components/TableReport';
 import asNumber from './components/asNumber';
 import './AllItems.css';
 import GA from './extra/GA';
+import TimeCachedStore from './extra/TimeCachedStore';
 
 interface State {
     loading: boolean;
@@ -45,8 +46,14 @@ class AllItems extends React.Component<Props, State> {
 
     doLoad() {
         this.setState({loading: true});
-
         const me = this;
+
+        const cacheData = TimeCachedStore.instance().get(`items/${this.props.term}`);
+        if (cacheData) {
+            me.setState({ data: cacheData, loading: false });
+            return;
+        }
+
         fetch('https://free-ro.kudesnik.cc/rest/shops/active?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
@@ -56,6 +63,7 @@ class AllItems extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
+                TimeCachedStore.instance().set(`items/${me.props.term}`, data);
                 me.setState({ data, loading: false });
             });
 

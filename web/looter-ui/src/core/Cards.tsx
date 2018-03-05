@@ -7,6 +7,7 @@ import InfoOutline from 'material-ui-icons/InfoOutline';
 import Container from './components/Container';
 import TableReport from './components/TableReport';
 import GA from './extra/GA';
+import TimeCachedStore from './extra/TimeCachedStore';
 
 interface State {
     loading: boolean;
@@ -47,6 +48,13 @@ class Cards extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
+
+        const cacheData = TimeCachedStore.instance().get(`cards/${this.props.term}`);
+        if (cacheData) {
+            me.setState({ data: cacheData, loading: false });
+            return;
+        }
+
         fetch('https://free-ro.kudesnik.cc/rest/cards?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
@@ -56,9 +64,9 @@ class Cards extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
+                TimeCachedStore.instance().set(`cards/${me.props.term}`, data);
                 me.setState({ data, loading: false });
             });
-
     }
 
     render() {
