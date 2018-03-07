@@ -16,8 +16,6 @@ export default function () {
         }
 
         window['tracker'] = tracker;
-    } else {
-        console.warn('window.ga is undefined');
     }
 
     window['last'] = location.pathname + location.search;
