@@ -108,8 +108,12 @@ class ShopItems extends React.Component<Props, State> {
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    {moment(this.state.data.date).format('DD-MM-YYYY, HH:mm')} -{' '}
-                                    {moment(this.state.data.lastFetch).format('DD-MM-YYYY, HH:mm')}
+                                    {moment(this.state.data.date)
+                                    .locale('ru')
+                                    .format('DD MMMM YYYY, HH:mm')} -
+                                    {' '}{moment(this.state.data.lastFetch)
+                                    .locale('ru')
+                                    .format('DD MMMM YYYY, HH:mm')}
                                 </td>
                             </tr>
                         </tbody>

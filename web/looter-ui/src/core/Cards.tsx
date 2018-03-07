@@ -108,7 +108,9 @@ class Cards extends React.Component<Props, State> {
                                     title: 'Время',
                                     field: 'date',
                                     align: 'right',
-                                    render: (date) => moment(date).format('DD-MM-YYYY, HH:mm')
+                                    render: (date) => moment(date)
+                                        .locale('ru')
+                                        .format('DD MMMM YYYY, HH:mm')
                                 }
                             ]
                         }
