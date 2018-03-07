@@ -69,6 +69,15 @@ router.get('/report', async (req, res, next) => {
     next();
 });
 
+router.get('/report/preview', async (req, res, next) => {
+    const connection = await getConnection();
+    const data = await connection.query(`select * from reports order by id desc limit 1`);
+    connection.close();
+    res.json(JSON.parse(data[0].report));
+
+    next();
+});
+
 router.get('/shops/active', async (req, res, next) => {
     const args = extractTermWithDirection(req.query.term);
     const connection = await getConnection();

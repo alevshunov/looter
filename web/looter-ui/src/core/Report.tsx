@@ -14,8 +14,8 @@ import ContainerText from './components/ContainerText';
 import GA from './extra/GA';
 import TimeCachedStore from './extra/TimeCachedStore';
 
-class Report extends React.Component<{}, { loading: boolean, report?: ReportEntry}> {
-    constructor(props: {}, context: any) {
+class Report extends React.Component<{preview: boolean}, { loading: boolean, report?: ReportEntry}> {
+    constructor(props: {preview: boolean}, context: any) {
         super(props, context);
 
         this.state = { loading: false };
@@ -31,7 +31,7 @@ class Report extends React.Component<{}, { loading: boolean, report?: ReportEntr
             return;
         }
 
-        fetch('https://free-ro.kudesnik.cc/rest/report')
+        fetch('https://free-ro.kudesnik.cc/rest/report' + (this.props.preview ? '/preview' : ''))
             .then((response) => {
                 try {
                     return response.json();

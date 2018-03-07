@@ -70,7 +70,13 @@ class App extends React.Component {
                     <Route
                         exact={true}
                         path="/report"
-                        render={(props) => <Report />}
+                        render={(props) => <Report preview={false} />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/report/preview"
+                        render={(props) => <Report preview={true} />}
                     />
                 </Switch>
             </BrowserRouter>
