@@ -29,6 +29,7 @@ export class ShopItemLoader {
             this._reject = reject;
             this._hub.addListener('pm', this._pmEvent);
             const command = this._shop.type == ShopType.Sell ? '@shop' : '@buy';
+            this._logger.log(`${command} ${this._shop.owner}`);
             this._hub.say('FreeRO', `${command} ${this._shop.owner}`);
             setTimeout(this.success.bind(this), 5000);
         });
@@ -37,9 +38,36 @@ export class ShopItemLoader {
     private handlePm(from: string, message: string) {
         this._logger.log('PM >> ', from, message);
 
+        if (this._isNotFound) {
+            return;
+        }
+
         if (message == 'Торговец не найден. Проверите никнейм?' || message == '[' + this._shop.owner + '] сейчас не держит открытый магазин.') {
             this._isNotFound = true;
             return;
+        }
+
+        if (message.startsWith(':::::')) {
+            this._logger.log('Check shop label: ' + message);
+
+            // prt_market <83,109>
+            // prt_market,83,109
+            let location = this._shop
+                .location
+                .replace(' <', ',')
+                .replace('>', '')
+            ;
+
+            let expectedMessage = `::::: [ ${this._shop.name} ] (${location})`;
+
+            this._logger.log(`Expected message: ${expectedMessage}, actual: ${message}`);
+
+            if (message !== expectedMessage) {
+                this._logger.log(`Shop wrong message, mark as deprecated.`);
+                this._isNotFound = true;
+                return;
+            }
+            this._logger.log(`Correct shop.`);
         }
 
         if (from !== 'FreeRO') { return; }
