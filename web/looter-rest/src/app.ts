@@ -27,18 +27,38 @@ function adoptTermToLike(term: string) {
     return `%${term.replace('*', '%') || ''}%`;
 }
 
-function extractTermWithDirection(term: string) : {term: string, direction: string} {
-    let realTerm= term || '';
-    let direction = '%';
+function extractTermWithDirection(term: string) : {term: string, direction: string, minPrice: number, maxPrice: number} {
+    term = term || '';
 
-    if (/^[sSbB]\>.*/.test(realTerm)) {
-        direction = realTerm[0].toLowerCase() === 's' ? 'sell' : 'buy';
-        realTerm = realTerm.substring(2).trim();
+    let direction = '%';
+    let minPrice = 0;
+    let maxPrice = 1000000000;
+    let realTerm = '';
+
+    let terms = term.split('&').map(x => x.trim());
+
+    for (let i=0; i<terms.length; i++) {
+        let termPart = terms[i];
+
+        if (/^[sSbB]\>.*/.test(termPart)) {
+            direction = termPart[0].toLowerCase() === 's' ? 'sell' : 'buy';
+            realTerm = termPart.substring(2).trim();
+        } else
+        if (/^[pP](\>|\<)([0-9]+).*/.test(termPart)) {
+            let price = parseInt(termPart.substring(2).trim());
+            if (termPart[1] === '>') {
+                minPrice = price;
+            } else {
+                maxPrice = price;
+            }
+        } else {
+            realTerm = termPart;
+        }
     }
 
     realTerm = adoptTermToLike(realTerm);
 
-    return { term: realTerm, direction: direction };
+    return { term: realTerm, direction: direction, maxPrice, minPrice };
 }
 
 router.get('/cards', async (req, res, next) => {
@@ -96,9 +116,12 @@ router.get('/shops/active', async (req, res, next) => {
                 and si.fetch_index = s.fetch_count 
                 and (si.name like ? or i.ids like ?)
                 and s.type like ?
-            group by si.name, s.type;
+            group by 
+                si.name, s.type
+            having
+				min(si.price) >= ? and max(si.price) <= ?
         `,
-        args.term, args.term, args.direction,
+        args.term, args.term, args.direction, args.minPrice, args.maxPrice
     );
     connection.close();
     res.json(data);
