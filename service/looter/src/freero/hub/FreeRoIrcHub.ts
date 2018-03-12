@@ -47,6 +47,7 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
 
     private ircErrorHandler(message: any) {
         this._logger.log(new Date(), 'Error:', JSON.stringify(message));
+        // this._irc.connect(10);
     }
 
     public onEvent(): IEvent<FreeRoIrcHub, FreeRoEventArgs> {

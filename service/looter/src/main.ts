@@ -29,18 +29,7 @@ const messageStorage = new MessageStorage(dbConnection, logger);
 const shopStorage = new ShopStorage(dbConnection, logger);
 const shopItemStorage = new ShopItemStorage(dbConnection, logger);
 
-const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, {
-    autoConnect: true,
-    autoRejoin: true,
-    channels: [st.config.IrcChannel],
-    userName: st.config.IrcNick,
-    realName: 'free-ro.kudesnik.cc, please ask KK',
-    floodProtection: true,
-    floodProtectionDelay: 5000,
-    // retryCount: 60,
-    // retryDelay: 5*60*1000,
-});
-
+const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [st.config.IrcChannel], userName: st.config.IrcNick});
 const ircHub = new FreeRoIrcHub(ircClient, logger);
 
 let cardLooter = new CardLooter(ircHub);
