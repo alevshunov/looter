@@ -29,7 +29,7 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
 
     private ircDirectMessageHandler(from: string, message: string, extra: any) {
         this._logger.log('MSG >> ', from, '>', message);
-        this._logger.log('MSG >> ', JSON.stringify(extra));
+        // this._logger.log('MSG >> ', JSON.stringify(extra));
 
         const freeRoEvent = new FreeRoEventArgs('FreeRO-PM', message, new Date());
 
@@ -38,7 +38,7 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
 
     private ircMessageHandler(from: string, message: string, extra: any) {
         this._logger.log('MSG >> ', from, '>', message);
-        this._logger.log('MSG >> ', JSON.stringify(extra));
+        // this._logger.log('MSG >> ', JSON.stringify(extra));
 
         const freeRoEvent = new FreeRoEventArgs(from, message, new Date());
 

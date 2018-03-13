@@ -11,4 +11,6 @@ export interface IShopProvider {
     deactivateShops(shop: Shop): void;
 
     updateRetryCount(shop: Shop, retryCounter: number): void;
+
+    markAsNonValid(shop: Shop): void;
 }

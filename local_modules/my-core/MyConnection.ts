@@ -43,7 +43,7 @@ export class MyConnection {
                 } else {
                     if (result.length > 0) {
                         me._logger.log('Query Success', `Fetched ${result.length} lines.`);
-                    } if (result.length === 0) {
+                    } else if (result.length === 0) {
                         me._logger.log('Query Success', `Fetched ${result.length} lines.`);
                     } else {
                         me._logger.log('Query Success', `affectedRows: ${result.affectedRows}, insertId: ${result.insertId}.`);

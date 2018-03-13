@@ -93,4 +93,14 @@ export class ShopStorage implements IShopProvider {
 
         conn.close();
     }
+
+    async markAsNonValid(shop: Shop) {
+        const conn = new MyConnection(this._dbConnection, this._logger);
+        await conn.open();
+        await conn.query(
+            "update shops set closed_as_invalid = 1 where id = ?",
+            shop.id);
+
+        conn.close();
+    }
 }

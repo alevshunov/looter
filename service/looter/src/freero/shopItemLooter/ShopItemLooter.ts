@@ -3,6 +3,7 @@ import {IShopProvider} from "./IShopProvider";
 import {ShopItemLoader} from "./ShopItemLoader";
 import {Client as IrcClient} from "irc";
 import {MyLogger} from "my-core";
+import ShopItemsFetchValidator from './ShopItemsFetchValidator';
 
 export class ShopItemLooter {
     private SCAN_FIRST_INTERVAL: number = 60000;
@@ -40,7 +41,12 @@ export class ShopItemLooter {
             this._logger.log('GET SHOP ITEMS');
             const searchResult = await new ShopItemLoader(shop, this._hub, this._logger).getItems();
 
-            if (!searchResult.isNotFound && searchResult.items.length > 0)
+            const isValid = await new ShopItemsFetchValidator(shop, searchResult, this._shopItemStorage, this._logger)
+                .validate();
+
+            this._logger.log('Is valid = ', isValid);
+
+            if (!searchResult.isNotFound && searchResult.items.length > 0 && isValid)
             {
                 shop.fetchCount++;
 
@@ -51,9 +57,12 @@ export class ShopItemLooter {
 
                 await this._shopProvider.updateRetryCount(shop, 0);
             } else {
-                if (searchResult.isNotFound || shop.retryCount > 5) {
+                if (searchResult.isNotFound || shop.retryCount > 5 || !isValid) {
                     this._logger.log('DEACTIVATE SHOP');
                     await this._shopProvider.deactivateShops(shop);
+                    if (!isValid) {
+                        await this._shopProvider.markAsNonValid(shop);
+                    }
                 } else {
                     this._logger.log('RETRY LATER');
                     await this._shopProvider.updateRetryCount(shop, shop.retryCount + 1);

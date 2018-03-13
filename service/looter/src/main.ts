@@ -38,22 +38,22 @@ let shopSellLooter = new ShopSellLooter(ircHub);
 let shopBuyLooter = new ShopBuyLooter(ircHub);
 
 cardLooter.onEvent().subscribe(async (sender, drop) => {
-    logger.log(JSON.stringify(drop));
+    // logger.log(JSON.stringify(drop));
     await cardStorage.add(drop);
 });
 
 messageLooter.onEvent().subscribe(async (sender, message) => {
-    logger.log(JSON.stringify(message));
+    // logger.log(JSON.stringify(message));
     await messageStorage.add(message);
 });
 
 shopSellLooter.onEvent().subscribe(async (sender, shop) => {
-    logger.log(JSON.stringify(shop));
+    // logger.log(JSON.stringify(shop));
     await shopStorage.add(shop);
 });
 
 shopBuyLooter.onEvent().subscribe(async (sender, shop) => {
-    logger.log(JSON.stringify(shop));
+    // logger.log(JSON.stringify(shop));
     await shopStorage.add(shop);
 });
 

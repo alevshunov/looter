@@ -24,4 +24,19 @@ export class ShopItemStorage {
 
         conn.close();
     }
+
+    async get(shopId: number, fetchIndex: number): Promise<ShopItem[]> {
+        const conn = new MyConnection(this._dbConnection, this._logger);
+        await conn.open();
+
+        const items = await conn.query(
+            "select * from shop_items where shop_id = ? and fetch_index = ? order by id",
+            shopId, fetchIndex);
+
+        const shopItems = items.map((x: any) => new ShopItem(x.name, x.price, x.count, x.fetch_index, x.date));
+
+        conn.close();
+
+        return shopItems;
+    }
 }
