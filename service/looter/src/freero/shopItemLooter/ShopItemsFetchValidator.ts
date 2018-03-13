@@ -17,6 +17,10 @@ class ShopItemsFetchValidator {
     }
 
     public async validate(): Promise<boolean> {
+        if (this._shop.fetchCount === 0) {
+            return true;
+        }
+
         const last = await this._shopItemStorage.get(this._shop.id, this._shop.fetchCount);
         const curr = this._searchResult.items;
 
