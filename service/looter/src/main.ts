@@ -8,10 +8,15 @@ import {MessageStorage} from "./db/MessageStorage";
 import {MessageLooter} from "./freero/messageLooter/MessageLooter";
 import {ShopSellLooter} from "./freero/shopLooter/ShopSellLooter";
 import {ShopStorage} from "./db/ShopStorage";
-import {ShopItemLooter} from "./freero/shopItemLooter/ShopItemLooter";
 import {ShopItemStorage} from "./db/ShopItemStorage";
 import {ShopBuyLooter} from "./freero/shopLooter/ShopBuyLooter";
 import {MyLogger} from "my-core";
+import {ShopItemsLooterProvider} from './freero/shopItemLooter/ShopItemsLooterProvider';
+import ShopLooter from './freero/shopItemLooter/ShopLooter';
+import {ShopItemsLoaderProvider} from './freero/shopItemLooter/itemsLoader/ShopItemsLoaderProvider';
+import {ShopFetchValidatorProvider} from './freero/shopItemLooter/validators/ShopFetchValidatorProvider';
+import FreeRoIrcPmHandler from './freero/hub/FreeRoIrcPmHandler';
+import {FreeRoSayHub} from './freero/hub/FreeRoSayHub';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -31,6 +36,8 @@ const shopItemStorage = new ShopItemStorage(dbConnection, logger);
 
 const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [st.config.IrcChannel], userName: st.config.IrcNick});
 const ircHub = new FreeRoIrcHub(ircClient, logger);
+const ircPmHub = new FreeRoIrcPmHandler(ircClient, logger);
+const sayHub = new FreeRoSayHub(ircClient, logger);
 
 let cardLooter = new CardLooter(ircHub);
 let messageLooter = new MessageLooter(ircHub);
@@ -57,7 +64,12 @@ shopBuyLooter.onEvent().subscribe(async (sender, shop) => {
     await shopStorage.add(shop);
 });
 
-const shopItemLooter = new ShopItemLooter(shopItemStorage, shopStorage, ircClient, logger);
-shopItemLooter.run();
+const shopItemsLoaderProvider = new ShopItemsLoaderProvider(ircPmHub, sayHub, logger);
+const shopFetchValidatorProvider = new ShopFetchValidatorProvider(shopItemStorage, logger);
+const shopItemsLooterProvider = new ShopItemsLooterProvider(shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
+const shopLooter = new ShopLooter(shopItemsLooterProvider);
+
+shopLooter.run();
+
 
 logger.log('Started...');

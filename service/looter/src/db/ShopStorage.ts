@@ -1,9 +1,24 @@
 import {ConnectionConfig} from "mysql";
 import {Shop} from "../model/Shop";
-import {IShopProvider} from "../freero/shopItemLooter/IShopProvider";
 import {MyConnection, MyLogger} from "my-core";
 
-export class ShopStorage implements IShopProvider {
+export interface IShopStorage {
+    add(shop: Shop): Promise<void>;
+
+    updateFetchIndex(shop: Shop): Promise<void>;
+
+    deactivateOtherShops(shop: Shop): Promise<void>;
+
+    getNextShop(): Promise<Shop>;
+
+    deactivateShops(shop: Shop): Promise<void>;
+
+    updateRetryCount(shop: Shop, retryCounter: number): Promise<void>;
+
+    markAsNonValid(shop: Shop): Promise<void>;
+}
+
+export class ShopStorage implements IShopStorage, IShopStorage {
     private _dbConnection: ConnectionConfig;
     private _logger: MyLogger;
 
@@ -12,7 +27,7 @@ export class ShopStorage implements IShopProvider {
         this._logger = logger;
     }
 
-    async add(shop: Shop) {
+    public async add(shop: Shop) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query("insert into shops(owner, name, location, date, type) values (?,?,?,?,?);",
@@ -20,7 +35,7 @@ export class ShopStorage implements IShopProvider {
         conn.close();
     }
 
-    async updateFetchIndex(shop: Shop) {
+    public async updateFetchIndex(shop: Shop) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
@@ -30,7 +45,7 @@ export class ShopStorage implements IShopProvider {
         conn.close();
     }
 
-    async deactivateOtherShops(shop: Shop) {
+    public async deactivateOtherShops(shop: Shop) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
@@ -40,7 +55,7 @@ export class ShopStorage implements IShopProvider {
         conn.close();
     }
 
-    getNextShop(): Promise<Shop> {
+    public getNextShop(): Promise<Shop> {
         return new Promise(async (resolve, reject) => {
             const conn = new MyConnection(this._dbConnection, this._logger);
             await conn.open();
@@ -52,8 +67,8 @@ export class ShopStorage implements IShopProvider {
                     and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) 
                     order by last_fetch asc, date desc, id desc 
                     limit 1
-                `,
-                );
+                `
+            );
 
             conn.close();
 
@@ -74,7 +89,7 @@ export class ShopStorage implements IShopProvider {
         });
     }
 
-    async deactivateShops(shop: Shop) {
+    public async deactivateShops(shop: Shop) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
@@ -84,7 +99,7 @@ export class ShopStorage implements IShopProvider {
         conn.close();
     }
 
-    async updateRetryCount(shop: Shop, retryCounter: number) {
+    public async updateRetryCount(shop: Shop, retryCounter: number) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(
@@ -94,7 +109,7 @@ export class ShopStorage implements IShopProvider {
         conn.close();
     }
 
-    async markAsNonValid(shop: Shop) {
+    public async markAsNonValid(shop: Shop) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
         await conn.query(

@@ -13,6 +13,7 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
     private IRC_ERROR_EVENT = 'error';
 
     private _onEvent = new EventDispatcher<FreeRoIrcHub, FreeRoEventArgs>();
+    private _onPmEvent = new EventDispatcher<FreeRoIrcHub, FreeRoEventArgs>();
     private _logger: MyLogger;
 
     constructor(irc: IrcClient | IIrcConnection, logger: MyLogger) {
@@ -31,16 +32,17 @@ export class FreeRoIrcHub implements IEventProvider<FreeRoEventArgs> {
         this._logger.log('MSG >> ', from, '>', message);
         // this._logger.log('MSG >> ', JSON.stringify(extra));
 
-        const freeRoEvent = new FreeRoEventArgs('FreeRO-PM', message, new Date());
+        const freeRoEvent = new FreeRoEventArgs(from, message, new Date(), true);
 
         this._onEvent.dispatch(this, freeRoEvent);
+        this._onPmEvent.dispatch(this, freeRoEvent);
     }
 
     private ircMessageHandler(from: string, message: string, extra: any) {
         this._logger.log('MSG >> ', from, '>', message);
         // this._logger.log('MSG >> ', JSON.stringify(extra));
 
-        const freeRoEvent = new FreeRoEventArgs(from, message, new Date());
+        const freeRoEvent = new FreeRoEventArgs(from, message, new Date(), false);
 
         this._onEvent.dispatch(this, freeRoEvent);
     }

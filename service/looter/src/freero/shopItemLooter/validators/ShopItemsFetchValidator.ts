@@ -1,28 +1,20 @@
-import {Shop} from '../../model/Shop';
-import {ShopItemsLoadResult} from './ShopItemsLoadResult';
-import {ShopItemStorage} from '../../db/ShopItemStorage';
-import {MyLogger} from '../../../../../local_modules/my-core';
+import {MyLogger} from '../../../../../../local_modules/my-core';
+import {ShopItem} from '../../../model/ShopItem';
 
 class ShopItemsFetchValidator {
-    private _shop: Shop;
-    private _searchResult: ShopItemsLoadResult;
-    private _shopItemStorage: ShopItemStorage;
+    private _prev: ShopItem[];
+    private _curr: ShopItem[];
     private _logger: MyLogger;
 
-    constructor(shop: Shop, searchResult: ShopItemsLoadResult, shopItemStorage: ShopItemStorage, logger: MyLogger) {
-        this._shop = shop;
-        this._searchResult = searchResult;
-        this._shopItemStorage = shopItemStorage;
+    constructor(prev: ShopItem[], curr: ShopItem[], logger: MyLogger) {
+        this._prev = prev;
+        this._curr = curr;
         this._logger = logger;
     }
 
-    public async validate(): Promise<boolean> {
-        if (this._shop.fetchCount === 0) {
-            return true;
-        }
-
-        const last = await this._shopItemStorage.get(this._shop.id, this._shop.fetchCount);
-        const curr = this._searchResult.items;
+    public isValid(): boolean {
+        const last = this._prev;
+        const curr = this._curr;
 
         this._logger.log('Validate last fetch with current:');
         this._logger.log('Last: ', JSON.stringify(last));
@@ -43,8 +35,9 @@ class ShopItemsFetchValidator {
 
             if (!last[lastIndex]) {
                 this._logger.log(
-                    'Not found element: curr[', currIndex, '].name = ', curr[currIndex].name,
-                    'curr[', currIndex, '].price = ', curr[currIndex].price
+                    `Invalid fetch: not found element: curr[${currIndex}].name = ${curr[currIndex].name}, ` +
+                    `curr[${currIndex}].price = ${curr[currIndex].price}, ` +
+                    `curr[${currIndex}].count = ${curr[currIndex].count}.`
                 );
 
                 return false;
