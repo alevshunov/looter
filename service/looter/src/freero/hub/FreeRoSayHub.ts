@@ -1,4 +1,4 @@
-import {IIrcConnection} from './IIrcConnection';
+import {IIrcConnection} from './base/IIrcConnection';
 import {MyLogger} from '../../../../../local_modules/my-core';
 
 interface ISayHub {

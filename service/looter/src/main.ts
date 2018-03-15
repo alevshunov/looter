@@ -1,6 +1,5 @@
 import {Client} from "irc";
 import * as st from "./static";
-import {FreeRoIrcHub} from "./freero/hub/FreeRoIrcHub";
 import {CardLooter} from "./freero/cardLooter/CardLooter";
 import {DbConnectionChecker} from "./tools/DbConnectionChecker";
 import {CardDropStorage} from "./db/CardDropStorage";
@@ -11,12 +10,10 @@ import {ShopStorage} from "./db/ShopStorage";
 import {ShopItemStorage} from "./db/ShopItemStorage";
 import {ShopBuyLooter} from "./freero/shopLooter/ShopBuyLooter";
 import {MyLogger} from "my-core";
-import {ShopItemsLooterProvider} from './freero/shopItemLooter/ShopItemsLooterProvider';
-import ShopLooter from './freero/shopItemLooter/ShopLooter';
-import {ShopItemsLoaderProvider} from './freero/shopItemLooter/itemsLoader/ShopItemsLoaderProvider';
-import {ShopFetchValidatorProvider} from './freero/shopItemLooter/validators/ShopFetchValidatorProvider';
 import FreeRoIrcPmHandler from './freero/hub/FreeRoIrcPmHandler';
 import {FreeRoSayHub} from './freero/hub/FreeRoSayHub';
+import FreeRoIrcMessageHandler from './freero/hub/FreeRoIrcMessageHandler';
+import ShopLooterProvider from './freero/shopItemLooter/ShopLooterProvider';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -35,23 +32,24 @@ const shopStorage = new ShopStorage(dbConnection, logger);
 const shopItemStorage = new ShopItemStorage(dbConnection, logger);
 
 const ircClient = new Client(st.config.IrcServer, st.config.IrcNick, { channels: [st.config.IrcChannel], userName: st.config.IrcNick});
-const ircHub = new FreeRoIrcHub(ircClient, logger);
-const ircPmHub = new FreeRoIrcPmHandler(ircClient, logger);
-const sayHub = new FreeRoSayHub(ircClient, logger);
 
-let cardLooter = new CardLooter(ircHub);
-let messageLooter = new MessageLooter(ircHub);
-let shopSellLooter = new ShopSellLooter(ircHub);
-let shopBuyLooter = new ShopBuyLooter(ircHub);
+const freeroSayHub = new FreeRoSayHub(ircClient, logger);
+const freeroMainChat = new FreeRoIrcMessageHandler(ircClient, logger);
+const freeroPmChat = new FreeRoIrcPmHandler(ircClient, logger);
 
-cardLooter.onEvent().subscribe(async (sender, drop) => {
-    // logger.log(JSON.stringify(drop));
-    await cardStorage.add(drop);
-});
+let messageLooter = new MessageLooter(freeroMainChat);
+let cardLooter = new CardLooter(freeroMainChat);
+let shopSellLooter = new ShopSellLooter(freeroMainChat);
+let shopBuyLooter = new ShopBuyLooter(freeroMainChat);
 
 messageLooter.onEvent().subscribe(async (sender, message) => {
     // logger.log(JSON.stringify(message));
     await messageStorage.add(message);
+});
+
+cardLooter.onEvent().subscribe(async (sender, drop) => {
+    // logger.log(JSON.stringify(drop));
+    await cardStorage.add(drop);
 });
 
 shopSellLooter.onEvent().subscribe(async (sender, shop) => {
@@ -64,11 +62,7 @@ shopBuyLooter.onEvent().subscribe(async (sender, shop) => {
     await shopStorage.add(shop);
 });
 
-const shopItemsLoaderProvider = new ShopItemsLoaderProvider(ircPmHub, sayHub, logger);
-const shopFetchValidatorProvider = new ShopFetchValidatorProvider(shopItemStorage, logger);
-const shopItemsLooterProvider = new ShopItemsLooterProvider(shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
-const shopLooter = new ShopLooter(shopItemsLooterProvider);
-
+const shopLooter = new ShopLooterProvider().create(freeroPmChat, freeroSayHub, shopStorage, shopItemStorage, logger);
 shopLooter.run();
 
 

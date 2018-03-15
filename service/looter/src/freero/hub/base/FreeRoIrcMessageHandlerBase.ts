@@ -1,11 +1,14 @@
 import {EventDispatcher, IEvent} from "strongly-typed-events";
 import {Client as IrcClient} from "irc";
-import {FreeRoEventArgs} from "./FreeRoEventArgs";
-import {IEventProvider} from "../../core/IEventProvider";
+import {FreeRoEventArgs} from "../FreeRoEventArgs";
+import {IEventProvider} from "../../../core/IEventProvider";
 import {IIrcConnection} from "./IIrcConnection";
 import {MyLogger} from 'my-core';
 
 class FreeRoIrcMessageHandlerBase implements IEventProvider<FreeRoEventArgs> {
+    static EVENT_DIRECT_MESSAGE : string = 'pm';
+    static EVENT_MESSAGE : string = 'message#freero';
+
     private _irc: IrcClient | IIrcConnection;
 
     private _onEvent = new EventDispatcher<FreeRoIrcMessageHandlerBase, FreeRoEventArgs>();
@@ -26,7 +29,7 @@ class FreeRoIrcMessageHandlerBase implements IEventProvider<FreeRoEventArgs> {
     private ircHandler(from: string, message: string, extra: any) {
         this._logger.log('HANDLE', from, '>', message);
 
-        const freeRoEvent = new FreeRoEventArgs(from, message, new Date(), false);
+        const freeRoEvent = new FreeRoEventArgs(from, message, new Date());
 
         this._onEvent.dispatch(this, freeRoEvent);
     }

@@ -32,7 +32,6 @@ class ShopLooter {
 
         await this._shopItemsLooterProvider.createFor(shop).run();
     }
-
 }
 
 export default ShopLooter;

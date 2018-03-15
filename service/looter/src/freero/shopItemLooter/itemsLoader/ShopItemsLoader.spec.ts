@@ -51,7 +51,7 @@ describe('ShopItemLoader', () => {
 
         const sayHandler = {
             say() {
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[User C] сейчас не держит открытый магазин.', new Date(), true));
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[User C] сейчас не держит открытый магазин.', new Date()));
             }
         };
 
@@ -70,7 +70,7 @@ describe('ShopItemLoader', () => {
 
         const sayHandler = {
             say() {
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[User C] сейчас не держит открытых скупок.', new Date(), true));
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[User C] сейчас не держит открытых скупок.', new Date()));
             }
         };
 
@@ -89,7 +89,7 @@ describe('ShopItemLoader', () => {
 
         const sayHandler = {
             say() {
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', 'Торговец не найден. Проверите никнейм?', new Date(), true));
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', 'Торговец не найден. Проверите никнейм?', new Date()));
             }
         };
 
@@ -108,7 +108,7 @@ describe('ShopItemLoader', () => {
 
         const sayHandler = {
             say() {
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', 'Торговец не найден. Проверите никнейм?', new Date(), true));
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', 'Торговец не найден. Проверите никнейм?', new Date()));
             }
         };
 
@@ -151,10 +151,10 @@ describe('ShopItemLoader', () => {
 
         const sayHandler = {
             say() {
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', '::::: [ Карандаш, дьябло роба, вайлет фир ] (alberta,116,53)', date, true));
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[Well-Chewed Pencil] -- 990000 z | 1 шт', date, true));
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[Angel Wing] -- 1200000 z | 2 шт', date, true));
-                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[Fancy Flower] -- 48500 z | 3 шт', date, true))
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', '::::: [ Карандаш, дьябло роба, вайлет фир ] (alberta,116,53)', date));
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[Well-Chewed Pencil] -- 990000 z | 1 шт', date));
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[Angel Wing] -- 1200000 z | 2 шт', date));
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', '[Fancy Flower] -- 48500 z | 3 шт', date))
             }
         };
 
