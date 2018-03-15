@@ -13,7 +13,7 @@ class ShopLooterProvider {
         const shopItemsLoaderProvider = new ShopItemsLoaderProvider(ircPmHub, sayHub, logger);
         const shopFetchValidatorProvider = new ShopFetchValidatorProvider(shopItemStorage, logger);
         const shopItemsLooterProvider = new ShopItemsLooterProvider(shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
-        const shopLooter = new ShopLooter(shopItemsLooterProvider);
+        const shopLooter = new ShopLooter(shopStorage, shopItemsLooterProvider);
         return shopLooter;
     }
 }

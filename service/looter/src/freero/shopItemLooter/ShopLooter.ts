@@ -3,8 +3,8 @@ import {ShopStorage} from '../../db/ShopStorage';
 import {ShopItemsLooterProvider} from './ShopItemsLooterProvider';
 
 class ShopLooter {
-    private SCAN_FIRST_INTERVAL: number = 60000;
-    private SCAN_INTERVAL: number = 30000;
+    private SCAN_FIRST_INTERVAL: number = 6000;
+    private SCAN_INTERVAL: number = 3000;
 
     private _timer : Timer;
 
@@ -12,7 +12,8 @@ class ShopLooter {
     private _shopItemsLooterProvider: ShopItemsLooterProvider;
 
 
-    constructor(shopItemsLooterProvider: ShopItemsLooterProvider) {
+    constructor(shopStorage: ShopStorage, shopItemsLooterProvider: ShopItemsLooterProvider) {
+        this._shopStorage = shopStorage;
         this._shopItemsLooterProvider = shopItemsLooterProvider;
         this._timer = new Timer(this.tick.bind(this), this.SCAN_INTERVAL);
     }

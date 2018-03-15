@@ -37,7 +37,7 @@ class Timer {
     }
 
     private waitNext() {
-        this._timerId = setTimeout(this.tick, this._delay);
+        this._timerId = setTimeout(this.tick.bind(this), this._delay);
     }
 }
 
