@@ -71,7 +71,7 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
                 <Container>
                     <ContainerText>
                         <div style={{textAlign: 'center'}}>
-                            Статистика за неделю:<br/>
+                            Статистика за неделю:<br/><br/>
                             <strong>
                                 {moment(report.reportInfo.start)
                                     .locale('ru')
@@ -85,10 +85,17 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
                     </ContainerText>
                 </Container>
 
-                {report.cardOfAWeek &&
+                {report.levelUppedOfAWeek &&
                 <Container>
                     <ContainerText>
-                    Картой недели выбрана <NavLink to={'/cards/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
+                        Сияйкой недели признан игрок
+                        {' '}<NavLink to={'/cards/' + report.levelUppedOfAWeek.owner}>
+                        {report.levelUppedOfAWeek.owner}
+                    </NavLink> взявший лампу
+                        {' '}{moment(report.levelUppedOfAWeek.date)
+                            .locale('ru')
+                            .format('DD MMMM YYYY в HH:mm')}
+                    .
                     </ContainerText>
                 </Container>
                 }
@@ -102,14 +109,10 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
                 </Container>
                 }
 
-                {report.shopOfAWeek &&
+                {report.cardOfAWeek &&
                 <Container>
                     <ContainerText>
-                        Магазином недели признан
-                        {' '}<strong>{report.shopOfAWeek.name}</strong>,
-                        {' '}выставленный
-                        {' '}<NavLink to={'/shops/' + report.shopOfAWeek.owner}>{report.shopOfAWeek.owner}</NavLink> в
-                        {' '}<NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
+                    Картой недели выбрана <NavLink to={'/cards/' + report.cardOfAWeek}>{report.cardOfAWeek}</NavLink>.
                     </ContainerText>
                 </Container>
                 }
@@ -117,15 +120,49 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
                 {report.shopLotOfAWeek &&
                 <Container>
                     <ContainerText>
-                    Товаром недели выбран
-                    {' '}<NavLink to={'/items/' + report.shopLotOfAWeek.name}>{report.shopLotOfAWeek.name}</NavLink>,
-                    {' '}был доступен в магазине
-                    {' '}<strong>{report.shopLotOfAWeek.shopName}</strong>,
-                    {' '}владельца
-                    {' '}<NavLink to={'/shops/' + report.shopLotOfAWeek.owner}>{report.shopLotOfAWeek.owner}</NavLink>
-                    {' '}в
-                    {' '}<NavLink to={'/shop/' + report.shopLotOfAWeek.id}>{report.shopLotOfAWeek.location}</NavLink>.
+                        Товаром недели выбран
+                        {' '}<NavLink to={'/items/' + report.shopLotOfAWeek.name}>{report.shopLotOfAWeek.name}</NavLink>
+                        .
                     </ContainerText>
+                </Container>
+                }
+
+                {report.shopOfAWeek &&
+                <Container>
+                    <ContainerText>
+                        Магазином недели признан
+                        {' '}"<strong>{report.shopOfAWeek.name}</strong>"
+                        {' '}в <NavLink to={'/shop/' + report.shopOfAWeek.id}>{report.shopOfAWeek.location}</NavLink>.
+                    </ContainerText>
+                </Container>
+                }
+
+                {report.levelUpped &&
+                <Container>
+                    <ContainerText>
+                        Взяли лампу:
+                    </ContainerText>
+                    <TableReport
+                        cells={
+                            [
+                                {title: '', field: 'index', align: 'center'},
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner',
+                                    render: (name) => <NavLink to={'/cards/' + name}>{name}</NavLink>
+                                },
+                                {
+                                    title: 'Время',
+                                    field: 'date',
+                                    align: 'right',
+                                    render: (date) => moment(date)
+                                        .locale('ru')
+                                        .format('DD MMMM YYYY, HH:mm')
+                                }
+                            ]
+                        }
+                        data={report.levelUpped}
+                    />
                 </Container>
                 }
 

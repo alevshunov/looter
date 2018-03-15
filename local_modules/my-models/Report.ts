@@ -20,4 +20,7 @@ export class ReportEntry {
     shopMostUnstable: Array<{ owner: string; count: number; }>;
     // shopMostSellableItems: Array<{name: string; count: number; totalValue: number}>;
     shopMostExpensiveLots: Array<{ name: string; price: number; shopName: string; shopOwner: string; }>;
+
+    levelUpped: Array<{ owner: string, date: Date}>;
+    levelUppedOfAWeek: { owner: string, date: Date};
 }

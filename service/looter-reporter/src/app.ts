@@ -294,6 +294,45 @@ class ReportGenerator {
                 return data;
             }
 
+            async function levelUpped() {
+                let data = await connection.query(`
+                    select date, originalMessage message
+                    from messages
+                    where originalMessage like '- %сияй%'
+                    and originalOwner = 'FreeRO'
+                    and date between ? and ?
+                    order by date
+                `, start, end);
+
+                const exp = /^- (.+?) стала? сияйкой! Поздравляем!$/;
+
+                data = data
+                    .filter(p => new RegExp(exp).test(p.message))
+                    .map(p => { return {date: p.date, owner: new RegExp(exp).exec(p.message)[1]}; });
+
+                return data;
+            }
+
+            async function levelUppedOfAWeek() {
+                let data = await connection.query(`
+                    select date, originalMessage message
+                    from messages
+                    where originalMessage like '- %сияй%'
+                    and originalOwner = 'FreeRO'
+                    and date between ? and ?
+                    order by rand()
+                    limit 1
+                `, start, end);
+
+                const exp = /^- (.+?) стала? сияйкой! Поздравляем!$/;
+
+                data = data
+                    .filter(p => new RegExp(exp).test(p.message))
+                    .map(p => { return {date: p.date, owner: new RegExp(exp).exec(p.message)[1]}; });
+
+                return data[0];
+            }
+
             try {
                 report.cardOfAWeek = await cardOfAWeek();
                 report.cardDropActivity = await cardDropActivity();
@@ -313,6 +352,9 @@ class ReportGenerator {
                 report.shopMostCheapest = await shopMostCheapest();
                 report.shopMostUnstable = await shopMostUnstable();
                 report.shopMostExpensiveLots = await shopMostExpensiveLots();
+
+                report.levelUpped = await levelUpped();
+                report.levelUppedOfAWeek = await levelUppedOfAWeek();
 
                 await connection.query('insert into reports(date, report) values(?,?)', new Date(), JSON.stringify(report));
 
