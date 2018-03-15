@@ -11,6 +11,8 @@ class ReportGenerator {
             database: process.env.LOOTER_DB_DBNAME
         };
 
+        const isActive = process.env.LOOTER_ACTIVE_REPORT === 'true';
+
         const endDate = moment().startOf('day').toDate();
         const startDate = moment(endDate).add({ days: -7}).toDate();
 
@@ -356,7 +358,7 @@ class ReportGenerator {
                 report.levelUpped = await levelUpped();
                 report.levelUppedOfAWeek = await levelUppedOfAWeek();
 
-                await connection.query('insert into reports(date, report) values(?,?)', new Date(), JSON.stringify(report));
+                await connection.query('insert into reports(date, report, active) values(?,?,?)', new Date(), JSON.stringify(report), isActive);
 
             } finally {
                 await connection.close();
