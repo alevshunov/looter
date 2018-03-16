@@ -55,38 +55,36 @@ export class ShopStorage implements IShopStorage, IShopStorage {
         conn.close();
     }
 
-    public getNextShop(): Promise<Shop> {
-        return new Promise(async (resolve, reject) => {
-            const conn = new MyConnection(this._dbConnection, this._logger);
-            await conn.open();
-            const result = await conn.query(
-                `
-                    select * 
-                    from shops 
-                    where active = 1
-                    and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) 
-                    order by last_fetch asc, date desc, id desc 
-                    limit 1
-                `
-            );
+    public async getNextShop(): Promise<Shop> {
+        const conn = new MyConnection(this._dbConnection, this._logger);
+        await conn.open();
+        const result = await conn.query(
+            `
+                select * 
+                from shops 
+                where active = 1
+                and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) 
+                order by last_fetch asc, date desc, id desc 
+                limit 1
+            `
+        );
 
-            conn.close();
+        conn.close();
 
-            if (result.length == 0) {
-                return resolve(null);
-            }
+        if (result.length == 0) {
+            return null;
+        }
 
-            const s = result[0];
-            const shop = new Shop(s.owner, s.name, s.location, s.date, s.type);
-            shop.id = s.id;
-            shop.date = s.date;
-            shop.fetched = s.fetched;
-            shop.fetchCount = s.fetch_count;
-            shop.lastFetch = s.last_fetch;
-            shop.active = s.active;
-            shop.retryCount = s.retry_count;
-            resolve(shop);
-        });
+        const s = result[0];
+        const shop = new Shop(s.owner, s.name, s.location, s.date, s.type);
+        shop.id = s.id;
+        shop.date = s.date;
+        shop.fetched = s.fetched;
+        shop.fetchCount = s.fetch_count;
+        shop.lastFetch = s.last_fetch;
+        shop.active = s.active;
+        shop.retryCount = s.retry_count;
+        return shop;
     }
 
     public async deactivateShops(shop: Shop) {

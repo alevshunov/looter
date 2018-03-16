@@ -3,8 +3,8 @@ import {ShopStorage} from '../../db/ShopStorage';
 import {ShopItemsLooterProvider} from './ShopItemsLooterProvider';
 
 class ShopLooter {
-    private SCAN_FIRST_INTERVAL: number = 6000;
-    private SCAN_INTERVAL: number = 3000;
+    private SCAN_FIRST_INTERVAL: number = 30000;
+    private SCAN_INTERVAL: number = 61000;
 
     private _timer : Timer;
 

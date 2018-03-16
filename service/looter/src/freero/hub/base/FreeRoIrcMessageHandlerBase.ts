@@ -8,12 +8,13 @@ import {MyLogger} from 'my-core';
 class FreeRoIrcMessageHandlerBase implements IEventProvider<FreeRoEventArgs> {
     static EVENT_DIRECT_MESSAGE : string = 'pm';
     static EVENT_MESSAGE : string = 'message#freero';
+    static EVENT_ERROR : string = 'error';
 
-    private _irc: IrcClient | IIrcConnection;
+    protected _irc: IrcClient | IIrcConnection;
 
-    private _onEvent = new EventDispatcher<FreeRoIrcMessageHandlerBase, FreeRoEventArgs>();
-    private _logger: MyLogger;
-    private _handler: string;
+    protected _onEvent = new EventDispatcher<FreeRoIrcMessageHandlerBase, FreeRoEventArgs>();
+    protected _logger: MyLogger;
+    protected _handler: string;
 
     constructor(irc: IrcClient | IIrcConnection, handler: string, logger: MyLogger) {
         this._irc = irc;
@@ -26,7 +27,7 @@ class FreeRoIrcMessageHandlerBase implements IEventProvider<FreeRoEventArgs> {
         this._irc.addListener(this._handler, this.ircHandler.bind(this));
     }
 
-    private ircHandler(from: string, message: string, extra: any) {
+    protected ircHandler(from: string, message: string, extra: any) {
         this._logger.log('HANDLE', from, '>', message);
 
         const freeRoEvent = new FreeRoEventArgs(from, message, new Date());
