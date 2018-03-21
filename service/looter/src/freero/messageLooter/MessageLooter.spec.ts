@@ -16,7 +16,8 @@ describe('MessageLooter', () => {
         const extEventArgs = new FreeRoEventArgs(
             "FreeRO",
             "[КолбасычС] : мумии и изисы где водятся? Левее или лево-верх от морока? Ну осирис еще где",
-            new Date(2017, 3, 2));
+            new Date(2017, 3, 2)
+            );
 
         const extEvent = new SimpleEvent<FreeRoEventArgs>();
 
@@ -40,7 +41,8 @@ describe('MessageLooter', () => {
         const extEventArgs = new FreeRoEventArgs(
             "КолбасычС",
             "мумии и изисы где водятся? Левее или лево-верх от морока? Ну осирис еще где",
-            new Date(2017, 3, 2));
+            new Date(2017, 3, 2)
+        );
 
         const extEvent = new SimpleEvent<FreeRoEventArgs>();
 

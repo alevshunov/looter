@@ -3,7 +3,13 @@ import {ConnectionConfig} from "mysql";
 import {Shop} from "../model/Shop";
 import {MyConnection, MyLogger} from "my-core";
 
-export class ShopItemStorage {
+export interface IShopItemStorage {
+    add(shop: Shop, shopItems: ShopItem[]): Promise<void>;
+
+    get(shopId: number, fetchIndex: number): Promise<ShopItem[]>;
+}
+
+export class ShopItemStorage implements IShopItemStorage {
     private _dbConnection: ConnectionConfig;
     private _logger: MyLogger;
 
@@ -12,20 +18,24 @@ export class ShopItemStorage {
         this._logger = logger;
     }
 
-    async add(shop: Shop, shopItems: ShopItem[]) {
+    public async add(shop: Shop, shopItems: ShopItem[]) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
 
-        for (let i=0; i<shopItems.length; i++) {
+        await conn.query('START TRANSACTION');
+
+        for (let i = 0; i < shopItems.length; i++) {
             const item = shopItems[i];
             await conn.query("insert into shop_items(shop_id, name, price, count, fetch_index, date) values (?,?,?,?,?,?);",
                 shop.id, item.name, item.price, item.count, item.fetchIndex, item.date);
         }
 
+        await conn.query('COMMIT');
+
         conn.close();
     }
 
-    async get(shopId: number, fetchIndex: number): Promise<ShopItem[]> {
+    public async get(shopId: number, fetchIndex: number): Promise<ShopItem[]> {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
 

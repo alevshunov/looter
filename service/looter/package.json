@@ -7,7 +7,7 @@
     "build": "gulp",
     "test": "jest --env=node",
     "test:watch": "jest --env=node --watch",
-    "test:verbose": "jest --env=node --verbose --coverage",
+    "test:verbose": "jest --env=node --no-cache --verbose --coverage",
     "start": "node dist/main.js"
   },
   "author": "",

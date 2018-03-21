@@ -1,32 +1,52 @@
-import {FreeRoIrcHub} from "./FreeRoIrcHub";
-import {handlers} from "irc";
-import {FreeRoEventArgs} from "./FreeRoEventArgs";
+import {FreeRoEventArgs} from './FreeRoEventArgs';
+import {handlers} from 'irc';
+import FreeRoIrcMessageHandler from './FreeRoIrcMessageHandler';
 
 describe('FreeRoIrcHub', () => {
 
     const fakeIrc = {
         _cb: {},
+
         addListener(e: string, cb: () => void) { this._cb[e] = cb; return this; },
 
         connect(retryCount?: number | handlers.IRaw, callback?: handlers.IRaw) {},
 
         doMessage(from: string, message: string) {
-            this._cb['message#freero'](from, message);
+            this._cb['message#freero'] && this._cb['message#freero'](from, message);
+        },
+
+        doPmMessage(from: string, message: string) {
+            this._cb['pm'] && this._cb['pm'](from, message);
         },
 
         doError(msg: string) {
             this._cb['error'](msg);
-        }
+        },
+
+        say() {}
     };
 
 
-    it('should handle irc messages and dispatch', () => {
+    it('should not handle irc pm messages', () => {
         const mockCallback = jest.fn();
         const from = 'FreeRo';
-        const to = '#FreeRO';
         const msg = 'Hello world';
 
-        const hub = new FreeRoIrcHub(fakeIrc, { log: () => {}, error: () => {} });
+        const hub = new FreeRoIrcMessageHandler(fakeIrc, { log: () => {}, error: () => {} });
+        hub.onEvent().subscribe(mockCallback);
+
+        fakeIrc.doPmMessage(from, msg);
+
+        expect(mockCallback.mock.calls.length).toBe(0);
+    });
+
+
+    it('should not handle irc common messages and dispatch', () => {
+        const mockCallback = jest.fn();
+        const from = 'FreeRo';
+        const msg = 'Hello world';
+
+        const hub = new FreeRoIrcMessageHandler(fakeIrc, { log: () => {}, error: () => {} });
         hub.onEvent().subscribe(mockCallback);
 
         fakeIrc.doMessage(from, msg);

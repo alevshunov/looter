@@ -17,6 +17,9 @@ export class MyConnection {
             const connection = mysql.createConnection(this._config);
             connection.connect((e: any) => {
                 if(e) {
+                    this._logger.error(e);
+                    this._logger.error(e.stack);
+
                     return reject(e);
                 }
                 this._connection = connection;
@@ -29,28 +32,34 @@ export class MyConnection {
         const me = this;
 
         return new Promise((resolve, reject) => {
-            const logQuery = query
-                .replace(/\t|\n/g, ' ')
-                .replace(/( +)/g, ' ')
-                .trim();
+            try {
+                const logQuery = query
+                    .replace(/\t|\n/g, ' ')
+                    .replace(/( +)/g, ' ')
+                    .trim();
 
-            this._logger.log('Query', logQuery, JSON.stringify(args));
+                this._logger.log('Query', logQuery, JSON.stringify(args));
 
-            me._connection.query(query, args, (err: any, result: any) => {
-                if (err) {
-                    me._logger.log('Query Error', JSON.stringify(err));
-                    return reject (err);
-                } else {
-                    if (result.length > 0) {
-                        me._logger.log('Query Success', `Fetched ${result.length} lines.`);
-                    } else if (result.length === 0) {
-                        me._logger.log('Query Success', `Fetched ${result.length} lines.`);
+                me._connection.query(query, args, (err: any, result: any) => {
+                    if (err) {
+                        me._logger.log('Query Error', JSON.stringify(err));
+                        return reject (err);
                     } else {
-                        me._logger.log('Query Success', `affectedRows: ${result.affectedRows}, insertId: ${result.insertId}.`);
+                        if (result.length > 0) {
+                            me._logger.log('Query Success', `Fetched ${result.length} lines.`);
+                        } else if (result.length === 0) {
+                            me._logger.log('Query Success', `Fetched ${result.length} lines.`);
+                        } else {
+                            me._logger.log('Query Success', `affectedRows: ${result.affectedRows}, insertId: ${result.insertId}.`);
+                        }
+                        return resolve(result);
                     }
-                    return resolve(result);
-                }
-            });
+                });
+            } catch(e) {
+                me._logger.error(e);
+                me._logger.error(e.stack);
+                reject(e);
+            }
         });
     }
 

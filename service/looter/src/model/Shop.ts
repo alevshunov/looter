@@ -17,6 +17,7 @@ export class Shop {
         this.location = location;
         this.date = date;
         this.type = type;
+        this.fetchCount = 0;
     }
 }
 
