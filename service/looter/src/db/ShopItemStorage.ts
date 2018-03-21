@@ -22,11 +22,15 @@ export class ShopItemStorage implements IShopItemStorage {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
 
+        await conn.query('START TRANSACTION');
+
         for (let i = 0; i < shopItems.length; i++) {
             const item = shopItems[i];
             await conn.query("insert into shop_items(shop_id, name, price, count, fetch_index, date) values (?,?,?,?,?,?);",
                 shop.id, item.name, item.price, item.count, item.fetchIndex, item.date);
         }
+
+        await conn.query('COMMIT');
 
         conn.close();
     }

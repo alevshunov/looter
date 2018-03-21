@@ -48,15 +48,15 @@ export class ShopItemsLooter {
                 return;
             }
 
+            if (fetchResult.isBusy) {
+                this._logger.log('BUSY');
+                await this._shopStorage.updateRetryCount(shop, shop.retryCount + 1);
+                return;
+            }
+
             if (fetchResult.items.length === 0) {
-                if (shop.retryCount > 5) {
-                    this._logger.log('DEACTIVATE SHOP');
-                    await this._shopStorage.deactivateShops(shop);
-                    await this._shopStorage.markAsNonValid(shop);
-                } else {
-                    this._logger.log('RETRY LATER');
-                    await this._shopStorage.updateRetryCount(shop, shop.retryCount + 1);
-                }
+                this._logger.log('EMPTY RESPONSE');
+                await this._shopStorage.updateRetryCount(shop, shop.retryCount + 1);
                 return;
             }
 
@@ -67,6 +67,9 @@ export class ShopItemsLooter {
                 this._logger.log('DEACTIVATE SHOP');
                 await this._shopStorage.deactivateShops(shop);
                 await this._shopStorage.markAsNonValid(shop);
+
+                this._logger.log('CREATE NEW SHOP');
+                await this._shopStorage.add(new Shop(shop.owner, fetchResult.name, fetchResult.location, fetchResult.date, shop.type));
                 return;
             }
 

@@ -29,7 +29,7 @@ describe('ShopItemsLooter', () => {
         const shopItemsLoaderProvider = {
             createFor: jest.fn().mockReturnValue({
                 getItems: jest.fn().mockReturnValue(
-                    new ShopItemsLoadResult([], true, '', '')
+                    new ShopItemsLoadResult('', '',[], date, true, false)
                 )
             })
         };
@@ -80,7 +80,7 @@ describe('ShopItemsLooter', () => {
         const shopItemsLoaderProvider = {
             createFor: jest.fn().mockReturnValue({
                 getItems: jest.fn().mockReturnValue(
-                    new ShopItemsLoadResult([], false, '', '')
+                    new ShopItemsLoadResult('', '', [], date, false, false)
                 )
             })
         };
@@ -106,7 +106,7 @@ describe('ShopItemsLooter', () => {
     });
 
 
-    it('should handle found but empty result as deactivate after six retry with invalid', async () => {
+    it('should call validate for found items, disable for non valid and create new', async () => {
         const date = new Date();
 
         const shop: Shop = new Shop('User X', 'Best price ever', 'prt_in <1,2>', date, ShopType.Sell);
@@ -129,61 +129,11 @@ describe('ShopItemsLooter', () => {
             get: jest.fn()
         };
 
-        const shopItemsLoaderProvider = {
-            createFor: jest.fn().mockReturnValue({
-                getItems: jest.fn().mockReturnValue(
-                    new ShopItemsLoadResult([], false, '', '')
-                )
-            })
-        };
-
-        const shopFetchValidatorProvider = {
-            createFor: jest.fn().mockReturnValue({
-                isValid: jest.fn().mockReturnValue(false)
-            })
-        };
-
-        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
-
-        await looter.run();
-
-
-        expect(shopStorage.deactivateOtherShops.mock.calls.length).toEqual(1);
-        expect(shopStorage.deactivateOtherShops.mock.calls[0][0]).toBe(shop);
-        expect(shopStorage.deactivateShops.mock.calls.length).toEqual(1);
-        expect(shopStorage.deactivateShops.mock.calls[0][0]).toBe(shop);
-        expect(shopStorage.markAsNonValid.mock.calls.length).toEqual(1);
-        expect(shopStorage.markAsNonValid.mock.calls[0][0]).toBe(shop);
-        expect(shopFetchValidatorProvider.createFor.mock.calls.length).toEqual(0);
-    });
-
-
-    it('should call validate for found items and disable for non valid', async () => {
-        const date = new Date();
-
-        const shop: Shop = new Shop('User X', 'Best price ever', 'prt_in <1,2>', date, ShopType.Sell);
-        shop.retryCount = 6;
-
-        const logger = { log: jest.fn(), error: jest.fn()};
-
-        const shopStorage = {
-            deactivateOtherShops: jest.fn(),
-            add: jest.fn(),
-            updateFetchIndex: jest.fn(),
-            getNextShop: jest.fn(),
-            deactivateShops: jest.fn(),
-            updateRetryCount: jest.fn(),
-            markAsNonValid: jest.fn()
-        };
-
-        const shopItemStorage = {
-            add: jest.fn(),
-            get: jest.fn()
-        };
-
-        const loadResult = new ShopItemsLoadResult([
-            new ShopItem('Item A', 100000, 20, 5, date)
-        ], false, 'Shop Name Z', 'prontera <19,99>');
+        const loadResult = new ShopItemsLoadResult('Shop Name Z', 'prontera <19,99>',
+            [
+                new ShopItem('Item A', 100000, 20, 5, date)
+            ],
+            date,false, false);
 
         const shopItemsLoaderProvider = {
             createFor: jest.fn().mockReturnValue({
@@ -220,6 +170,12 @@ describe('ShopItemsLooter', () => {
         expect(shopStorage.markAsNonValid.mock.calls.length).toEqual(1);
         expect(shopStorage.markAsNonValid.mock.calls[0][0]).toBe(shop);
 
+        expect(shopStorage.add.mock.calls.length).toEqual(1);
+        expect(shopStorage.add.mock.calls[0][0]).toBeInstanceOf(Shop);
+        expect(shopStorage.add.mock.calls[0][0].owner).toEqual('User X');
+        expect(shopStorage.add.mock.calls[0][0].location).toEqual('prontera <19,99>');
+        expect(shopStorage.add.mock.calls[0][0].date).toEqual(date);
+        expect(shopStorage.add.mock.calls[0][0].type).toEqual(ShopType.Sell);
     });
 
 
@@ -247,9 +203,10 @@ describe('ShopItemsLooter', () => {
             get: jest.fn()
         };
 
-        const loadResult = new ShopItemsLoadResult([
-            new ShopItem('Item A', 100000, 20, 5, date)
-        ], false, 'Shop Name Z', 'prontera <19,99>');
+        const loadResult = new ShopItemsLoadResult('Shop Name Z', 'prontera <19,99>',
+            [
+                new ShopItem('Item A', 100000, 20, 5, date)
+            ], date, false, false);
 
         const shopItemsLoaderProvider = {
             createFor: jest.fn().mockReturnValue({

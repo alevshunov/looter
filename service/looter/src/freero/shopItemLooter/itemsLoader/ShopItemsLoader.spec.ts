@@ -44,6 +44,26 @@ describe('ShopItemLoader', () => {
     });
 
 
+    it('should fetch busy', async () => {
+        const simpleEvent = new SimpleEvent<FreeRoEventArgs>();
+
+        const shop: Shop = new Shop('User C', 'Well done', 'izlude <12,34>', new Date(), ShopType.Sell);
+
+        const sayHandler = {
+            say() {
+                simpleEvent.do(new FreeRoEventArgs('FreeRO', '...Попробуйте ещё разок, через пару секунд?', new Date()));
+            }
+        };
+
+        const loader = new ShopItemsLoader(shop, simpleEvent, sayHandler, emptyLogger, 100);
+
+        const actual = await loader.getItems();
+
+        expect(actual.isNotFound).toEqual(false);
+        expect(actual.isBusy).toEqual(true);
+    });
+
+
     it('should fetch not found for @shop', async () => {
         const simpleEvent = new SimpleEvent<FreeRoEventArgs>();
 
@@ -60,6 +80,7 @@ describe('ShopItemLoader', () => {
         const actual = await loader.getItems();
 
         expect(actual.isNotFound).toEqual(true);
+        expect(actual.isBusy).toEqual(false);
     });
 
 
@@ -79,6 +100,7 @@ describe('ShopItemLoader', () => {
         const actual = await loader.getItems();
 
         expect(actual.isNotFound).toEqual(true);
+        expect(actual.isBusy).toEqual(false);
     });
 
 
@@ -98,10 +120,11 @@ describe('ShopItemLoader', () => {
         const actual = await loader.getItems();
 
         expect(actual.isNotFound).toEqual(true);
+        expect(actual.isBusy).toEqual(false);
     });
 
 
-    it('should fetch offline for @buy', async () => {
+    it('should fetch offline for @sell', async () => {
         const simpleEvent = new SimpleEvent<FreeRoEventArgs>();
 
         const shop: Shop = new Shop('User C', 'Well done', 'izlude <12,34>', new Date(), ShopType.Sell);
@@ -117,6 +140,7 @@ describe('ShopItemLoader', () => {
         const actual = await loader.getItems();
 
         expect(actual.isNotFound).toEqual(true);
+        expect(actual.isBusy).toEqual(false);
     });
 
 
@@ -135,8 +159,9 @@ describe('ShopItemLoader', () => {
         const actual = await loader.getItems();
 
         expect(actual.isNotFound).toEqual(false);
-        expect(actual.location).toEqual(undefined);
-        expect(actual.name).toEqual(undefined);
+        expect(actual.isBusy).toEqual(false);
+        expect(actual.location).toEqual('');
+        expect(actual.name).toEqual('');
         expect(actual.items).toEqual([]);
     });
 
@@ -167,10 +192,11 @@ describe('ShopItemLoader', () => {
             new ShopItem('Fancy Flower', 48500, 3, 85, date)
         ];
 
+        expect(actual.isNotFound).toEqual(false);
+        expect(actual.isBusy).toEqual(false);
         expect(actual.location).toEqual('alberta <116,53>');
         expect(actual.name).toEqual('Карандаш, дьябло роба, вайлет фир');
+        expect(actual.date).toEqual(date);
         expect(actual.items).toEqual(expected);
     });
-
-
 });

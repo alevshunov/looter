@@ -46,16 +46,21 @@ const freeroMainChat = new FreeRoIrcMessageHandler(ircClient, logger);
 const freeroPmChat = new FreeRoIrcPmHandler(ircClient, logger);
 
 if (process.env.LOOTER_IRC_PASSWORD) {
-    setTimeout(() => { freeroSayHub.say('NickServ', `RECOVER ${process.env.LOOTER_IRC_NICK} ${process.env.LOOTER_IRC_PASSWORD}`); } , 2000);
-    setTimeout(() => { freeroSayHub.say('NickServ', `IDENTIFY ${process.env.LOOTER_IRC_PASSWORD}`); }, 5000);
+    setTimeout(() => { freeroSayHub.say('NickServ', `RECOVER ${process.env.LOOTER_IRC_NICK} ${process.env.LOOTER_IRC_PASSWORD}`); } , 5000);
+    setTimeout(() => { freeroSayHub.say('NickServ', `IDENTIFY ${process.env.LOOTER_IRC_PASSWORD}`); }, 10000);
 }
 
 let messageLooter = new MessageLooter(freeroMainChat);
+let messagePmLooter = new MessageLooter(freeroPmChat);
 let cardLooter = new CardLooter(freeroMainChat);
 let shopSellLooter = new ShopSellLooter(freeroMainChat);
 let shopBuyLooter = new ShopBuyLooter(freeroMainChat);
 
 messageLooter.onEvent().subscribe(async (sender, message) => {
+    await messageStorage.add(message);
+});
+
+messagePmLooter.onEvent().subscribe(async (sender, message) => {
     await messageStorage.add(message);
 });
 

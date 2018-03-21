@@ -14,6 +14,7 @@ export class ShopItemsLoader {
     private NOT_FOUND_SELL_POSTFIX: string  = 'сейчас не держит открытый магазин.';
 
     private OFFLINE_MESSAGE: string = 'Торговец не найден. Проверите никнейм?';
+    private BUSY_MESSAGE: string = '...Попробуйте ещё разок, через пару секунд?';
 
     private NOT_FOUND_MESSAGE: string = '';
 
@@ -26,13 +27,16 @@ export class ShopItemsLoader {
     private _resolve: (value?: (any)) => void;
     private _reject: (reason?: any) => void;
 
-    private _data: ShopItem[];
-
     private _shop: Shop;
+
+    private _date: Date;
+    private _name: string = '';
+    private _location: string = '';
+    private _items: ShopItem[] = [];
     private _isNotFound: boolean = false;
+    private _isBusy: boolean = false;
+
     private _logger: MyLogger;
-    private _name: string;
-    private _location: string;
 
     constructor(shop: Shop, pmHub: IEventProvider<FreeRoEventArgs>, sayHub: ISayHub, logger: MyLogger, waitTime?: number) {
         this._shop = shop;
@@ -40,7 +44,7 @@ export class ShopItemsLoader {
         this._sayHub = sayHub;
         this._logger = logger;
 
-        this._data = [];
+        this._items = [];
         this._pmEvent = this.handle.bind(this);
 
         this.WAIT_TIME = waitTime || this.WAIT_TIME;
@@ -76,28 +80,29 @@ export class ShopItemsLoader {
             return;
         }
 
+        if (message == this.BUSY_MESSAGE) {
+            this._isBusy = true;
+            return;
+        }
+
         if (new RegExp(this.HEADER_EXP).test(message)) {
             const parts = new RegExp(this.HEADER_EXP).exec(message);
             this._name = parts[1];
             this._location = `${parts[2]} <${parts[3]},${parts[4]}>`;
+            this._date = args.date;
         }
 
         if (new RegExp(this.ITEM_EXP).test(message)) {
             const parts = new RegExp(this.ITEM_EXP).exec(message);
             const shopItem = new ShopItem(parts[1], parseInt(parts[2]), parseInt(parts[3]), this._shop.fetchCount+1, args.date);
-            this._data.push(shopItem);
+            this._items.push(shopItem);
         }
     }
 
     private success() {
         this._pmHub.onEvent().unsubscribe(this._pmEvent);
 
-        if (this._isNotFound) {
-            this._logger.log('Resolve with: false (NOT FOUND)');
-            this._resolve(new ShopItemsLoadResult([], true, this._name, this._location));
-        } else {
-            this._logger.log('Resolve with:', JSON.stringify(this._data));
-            this._resolve(new ShopItemsLoadResult(this._data, false, this._name, this._location));
-        }
+        this._logger.log('Resolve with: false (NOT FOUND)');
+        this._resolve(new ShopItemsLoadResult(this._name, this._location,this._items, this._date, this._isNotFound, this._isBusy));
     }
 }
