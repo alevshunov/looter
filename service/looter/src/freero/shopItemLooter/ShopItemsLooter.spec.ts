@@ -106,7 +106,7 @@ describe('ShopItemsLooter', () => {
     });
 
 
-    it('should call validate for found items, disable for non valid and create new', async () => {
+    it('should call validate for found items, disable for non valid and not create new', async () => {
         const date = new Date();
 
         const shop: Shop = new Shop('User X', 'Best price ever', 'prt_in <1,2>', date, ShopType.Sell);
@@ -170,12 +170,12 @@ describe('ShopItemsLooter', () => {
         expect(shopStorage.markAsNonValid.mock.calls.length).toEqual(1);
         expect(shopStorage.markAsNonValid.mock.calls[0][0]).toBe(shop);
 
-        expect(shopStorage.add.mock.calls.length).toEqual(1);
-        expect(shopStorage.add.mock.calls[0][0]).toBeInstanceOf(Shop);
-        expect(shopStorage.add.mock.calls[0][0].owner).toEqual('User X');
-        expect(shopStorage.add.mock.calls[0][0].location).toEqual('prontera <19,99>');
-        expect(shopStorage.add.mock.calls[0][0].date).toEqual(date);
-        expect(shopStorage.add.mock.calls[0][0].type).toEqual(ShopType.Sell);
+        expect(shopStorage.add.mock.calls.length).toEqual(0);
+        // expect(shopStorage.add.mock.calls[0][0]).toBeInstanceOf(Shop);
+        // expect(shopStorage.add.mock.calls[0][0].owner).toEqual('User X');
+        // expect(shopStorage.add.mock.calls[0][0].location).toEqual('prontera <19,99>');
+        // expect(shopStorage.add.mock.calls[0][0].date).toEqual(date);
+        // expect(shopStorage.add.mock.calls[0][0].type).toEqual(ShopType.Sell);
     });
 
 

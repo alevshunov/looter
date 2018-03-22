@@ -68,8 +68,8 @@ export class ShopItemsLooter {
                 await this._shopStorage.deactivateShops(shop);
                 await this._shopStorage.markAsNonValid(shop);
 
-                this._logger.log('CREATE NEW SHOP');
-                await this._shopStorage.add(new Shop(shop.owner, fetchResult.name, fetchResult.location, fetchResult.date, shop.type));
+                // this._logger.log('CREATE NEW SHOP');
+                // await this._shopStorage.add(new Shop(shop.owner, fetchResult.name, fetchResult.location, fetchResult.date, shop.type));
                 return;
             }
 
