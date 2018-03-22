@@ -46,8 +46,9 @@ const freeroMainChat = new FreeRoIrcMessageHandler(ircClient, logger);
 const freeroPmChat = new FreeRoIrcPmHandler(ircClient, logger);
 
 if (process.env.LOOTER_IRC_PASSWORD) {
-    setTimeout(() => { freeroSayHub.say('NickServ', `RECOVER ${process.env.LOOTER_IRC_NICK} ${process.env.LOOTER_IRC_PASSWORD}`); } , 5000);
-    setTimeout(() => { freeroSayHub.say('NickServ', `IDENTIFY ${process.env.LOOTER_IRC_PASSWORD}`); }, 10000);
+    setTimeout(() => { freeroSayHub.say('NickServ', `REGISTER ${process.env.LOOTER_IRC_PASSWORD}`); } , 5000);
+    setTimeout(() => { freeroSayHub.say('NickServ', `RECOVER ${process.env.LOOTER_IRC_NICK} ${process.env.LOOTER_IRC_PASSWORD}`); } , 10000);
+    setTimeout(() => { freeroSayHub.say('NickServ', `IDENTIFY ${process.env.LOOTER_IRC_PASSWORD}`); }, 15000);
 }
 
 let messageLooter = new MessageLooter(freeroMainChat);
