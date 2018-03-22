@@ -20,17 +20,13 @@ class ShopFetchValidator {
     }
 
     public async isValid() : Promise<boolean> {
-        if (this._shop.fetchCount === 0) {
-            return true;
-        }
-
         const lastFetch = await this._shopItemStorage.get(this._shop.id, this._shop.fetchCount);
         const currentFetch = this._fetchResult.items;
 
         const nameLocationValidator = new ShopNameAndLocationValidator(this._shop, this._fetchResult, this._logger);
         const itemsValidator = new ShopItemsFetchValidator(lastFetch, currentFetch, this._logger);
 
-        const isValid = nameLocationValidator.isValid() && itemsValidator.isValid();
+        const isValid = nameLocationValidator.isValid() && (this._shop.fetchCount === 0 || itemsValidator.isValid());
 
         return isValid;
     }
