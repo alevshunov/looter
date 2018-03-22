@@ -3,7 +3,7 @@ import {ShopStorage} from '../../db/ShopStorage';
 import {ShopItemsLooterProvider} from './ShopItemsLooterProvider';
 
 class ShopLooter {
-    private SCAN_FIRST_INTERVAL: number = 30000;
+    private SCAN_DELAY: number = 60000;
     private SCAN_INTERVAL: number = 61000;
 
     private _timer : Timer;
@@ -19,7 +19,7 @@ class ShopLooter {
     }
 
     public run() {
-        setTimeout(this._timer.start.bind(this._timer), this.SCAN_FIRST_INTERVAL);
+        setTimeout(this._timer.start.bind(this._timer), this.SCAN_DELAY);
     }
 
     public stop() {
