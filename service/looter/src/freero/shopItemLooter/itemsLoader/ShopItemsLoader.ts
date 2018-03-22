@@ -101,8 +101,6 @@ export class ShopItemsLoader {
 
     private success() {
         this._pmHub.onEvent().unsubscribe(this._pmEvent);
-
-        this._logger.log('Resolve with: false (NOT FOUND)');
         this._resolve(new ShopItemsLoadResult(this._name, this._location,this._items, this._date, this._isNotFound, this._isBusy));
     }
 }
