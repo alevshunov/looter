@@ -101,7 +101,11 @@ class ShopItems extends React.Component<Props, State> {
                                     </td>
                             </tr>
                             <tr>
-                                <td className="info-item table-report-cell">{this.state.data.owner}</td>
+                                <td className="info-item table-report-cell">
+                                    <NavLink to={'/shops/by/' + this.state.data.owner}>
+                                        {this.state.data.owner}
+                                    </NavLink>
+                                </td>
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">{this.state.data.location}</td>

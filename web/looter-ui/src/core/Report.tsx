@@ -375,7 +375,7 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
                                 {
                                     title: 'Игрок',
                                     field: 'owner',
-                                    render: (name) => <NavLink to={'/shops/' + name}>{name}</NavLink>
+                                    render: (name) => <NavLink to={'/shops/by/' + name}>{name}</NavLink>
                                 },
                                 {title: 'Открывал магазин', field: 'count', align: 'right'}
                             ]
