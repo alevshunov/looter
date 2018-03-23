@@ -154,6 +154,25 @@ router.get('/shops/all', async (req, res, next) => {
     next();
 });
 
+router.get('/shops/by/:owner', async (req, res, next) => {
+    const itemName = req.params.owner;
+    const connection = await getConnection();
+    const data = await connection.query(`
+            select s.id, s.name, s.location, s.owner, s.date, s.type
+            from shops s
+            where s.fetch_count > 0 
+            and s.owner = ?
+            order by s.date desc
+            limit 100
+        `,
+        itemName,
+    );
+    connection.close();
+    res.json(data);
+
+    next();
+});
+
 router.get('/shops/with/:itemName', async (req, res, next) => {
     const itemName = req.params.itemName;
     const connection = await getConnection();
