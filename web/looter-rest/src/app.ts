@@ -158,7 +158,7 @@ router.get('/shops/by/:owner', async (req, res, next) => {
     const itemName = req.params.owner;
     const connection = await getConnection();
     const data = await connection.query(`
-            select s.id, s.name, s.location, s.owner, s.date, s.type
+            select s.id, s.name, s.location, s.owner, s.date, s.last_fetch lastFetch, s.active, s.type
             from shops s
             where s.fetch_count > 0 
             and s.owner = ?
