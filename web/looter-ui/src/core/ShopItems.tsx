@@ -123,11 +123,6 @@ class ShopItems extends React.Component<Props, State> {
                         </tbody>
                     </table>
                 </Container>
-
-                {this.state.loading && <tr><td className="cell100 column1">Загрузка ...</td></tr>}
-                {!this.state.loading && (!this.state.data.items || this.state.data.items.length === 0)
-                && <tr><td className="cell100 column1">Данные отсутствуют.</td></tr>}
-
                 {this.state.data.items &&
                     <Container>
                         <TableReport
