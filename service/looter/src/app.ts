@@ -14,6 +14,7 @@ import {FreeRoSayHub} from './freero/hub/FreeRoSayHub';
 import FreeRoIrcMessageHandler from './freero/hub/FreeRoIrcMessageHandler';
 import ShopLooterProvider from './freero/shopItemLooter/ShopLooterProvider';
 import FreeRoIrcErrorsHandler from './freero/hub/FreeRoIrcErrorsHandler';
+import {Message} from './model/Message';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -62,7 +63,8 @@ messageLooter.onEvent().subscribe(async (sender, message) => {
 });
 
 messagePmLooter.onEvent().subscribe(async (sender, message) => {
-    await messageStorage.add(message);
+    const msg = new Message('', '', message.date, 'PM', message.originalOwner, message.originalMessage);
+    await messageStorage.add(msg);
 });
 
 cardLooter.onEvent().subscribe(async (sender, drop) => {
