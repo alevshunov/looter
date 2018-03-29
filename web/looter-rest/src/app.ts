@@ -125,7 +125,7 @@ router.get('/shops/active', async (req, res, next) => {
             having
 				min(si.price) >= ? and max(si.price) <= ?
             order by ${order}
-                limit ${limit}
+                ${limit}
         `,
         args.term, args.term, args.direction, args.minPrice, args.maxPrice
     );
