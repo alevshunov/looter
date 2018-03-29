@@ -103,6 +103,7 @@ router.get('/shops/active', async (req, res, next) => {
     const connection = await getConnection();
 
     const order = req.query.term ? 'si.name asc' : 'max(si.date) desc';
+    const limit = req.query.term !== '*' ? 'limit 100' : '';
 
     const data = await connection.query(`
             select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type, i.ids
@@ -124,7 +125,7 @@ router.get('/shops/active', async (req, res, next) => {
             having
 				min(si.price) >= ? and max(si.price) <= ?
             order by ${order}
-                limit 100
+                limit ${limit}
         `,
         args.term, args.term, args.direction, args.minPrice, args.maxPrice
     );
