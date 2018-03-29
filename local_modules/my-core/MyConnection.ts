@@ -31,7 +31,7 @@ export class MyConnection {
     public query(query: string, ...args: any[]): Promise<any> {
         const me = this;
 
-        return new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             try {
                 const logQuery = query
                     .replace(/\t|\n/g, ' ')
@@ -43,7 +43,7 @@ export class MyConnection {
                 me._connection.query(query, args, (err: any, result: any) => {
                     if (err) {
                         me._logger.log('Query Error', JSON.stringify(err));
-                        return reject (err);
+                        return reject(err);
                     } else {
                         if (result.length > 0) {
                             me._logger.log('Query Success', `Fetched ${result.length} lines.`);
@@ -61,6 +61,12 @@ export class MyConnection {
                 reject(e);
             }
         });
+
+        promise.catch((e) => {
+            me._logger.error(JSON.stringify(e));
+        });
+
+        return promise;
     }
 
     public close() {
