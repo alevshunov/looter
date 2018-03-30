@@ -7,6 +7,7 @@ import ShopItems from './core/ShopItems';
 import ShopWithItem from './core/ShopsWithItem';
 import Report from './core/Report';
 import OwnerHistory from './core/OwnerHistory';
+import ItemHistory from './core/ItemHistory';
 
 class App extends React.Component {
 
@@ -72,6 +73,12 @@ class App extends React.Component {
                         exact={true}
                         path="/items/:term"
                         render={(props) => <AllItems term={decodeURIComponent(props.match.params.term)}/>}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/item/history/:itemName"
+                        render={(props) => <ItemHistory itemName={decodeURIComponent(props.match.params.itemName)}/>}
                     />
 
                     <Route

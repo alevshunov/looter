@@ -1,0 +1,22 @@
+.price .sell {
+    color: #945ed1;
+}
+
+.price .buy {
+    color: #884d3d;
+}
+
+.price .item {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    text-align: right;
+}
+
+.price .item + .title {
+    margin-top: 10px;
+}
+
+.price .title {
+
+}
+

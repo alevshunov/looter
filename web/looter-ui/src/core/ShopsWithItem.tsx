@@ -62,9 +62,14 @@ class ShopWithItem extends React.Component<Props, State> {
                 <Container>
                     <table className="table-report info">
                         <tbody>
-                        <tr>
-                            <td className="info-item table-report-cell shop-item-name">{this.props.itemName}</td>
-                        </tr>
+                            <tr>
+                                <td className="info-item table-report-cell shop-item-name">
+                                    {this.props.itemName}
+                                    {/*<NavLink to={'/item/history/' + decodeURI(this.props.itemName)}>*/}
+                                        {/*История цен*/}
+                                    {/*</NavLink>*/}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </Container>

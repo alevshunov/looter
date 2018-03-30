@@ -1,0 +1,33 @@
+.day {
+    display: inline-block;
+    width: calc(100% / 7);
+    vertical-align: top;
+    /*padding: 5px;*/
+    /*border: solid 1px #eeeeee;*/
+}
+
+.day-container {
+    margin: 5px;
+    border: solid 1px #eeeeee;
+    padding: 5px;
+}
+
+.day-title {
+    font-size: 10px;
+    text-align: right;
+}
+
+.day-content {
+    font-size: 12px;
+    /*padding: 5px;*/
+    /*text-align: center;*/
+    padding-top: 10px;
+
+    min-height: 100px;
+}
+
+@media (max-width: 899px) {
+    .container-shadow + .container-shadow {
+        margin-top: 20px;
+    }
+}

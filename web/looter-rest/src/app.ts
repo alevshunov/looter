@@ -253,7 +253,7 @@ router.get('/shop/:id', async (req, res, next) => {
 
 router.get('/item/price/:itemName', async (req, res, next) => {
     const itemName = req.params.itemName;
-    const days = 21;
+    const days = 31;
 
     const connection = await getConnection();
     const data = await connection.query(`
