@@ -27,7 +27,19 @@
 }
 
 @media (max-width: 899px) {
-    .container-shadow + .container-shadow {
-        margin-top: 20px;
+    .day {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .day-title {
+        font-size: 14px !important;
+    }
+
+    .day-content {
+        font-size: 14px !important;
+        padding-top: 10px;
+
+        min-height: 0px !important;
     }
 }

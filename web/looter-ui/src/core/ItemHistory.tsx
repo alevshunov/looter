@@ -76,7 +76,7 @@ class ItemHistory extends React.Component<Props, State> {
                         end={moment().toDate()}
                         render={(date) => {
                             if (!this.state.price) {
-                                return <div/>;
+                                return null;
                             }
 
                             const item = this.state.price.find((x) => {
@@ -84,7 +84,7 @@ class ItemHistory extends React.Component<Props, State> {
                             });
 
                             if (!item) {
-                                return <div/>;
+                                return null;
                             }
 
                             return (
