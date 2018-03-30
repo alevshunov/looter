@@ -71,6 +71,18 @@ class App extends React.Component {
 
                     <Route
                         exact={true}
+                        path="/items/by/:order"
+                        render={(props) => <AllItems term=""/>}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/items/by/:order/:term"
+                        render={(props) => <AllItems term={decodeURIComponent(props.match.params.term)}/>}
+                    />
+
+                    <Route
+                        exact={true}
                         path="/items/:term"
                         render={(props) => <AllItems term={decodeURIComponent(props.match.params.term)}/>}
                     />

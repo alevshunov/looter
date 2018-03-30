@@ -1,6 +1,6 @@
 import * as React from 'react';
 import RedirectableSearch from './components/RedirectableSearch';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import asPrice from './components/asPrice';
 import MyNavigation from './components/MyNavigation';
 import InfoOutline from 'material-ui-icons/InfoOutline';
@@ -13,6 +13,8 @@ import TimeCachedStore from './extra/TimeCachedStore';
 
 interface State {
     loading: boolean;
+
+    order: string;
 
     data?: Array<{
         name: string,
@@ -33,7 +35,7 @@ class AllItems extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = { data: undefined, loading: true};
+        this.state = { data: undefined, loading: true, order: 'name' };
     }
 
     componentWillMount() {
@@ -54,7 +56,9 @@ class AllItems extends React.Component<Props, State> {
             return;
         }
 
-        fetch('https://free-ro.kudesnik.cc/rest/shops/active?term=' + encodeURIComponent(this.props.term))
+        fetch('https://free-ro.kudesnik.cc/rest/shops/active?term='
+            + encodeURIComponent(this.props.term)
+            + '&order=' + this.state.order)
             .then((response) => {
                 try {
                     return response.json();
@@ -84,7 +88,8 @@ class AllItems extends React.Component<Props, State> {
                         cells={
                             [
                                 {
-                                    title: 'Название',
+                                    // title: 'Название',
+                                    title: <Link to={'/items/by/name/' + this.props.term}>Название</Link>,
                                     field: 'name',
                                     render: (name, d) => (
                                         <span>
