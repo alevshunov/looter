@@ -251,6 +251,47 @@ router.get('/shop/:id', async (req, res, next) => {
     next();
 });
 
+router.get('/item/price/:itemName', async (req, res, next) => {
+    const itemName = req.params.itemName;
+    const days = 21;
+
+    const connection = await getConnection();
+    const data = await connection.query(`
+        select c.date, isell.min minSell, isell.max maxSell, ibuy.min minBuy, ibuy.max maxBuy
+        from 
+        (
+            select * 
+            from calendar 
+            where date between date_add(now(), interval -${days} day) and now()
+        ) c
+        
+        left join (
+            select si.name, date(si.date) date, min(price) min, max(price) max
+            from shop_items si left join shops s on s.id = si.shop_id
+            where si.name = ? and s.type = 'sell'
+            and si.date between date_add(now(), interval -${days} day) and now()
+            group by date(si.date)
+        ) isell on c.date = date(isell.date)
+        
+        left join (
+            select si.name, date(si.date) date, min(price) min, max(price) max
+            from shop_items si left join shops s on s.id = si.shop_id
+            where si.name = ? and s.type = 'buy'
+            and si.date between date_add(now(), interval -${days} day) and now()
+            group by date(si.date)
+            
+        ) ibuy on c.date = date(ibuy.date)
+        
+        order by c.date
+        `,
+        itemName, itemName
+    );
+    connection.close();
+    res.json(data);
+
+    next();
+});
+
 app.use(async (req, res, next) => {
     logger.log(req.headers["x-real-ip"], req.originalUrl || req.url || req.path || '');
 
