@@ -35,7 +35,7 @@ class ShopWithItem extends React.Component<Props, State> {
     }
 
     doLoad() {
-        this.setState({loading: true, data: []});
+        this.setState({loading: true, data: undefined});
 
         const me = this;
         fetch('https://free-ro.kudesnik.cc/rest/shops/with/' + encodeURIComponent(this.props.itemName))
