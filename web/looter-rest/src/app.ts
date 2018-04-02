@@ -24,10 +24,10 @@ function adoptTermToLike(term: string) {
         return '%';
     }
 
-    return `%${term.replace('*', '%') || ''}%`;
+    return `%${term.replace(/\*/g, '%') || ''}%`;
 }
 
-function extractTermWithDirection(term: string) : {term: string, direction: string, minPrice: number, maxPrice: number} {
+function extractTermDetails(term: string) : {term: string, direction: string, minPrice: number, maxPrice: number} {
     term = term || '';
 
     let direction = '%';
@@ -99,10 +99,27 @@ router.get('/report/preview', async (req, res, next) => {
 });
 
 router.get('/shops/active', async (req, res, next) => {
-    const args = extractTermWithDirection(req.query.term);
+    const termDetails = extractTermDetails(req.query.term);
     const connection = await getConnection();
 
-    const order = req.query.term ? 'si.name asc' : 'max(si.date) desc';
+    const requestedOrder = { field: req.query.order || 'default', direction: req.query.direction || 'asc' };
+
+    if (['default', 'name', 'count', 'price'].indexOf(requestedOrder.field) === -1) {
+        requestedOrder.field = 'default';
+    }
+
+    if (['asc', 'desc'].indexOf(requestedOrder.direction) === -1) {
+        requestedOrder.direction = 'asc';
+    }
+
+    const orderMap = {
+        'default': req.query.term ? 'si.name asc' : 'max(si.date) desc',
+        'name': 'si.name ' + requestedOrder.direction,
+        'count': 'count ' + requestedOrder.direction,
+        'price' : requestedOrder.direction === 'asc' ? 'min asc' : 'max desc'
+    };
+
+    // const order = req.query.term ? 'si.name asc' : 'max(si.date) desc';
     const limit = req.query.term !== '*' ? 'limit 100' : '';
 
     const data = await connection.query(`
@@ -124,10 +141,10 @@ router.get('/shops/active', async (req, res, next) => {
                 si.name, s.type
             having
 				min(si.price) >= ? and max(si.price) <= ?
-            order by ${order}
+            order by ${orderMap[requestedOrder.field]}
                 ${limit}
         `,
-        args.term, args.term, args.direction, args.minPrice, args.maxPrice
+        termDetails.term, termDetails.term, termDetails.direction, termDetails.minPrice, termDetails.maxPrice
     );
     connection.close();
     res.json(data);
@@ -136,7 +153,7 @@ router.get('/shops/active', async (req, res, next) => {
 });
 
 router.get('/shops/all', async (req, res, next) => {
-    const args = extractTermWithDirection(req.query.term);
+    const args = extractTermDetails(req.query.term);
     const connection = await getConnection();
     const data = await connection.query(`
             select s.id, s.name, s.location, s.owner, s.date, s.type
@@ -298,6 +315,7 @@ app.use(async (req, res, next) => {
     // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
     const connection = await getConnection();
+
     await connection.query(`insert into logs(date, type, ip, url) values(?, ?, ?, ?);`,
         new Date(), 'rest', req.headers["x-real-ip"] || '', req.originalUrl || req.url || req.path || '');
 

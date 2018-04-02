@@ -65,26 +65,44 @@ class App extends React.Component {
 
                     <Route
                         exact={true}
-                        path="/items"
-                        render={(props) => <AllItems term=""/>}
+                        path="/items/by/:order/:direction/:term"
+                        render={(props) =>
+                            <AllItems
+                                term={decodeURIComponent(props.match.params.term)}
+                                order={{ field: props.match.params.order, direction: props.match.params.direction }}
+                            />
+                        }
                     />
 
                     <Route
                         exact={true}
-                        path="/items/by/:order"
-                        render={(props) => <AllItems term=""/>}
-                    />
-
-                    <Route
-                        exact={true}
-                        path="/items/by/:order/:term"
-                        render={(props) => <AllItems term={decodeURIComponent(props.match.params.term)}/>}
+                        path="/items/by/:order/:direction"
+                        render={(props) =>
+                            <AllItems
+                                term=""
+                                order={{ field: props.match.params.order, direction: props.match.params.direction }}
+                            />}
                     />
 
                     <Route
                         exact={true}
                         path="/items/:term"
-                        render={(props) => <AllItems term={decodeURIComponent(props.match.params.term)}/>}
+                        render={(props) =>
+                            <AllItems
+                                term={decodeURIComponent(props.match.params.term)}
+                                order={{ field: 'default', direction: 'asc' }}
+                            />
+                        }
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/items"
+                        render={(props) =>
+                            <AllItems
+                                term=""
+                                order={{ field: 'default', direction: 'asc' }}
+                            />}
                     />
 
                     <Route
@@ -103,6 +121,12 @@ class App extends React.Component {
                         exact={true}
                         path="/report/preview"
                         render={(props) => <Report preview={true} />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="*"
+                        render={(props) => <Report preview={false} />}
                     />
                 </Switch>
             </BrowserRouter>

@@ -2,7 +2,13 @@ import * as React from 'react';
 import './TableReport.css';
 
 interface Props {
-    cells: Array<{ title: any; field: string; align?: string; render?: (value: any, obj?: any) => any}>;
+    cells: Array<{
+        title: React.ReactNode | string;
+        field: string;
+        align?: string;
+        render?: (value: any, obj?: any) => any
+    }>;
+
     data: Array<Object> | undefined;
     rowExtraClass?: (obj?: any, index?: number) => string;
     title?: string;
@@ -14,28 +20,6 @@ class TableReport extends React.Component<Props, {}> {
 
     constructor(props: Props, context: any) {
         super(props, context);
-        this.handleThRef = this.handleThRef.bind(this);
-        this.handleSort = this.handleSort.bind(this);
-    }
-
-    handleSort(cell: any) {
-        console.log(cell);
-    }
-
-    handleThRef(cell: any, ref: any) {
-        console.log(cell, ref);
-
-        if (!ref) {
-            return;
-        }
-
-        if (cell.__ref) {
-            cell.__ref.removeEventListener('click', cell.__fn);
-        }
-
-        cell.__ref = ref;
-        cell.__fn = this.handleSort.bind(cell);
-        cell.__ref.addEventListener('click', cell.__fn);
     }
 
     render() {
@@ -57,7 +41,6 @@ class TableReport extends React.Component<Props, {}> {
                             <th
                                 className={'table-report-cell header ' + (cell.align || 'left') + ' ' + cell.field}
                                 key={index}
-                                ref={(ref) => this.handleThRef(cell, ref)}
                             >
                                 {cell.title}
                             </th>

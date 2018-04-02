@@ -9,13 +9,9 @@ import TableReport from './components/TableReport';
 import asNumber from './components/asNumber';
 import './AllItems.css';
 import GA from './extra/GA';
-import TimeCachedStore from './extra/TimeCachedStore';
+// import TimeCachedStore from './extra/TimeCachedStore';
 
 interface State {
-    loading: boolean;
-
-    order: string;
-
     data?: Array<{
         name: string,
         count: number,
@@ -28,6 +24,7 @@ interface State {
 
 interface Props {
     term: string;
+    order: { field: string, direction: string };
 }
 
 class AllItems extends React.Component<Props, State> {
@@ -35,7 +32,7 @@ class AllItems extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = { data: undefined, loading: true, order: 'name' };
+        this.state = { data: undefined };
     }
 
     componentWillMount() {
@@ -47,18 +44,31 @@ class AllItems extends React.Component<Props, State> {
     }
 
     doLoad() {
-        this.setState({loading: true});
+        this.setState({ data: undefined });
         const me = this;
 
-        const cacheData = TimeCachedStore.instance().get(`items/${this.props.term}`);
-        if (cacheData) {
-            me.setState({ data: cacheData, loading: false });
-            return;
+        // const cacheData = TimeCachedStore.instance().get(`items/${this.props.term}`);
+        // if (cacheData) {
+        //     me.setState({ data: cacheData });
+        //     return;
+        // }
+
+        const parts = [];
+
+        if (this.props.term) {
+            parts.push('term=' + encodeURIComponent(this.props.term));
         }
 
-        fetch('https://free-ro.kudesnik.cc/rest/shops/active?term='
-            + encodeURIComponent(this.props.term)
-            + '&order=' + this.state.order)
+        if (this.props.order) {
+            parts.push('order=' + encodeURIComponent(this.props.order.field));
+            parts.push('direction=' + encodeURIComponent(this.props.order.direction));
+        }
+
+        let url = 'https://free-ro.kudesnik.cc/rest/shops/active'
+        // let url = 'http://127.0.0.1:9999/rest/shops/active'
+            + (parts.length > 0 ? '?' + parts.join('&') : '');
+
+        fetch(url)
             .then((response) => {
                 try {
                     return response.json();
@@ -67,10 +77,28 @@ class AllItems extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                TimeCachedStore.instance().set(`items/${me.props.term}`, data);
-                me.setState({ data, loading: false });
+                // TimeCachedStore.instance().set(`items/${me.props.term}`, data);
+                me.setState({ data });
             });
 
+    }
+
+    urlForColumn(field: string) {
+        if (!this.props.order) {
+            return `/items/by/${field}/asc/${this.props.term}`;
+        }
+
+        let direction = this.props.order.field === field && this.props.order.direction === 'asc' ? 'desc' : 'asc';
+
+        return `/items/by/${field}/${direction}/${this.props.term}`;
+    }
+
+    urlForSearch() {
+        if (this.props.order.field === 'default') {
+            return `/items/`;
+        }
+
+        return `/items/by/${this.props.order.field}/${this.props.order.direction}/`;
     }
 
     render() {
@@ -81,7 +109,7 @@ class AllItems extends React.Component<Props, State> {
             <div className="limiter area-allitems">
                 <MyNavigation active="items"/>
                 <Container>
-                    <RedirectableSearch base="/items/" term={this.props.term}/>
+                    <RedirectableSearch base={this.urlForSearch()} term={this.props.term}/>
                 </Container>
                 <Container>
                     <TableReport
@@ -89,7 +117,7 @@ class AllItems extends React.Component<Props, State> {
                             [
                                 {
                                     // title: 'Название',
-                                    title: <Link to={'/items/by/name/' + this.props.term}>Название</Link>,
+                                    title: (<Link to={this.urlForColumn('name')}>Название</Link>),
                                     field: 'name',
                                     render: (name, d) => (
                                         <span>
@@ -107,13 +135,15 @@ class AllItems extends React.Component<Props, State> {
                                     )
                                 },
                                 {
-                                    title: 'Количество',
+                                    // title: 'Количество',
+                                    title: (<Link to={this.urlForColumn('count')}>Количество</Link>),
                                     field: 'count',
                                     align: 'right',
                                     render: (count) => asNumber(count, 'шт')
                                 },
                                 {
-                                    title: 'Цена',
+                                    // title: 'Цена',
+                                    title: (<Link to={this.urlForColumn('price')}>Цена</Link>),
                                     field: 'price',
                                     align: 'right',
                                     render: (price, d) => (

@@ -22,6 +22,11 @@
     padding-bottom: 18px;
 }
 
+.table-report-cell.header a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .table-report-cell.left {
     text-align: left;
 }
