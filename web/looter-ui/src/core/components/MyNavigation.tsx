@@ -18,6 +18,10 @@ class MyNavigation extends React.Component<{active: string}> {
             return true;
         }
 
+        if (!match && url === '/report/' && location.pathname === '/') {
+            return true;
+        }
+
         return match;
     }
 
@@ -49,6 +53,7 @@ class MyNavigation extends React.Component<{active: string}> {
             <div className="nav-top">
                 {items.map(a => (
                     <NavLink
+                        className={'nav-link'}
                         to={a.url}
                         key={a.url}
                         isActive={(match, location) => this.isActive(match, location, a.url)}

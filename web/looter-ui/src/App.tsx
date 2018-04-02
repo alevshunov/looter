@@ -18,7 +18,7 @@ class App extends React.Component {
                     <Route
                         exact={true}
                         path="/"
-                        render={(props) => <Cards term=""/>}
+                        render={(props) => <Report preview={false} />}
                     />
 
                     <Route

@@ -1,15 +1,22 @@
 .nav-top {
     text-align: center;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
 }
 
 .nav-item {
     width: 164px;
     display: inline-block;
+    height: 75px;
 }
 
 .nav-item > * {
     text-align: center;
+}
+
+.nav-icon {
+    height: 42px;
+    vertical-align: bottom;
+    display: inline;
 }
 
 .nav-title {
@@ -28,4 +35,19 @@
 .active .nav-item > .nav-icon > svg {
     width: 32px;
     height: 32px;
+}
+
+.nav-link {
+    display: inline-block;
+}
+
+@media (max-width: 899px) {
+    .nav-top {
+        padding-bottom: 0px;
+        padding-top: 10px;
+    }
+
+    .nav-item {
+        margin-bottom: 0px;
+    }
 }
