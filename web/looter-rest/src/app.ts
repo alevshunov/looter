@@ -140,7 +140,7 @@ router.get('/shops/active', async (req, res, next) => {
             group by 
                 si.name, s.type
             having
-				min(si.price) >= ? and max(si.price) <= ?
+				min(si.price) >= ? and min(si.price) <= ?
             order by ${orderMap[requestedOrder.field]}
                 ${limit}
         `,
