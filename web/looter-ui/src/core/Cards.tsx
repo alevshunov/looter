@@ -88,7 +88,7 @@ class Cards extends React.Component<Props, State> {
                                     field: 'card',
                                     render: (card, d) => (
                                         <span>
-                                            <NavLink to={'/shops/with/' + d.card}>{d.card}</NavLink>
+                                            <NavLink to={'/cards/' + d.card}>{d.card}</NavLink>
                                             {' '}
                                             {d.ids &&
                                                 <span className="item_db-ids">id: {d.ids}
@@ -102,7 +102,10 @@ class Cards extends React.Component<Props, State> {
                                 },
                                 {
                                     title: 'Игрок',
-                                    field: 'owner'
+                                    field: 'owner',
+                                    render: (owner) =>
+                                        <NavLink to={'/cards/' + owner}>{owner}</NavLink>
+
                                 },
                                 {
                                     title: 'Время',
