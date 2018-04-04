@@ -120,7 +120,16 @@ router.get('/shops/active', async (req, res, next) => {
     };
 
     // const order = req.query.term ? 'si.name asc' : 'max(si.date) desc';
-    const limit = req.query.term !== '*' ? 'limit 100' : '';
+    const limit = req.query.term === '*'
+        ? ''
+        : (
+            req.query.term
+            && req.query.term.length > 3
+            && req.query.term.indexOf('*') === -1
+            && req.query.term.indexOf('%') === -1
+                ? ''
+                : 'limit 100'
+        );
 
     const data = await connection.query(`
             select si.name, sum(si.count) as count, min(si.price) as min, max(si.price) as max, s.type, i.ids
