@@ -4,7 +4,7 @@ import {ShopItemsLooterProvider} from './ShopItemsLooterProvider';
 
 class ShopLooter {
     private SCAN_DELAY: number = 60000;
-    private SCAN_INTERVAL: number = 5000;
+    private SCAN_INTERVAL: number = 15000;
 
     private _timer : Timer;
 

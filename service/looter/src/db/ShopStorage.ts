@@ -63,7 +63,14 @@ export class ShopStorage implements IShopStorage, IShopStorage {
                 select * 
                 from shops 
                 where active = 1
-                and (last_fetch < date_add(now(), interval -4 hour) or last_fetch is null) 
+                and (
+                    last_fetch < date_add(now(), interval -4 hour) 
+                    or last_fetch is null 
+                    or (
+                        last_fetch < date_add(now(), interval -15 minute)
+                        and retry_count > 0
+                        )
+                ) 
                 order by last_fetch asc, date desc, id desc 
                 limit 1
             `
