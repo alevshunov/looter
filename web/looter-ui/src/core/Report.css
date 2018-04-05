@@ -13,3 +13,7 @@
 .container-shadow .container-text + .table-report .table-report-cell:last-child {
     padding-right: 40px;
 }
+
+.table-report-cell.randomMessage {
+    max-width: 400px;
+}
