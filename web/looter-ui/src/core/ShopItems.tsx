@@ -71,6 +71,11 @@ class ShopItems extends React.Component<Props, State> {
         if (!this.state.data) {  return null; }
 
         const shopType = this.state.data.type;
+        const parts = /^.+? <(.+)>$/g.exec(this.state.data.location);
+        let location;
+        if (parts && parts.length > 1) {
+            location = parts[1].replace(',', ' ');
+        }
 
         return (
             <div className="limiter">
@@ -108,7 +113,14 @@ class ShopItems extends React.Component<Props, State> {
                                 </td>
                             </tr>
                             <tr>
-                                <td className="info-item table-report-cell">{this.state.data.location}</td>
+                                <td className="info-item table-report-cell">
+                                    {this.state.data.location}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="info-item table-report-cell">
+                                    @show {location}
+                                </td>
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
