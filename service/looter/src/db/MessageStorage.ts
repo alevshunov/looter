@@ -14,8 +14,14 @@ export class MessageStorage {
     async add(message: Message) {
         const conn = new MyConnection(this._dbConnection, this._logger);
         await conn.open();
-        await conn.query("insert into messages(owner, message, date, originalOwner, originalMessage, hub) values (?,?,?,?,?,?)",
-            message.owner, message.message, message.date, message.originalOwner, message.originalMessage, message.source);
-        conn.close();
+        try {
+            await conn.query("insert into messages(owner, message, date, originalOwner, originalMessage, hub) values (?,?,?,?,?,?)",
+                message.owner, message.message, message.date, message.originalOwner, message.originalMessage, message.source);
+
+        } catch(e) {
+            this._logger.error(e);
+        } finally {
+            conn.close();
+        }
     }
 }
