@@ -204,7 +204,7 @@ router.get('/shops/with/:itemName', async (req, res, next) => {
     const itemName = req.params.itemName;
     const connection = await getConnection();
     const data = await connection.query(`
-            select s.id, s.owner, s.location, s.name, min(si.price) min, max(si.price) max, s.type
+            select s.id, s.owner, s.location, s.name, min(si.price) min, max(si.price) max, sum(si.count) count, s.type
             from shop_items si 
             inner join shops s on s.id = si.shop_id and si.fetch_index = s.fetch_count
             where si.name = ? and s.active = 1 and s.fetch_count > 0 
