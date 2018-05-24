@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { NavLink } from 'react-router-dom';
 import asPrice from './components/asPrice';
 import MyNavigation from './components/MyNavigation';
-import InfoOutline from 'material-ui-icons/InfoOutline';
+import InfoOutline from '@material-ui/icons/InfoOutline';
 import asShopCount from './components/asShopCount';
 import TableReport from './components/TableReport';
 import Container from './components/Container';

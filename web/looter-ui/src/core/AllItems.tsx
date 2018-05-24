@@ -3,7 +3,7 @@ import RedirectableSearch from './components/RedirectableSearch';
 import { Link, NavLink } from 'react-router-dom';
 import asPrice from './components/asPrice';
 import MyNavigation from './components/MyNavigation';
-import InfoOutline from 'material-ui-icons/InfoOutline';
+import InfoOutline from '@material-ui/icons/InfoOutline';
 import Container from './components/Container';
 import TableReport from './components/TableReport';
 import asNumber from './components/asNumber';

@@ -11,8 +11,6 @@
   "dependencies": {
     "@types/node": "^9.4.6",
     "moment": "^2.20.1",
-    "my-core": "file:../../local_modules/my-core",
-    "my-models": "file:../../local_modules/my-models",
     "ts-node": "^5.0.1",
     "typescript": "^2.7.2"
   }

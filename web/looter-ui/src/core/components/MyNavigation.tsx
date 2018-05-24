@@ -1,8 +1,8 @@
 import * as React from 'react';
-import BookIcon from 'material-ui-icons/Book';
-import ShoppingCartIcon from 'material-ui-icons/ShoppingCart';
-import LocalOfferIcon from 'material-ui-icons/LocalOffer';
-import EqualizerIcon from 'material-ui-icons/Assessment';
+import BookIcon from '@material-ui/icons/Book';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import EqualizerIcon from '@material-ui/icons/Assessment';
 import { NavLink } from 'react-router-dom';
 import './MyNavigation.css';
 import * as H from 'history';
