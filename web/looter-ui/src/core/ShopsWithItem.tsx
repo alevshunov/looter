@@ -5,6 +5,7 @@ import MyNavigation from './components/MyNavigation';
 import Container from './components/Container';
 import TableReport from './components/TableReport';
 import GA from './extra/GA';
+import asShopCount from './components/asShopCount';
 
 interface State {
     loading: boolean;
@@ -84,6 +85,12 @@ class ShopWithItem extends React.Component<Props, State> {
                                     render: (name, d) => (
                                         <span>{d.type === 'sell' ? 'S> ' : 'B> '}{d.name}</span>
                                     )
+                                },
+                                {
+                                    title: 'Количество',
+                                    field: 'count',
+                                    align: 'right',
+                                    render: (count) => asShopCount(count)
                                 },
                                 {
                                     title: 'Цена',
