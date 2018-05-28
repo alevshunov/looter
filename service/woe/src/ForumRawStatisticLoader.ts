@@ -19,8 +19,20 @@ class ForumRawStatisticLoader {
         // const data = await fetch(`https://forum.free-ro.com/threads/${this._threadId}/`);
         const data = await fetch(`https://forum.free-ro.com/posts/${this._threadId}/`);
         const dom = new JSDOM(await data.text());
-        const msg = dom.window.document.querySelector('.message.staff[data-author=X] blockquote');
-        const rawTextMessage = msg.textContent.trim().replace(/\*звуки сверчков\*​/g,'*звуки сверчков*​\n').split('\n').map(x => x.trim()).filter(x => x.length > 0);
+
+        const msgs = dom.window.document
+            .querySelectorAll('.message.staff[data-author=X] blockquote');
+
+        let realStatMsg = '';
+        for (let i=0; i<msgs.length; i++) {
+            const rawmsg = msgs[i].textContent.trim();
+            if (rawmsg.indexOf('Лидеры по фрагам') > -1) {
+                realStatMsg = rawmsg;
+                break;
+            }
+        }
+
+        const rawTextMessage = realStatMsg.replace(/\*звуки сверчков\*​/g,'*звуки сверчков*​\n').split('\n').map(x => x.trim()).filter(x => x.length > 0);
         return rawTextMessage;
     }
 }

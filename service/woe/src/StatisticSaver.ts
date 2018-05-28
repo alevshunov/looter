@@ -57,13 +57,18 @@ class StatisticSaver {
         const attributeId = this._attributesMap[attribute];
         if (!attributeId) {
             debugger;
+        } else {
+            await this._playerAttributeSaverFactory.createFor(this._woeId, playerId, attributeId, value).save();
         }
-        await this._playerAttributeSaverFactory.createFor(this._woeId, playerId, attributeId, value).save();
     }
 
     private async saveWoEAttribute(attribute: string, stringValue: string, intValue: number) {
         const attributeId = this._attributesMap[attribute];
-        await this._woeAttributeSaverFactory.createFor(this._woeId, attributeId, stringValue, intValue).save();
+        if (!attributeId) {
+            debugger;
+        } else {
+            await this._woeAttributeSaverFactory.createFor(this._woeId, attributeId, stringValue, intValue).save();
+        }
     }
 }
 
