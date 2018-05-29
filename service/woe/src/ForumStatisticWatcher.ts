@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 
 import {JSDOM} from 'jsdom';
+import moment = require('moment');
 
 class ForumStatisticWatcher {
     async load() {
@@ -35,9 +36,23 @@ class ForumStatisticWatcher {
             let x = dom.window.document.querySelectorAll('.searchResult.post.primaryContent');
             let a = [];
             x.forEach(x => a.push(x));
-            let z = a.map(aa => {return {id: aa.id.split('-')[1], date: aa.querySelector('.main a').text}});
+            let z = a.map(aa => {return {id: aa.id.split('-')[1], name: aa.querySelector('.main a').text}});
             z.forEach(z => r.push(z));
         }
+
+        r.forEach(item => {
+            try {
+                item.date = moment(item.name.split(' ')[1], 'DD.MM.YYYY').toDate();
+            } catch {
+                item.date = moment().startOf('day').toDate();
+            }
+        });
+
+        r.sort((a, b) => {
+            return a.date < b.date ? -1 : a.date == b.date ? 0 : 1;
+        });
+
+        r = r.filter(x => x.date >= new Date(2017, 0, 1));
 
         return r;
     }

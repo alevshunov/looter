@@ -4,7 +4,7 @@ class PlayerSaver {
     private _player: string;
     private _connection: MyConnection;
 
-    private static _players = {};
+    private static _players;
 
     constructor(player: string, connection: MyConnection) {
         this._player = player;
@@ -12,6 +12,12 @@ class PlayerSaver {
     }
 
     async save(): Promise<number> {
+        if (!PlayerSaver._players) {
+            const allPlayers = await this._connection.query('select id, name from player');
+            PlayerSaver._players = {};
+            allPlayers.forEach(p => PlayerSaver._players[p.name] = p.id);
+        }
+
         if (PlayerSaver._players[this._player]) {
             return PlayerSaver._players[this._player];
         }

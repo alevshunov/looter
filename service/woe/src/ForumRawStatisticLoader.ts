@@ -8,16 +8,16 @@ declare global {
 }
 
 class ForumRawStatisticLoader {
-    private readonly _threadId;
+    private readonly _postId;
 
-    constructor(threadId) {
-        this._threadId = threadId;
+    constructor(postId) {
+        this._postId = postId;
 
     }
 
     public async load() : Promise<string[]> {
-        // const data = await fetch(`https://forum.free-ro.com/threads/${this._threadId}/`);
-        const data = await fetch(`https://forum.free-ro.com/posts/${this._threadId}/`);
+        // const data = await fetch(`https://forum.free-ro.com/threads/${this._postId}/`);
+        const data = await fetch(`https://forum.free-ro.com/posts/${this._postId}/`);
         const dom = new JSDOM(await data.text());
 
         const msgs = dom.window.document

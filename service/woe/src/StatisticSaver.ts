@@ -15,9 +15,11 @@ class StatisticSaver {
     private _woeAttributeLoaderFactory: WoEAttributeLoaderFactory;
     private _playerAttributeSaverFactory: PlayerAttributeSaverFactory;
     private _woeAttributeSaverFactory: WoEAttributeSaverFactory;
+    private _logger: MyLogger;
 
     constructor(woeId: number,
                 statistic: Array<AttributeGroup>,
+                logger: MyLogger,
                 playerSaverFactory: PlayerSaverFactory,
                 woeAttributeLoaderFactory: WoEAttributeLoaderFactory,
                 playerAttributeSaverFactory: PlayerAttributeSaverFactory,
@@ -25,6 +27,7 @@ class StatisticSaver {
 
         this._woeId = woeId;
         this._statistic = statistic;
+        this._logger = logger;
         this._playerSaverFactory = playerSaverFactory;
         this._woeAttributeLoaderFactory = woeAttributeLoaderFactory;
         this._playerAttributeSaverFactory = playerAttributeSaverFactory;
@@ -52,7 +55,7 @@ class StatisticSaver {
     }
 
     private async savePlayerAttribute(attribute: string, player: string, value: number) {
-        console.log(attribute, player, value);
+        this._logger.log(attribute, player, value);
         const playerId = await this._playerSaverFactory.createFor(player).save();
         const attributeId = this._attributesMap[attribute];
         if (!attributeId) {

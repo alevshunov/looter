@@ -7,9 +7,8 @@ import PlayerSaverFactory from './PlayerSaverFactory';
 import WoEAttributeLoaderFactory from './WoEAttributeLoaderFactory';
 import PlayerAttributeSaverFactory from './PlayerAttributeSaverFactory';
 import WoEAttributeSaverFactory from './WoEAttributeSaverFactory';
-
 import ForumStatisticWatcher from './ForumStatisticWatcher';
-
+import WoEExistChecker from './WoEExistChecker';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -18,29 +17,34 @@ const dbConnection = {
     database: process.env.LOOTER_DB_DBNAME
 };
 
+const logger = new MyLogger();
+
 (async function() {
-    const logger = new MyLogger();
     const connection = new MyConnection(dbConnection, logger);
 
     await connection.open();
 
-    const items = await new ForumStatisticWatcher().load();
-
-    const threads = items.map(x => { return {id: x.id, name: x.date}});
+    const threads = await new ForumStatisticWatcher().load();
 
 
     for (let i=0; i<threads.length; i++) {
-        const threadId = threads[i].id;
+        const postId = threads[i].id;
         const name = threads[i].name;
+        const date = threads[i].date;
 
-        const stat = await new ForumRawStatisticLoader(threadId).load();
+        if (await new WoEExistChecker(name, connection).isExist()) {
+            continue;
+        }
+
+        const woeId = await new WoESaver(name, date, postId, connection).save();
+
+        const stat = await new ForumRawStatisticLoader(postId).load();
         const parsedStatistic = new RawStatisticParser(stat).parse();
 
-
-        const woeId = await new WoESaver(name, connection).save();
         await new StatisticSaver(
             woeId,
             parsedStatistic,
+            logger,
             new PlayerSaverFactory(connection),
             new WoEAttributeLoaderFactory(connection),
             new PlayerAttributeSaverFactory(connection),
@@ -48,7 +52,10 @@ const dbConnection = {
         ).save();
 
     }
+
     await connection.close();
+
+    logger.log('Done');
 })();
 
-console.log('hello world!');
+logger.log('Starting...');
