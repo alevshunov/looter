@@ -33,6 +33,7 @@ const logger = new MyLogger();
         const date = threads[i].date;
 
         if (await new WoEExistChecker(name, connection).isExist()) {
+            logger.log(`${name} already parsed.`)
             continue;
         }
 
