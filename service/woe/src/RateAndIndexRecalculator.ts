@@ -28,7 +28,12 @@ class RateAndIndexRecalculator {
 
         await this._connection.query(`
             update woe_player_value pv 
-            set rate = 15 - pv.index
+            set rate = (
+            select pv.value / max(value)
+            from (select * from woe_player_value) t
+            where pv.woe_id = t.woe_id and pv.woe_attribute_id = t.woe_attribute_id
+            )
+            where id > 0
         `);
 
 

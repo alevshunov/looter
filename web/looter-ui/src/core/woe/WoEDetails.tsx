@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import './WoEHistory.css';
+import './WoEDetails.css';
 import GA from '../extra/GA';
 import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
@@ -117,17 +117,10 @@ class WoEDetails extends React.Component<Props, State> {
                                         </Link>
                                 },
                                 {
-                                    title: 'Показатель',
+                                    title: 'Значение',
                                     field: 'value',
                                     align: 'right',
                                     render: v => asNumber(v)
-                                },
-                                {
-                                    title: 'Боев',
-                                    field: 'woeNumber',
-                                    align: 'right',
-                                    render: v => asNumber(v)
-
                                 },
                                 {
                                     title: 'Среднее',
@@ -138,7 +131,7 @@ class WoEDetails extends React.Component<Props, State> {
                                 {
                                     title: 'Дельта',
                                     align: 'right',
-                                    field: 'value',
+                                    field: 'delta',
                                     render: (value, d) => (
                                         <div>
                                             <span className="delta">

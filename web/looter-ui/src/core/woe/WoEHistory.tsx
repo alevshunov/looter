@@ -104,12 +104,6 @@ class WoEHistory extends React.Component<Props, State> {
                                     field: 'pdb',
                                     align: 'right',
                                     render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Сложность',
-                                    field: 'rate',
-                                    align: 'right',
-                                    render: (value) => asNumber(value, undefined, '0,0.00')
                                 }
                             ]
                         }
