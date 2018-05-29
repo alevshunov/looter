@@ -8,6 +8,10 @@ import ShopWithItem from './core/ShopsWithItem';
 import Report from './core/Report';
 import OwnerHistory from './core/OwnerHistory';
 import ItemHistory from './core/ItemHistory';
+import WoEHistory from './core/woe/WoEHistory';
+import WoEDetails from './core/woe/WoEDetails';
+import WoEPlayers from './core/woe/WoEPlayers';
+import WoEPlayer from './core/woe/WoEPlayer';
 
 class App extends React.Component {
 
@@ -15,6 +19,30 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <Switch>
+                    <Route
+                        exact={true}
+                        path="/woe/"
+                        render={(props) => <WoEHistory />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/players"
+                        render={(props) => <WoEPlayers />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/player/:playerName"
+                        render={(props) => <WoEPlayer playerName={decodeURIComponent(props.match.params.playerName)} />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/:woeId"
+                        render={(props) => <WoEDetails woeId={decodeURIComponent(props.match.params.woeId)} />}
+                    />
+
                     <Route
                         exact={true}
                         path="/"

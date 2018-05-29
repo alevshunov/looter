@@ -9,6 +9,7 @@ import PlayerAttributeSaverFactory from './PlayerAttributeSaverFactory';
 import WoEAttributeSaverFactory from './WoEAttributeSaverFactory';
 import ForumStatisticWatcher from './ForumStatisticWatcher';
 import WoEExistChecker from './WoEExistChecker';
+import RateAndIndexRecalculator from './IndexCalculator';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -51,8 +52,9 @@ const logger = new MyLogger();
             new PlayerAttributeSaverFactory(connection),
             new WoEAttributeSaverFactory(connection)
         ).save();
-
     }
+
+    await new RateAndIndexRecalculator(connection).recalculate();
 
     await connection.close();
 

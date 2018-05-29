@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { MyConnection, MyLogger } from 'my-core';
+import TimeCachedStore from '../../looter-ui/src/core/extra/TimeCachedStore';
 
 const app = express();
 const router = express.Router();
@@ -318,10 +319,242 @@ router.get('/item/price/:itemName', async (req, res, next) => {
     next();
 });
 
+router.get('/woe/history', async (req, res, next) => {
+    const cache = TimeCachedStore.instance().get('/woe/history');
+    if (cache) {
+        res.json(cache);
+        next();
+        return;
+    }
+
+    const connection = await getConnection();
+    const data = await connection.query(`
+        select 
+            w.*,
+            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 1) pk,
+            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 2) pdmg,
+            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 7) ps,
+            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 8) pdb,
+            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 9) pw
+        from 
+            woe w 
+        
+        order by w.date desc
+        
+        limit 50
+        `,
+    );
+    connection.close();
+
+    TimeCachedStore.instance().set('/woe/history', data);
+
+    res.json(data);
+
+    next();
+});
+
+router.get('/woe/players', async (req, res, next) => {
+    const cache = TimeCachedStore.instance().get('/woe/players');
+    if (cache) {
+        res.json(cache);
+        next();
+        return;
+    }
+
+
+    const connection = await getConnection();
+
+    const players = await connection.query(`
+        select r.*,
+        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 1) pk,
+        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 4) pd,
+        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 7) ps,
+        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 8) pdb,
+        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 9) pw
+        from 
+        (
+            select d.player_id, d.name, truncate(sum(rate)*avgv.cnt/100, 2) rate, avgv.cnt gamesPlayed
+            from
+            (
+                select 
+                    p.id player_id, p.name, avg(pv.value * a.rate * wv.value_int / 1000000) rate
+                from 
+                    player p 
+                    inner join woe_player_value pv on p.id = pv.player_id
+                    inner join woe_attribute a on pv.woe_attribute_id = a.id
+                    inner join woe_value wv on wv.woe_id = pv.woe_id and wv.woe_attribute_id = 11
+                    
+                group by p.id, pv.woe_attribute_id
+            ) d
+            inner join (
+                select player_id, count(distinct(woe_id)) cnt
+                from woe_player_value
+                where woe_id
+                group by player_id
+            ) avgv on avgv.player_id = d.player_id
+            group by d.player_id
+            order by rate desc
+        ) r
+        limit 50
+    `);
+
+    connection.close();
+
+    TimeCachedStore.instance().set('/woe/players', players);
+
+    res.json(players);
+
+    next();
+});
+
+router.get('/woe/player/:name', async (req, res, next) => {
+    const playerName = req.params.name;
+    const connection = await getConnection();
+
+    let player = await connection.query(`select * from player where name = ?`, playerName);
+
+    if (player.length === 0) {
+        return {};
+    }
+
+    player = player[0];
+
+    const rate = await connection.query(`
+        select pv.player_id, a.id, a.name, max(value) max, sum(value) sum, 
+        truncate(avg(pv.value * a.rate * wv.value_int / 1000000),2) rate
+        from 
+            woe_player_value pv 
+            inner join woe_attribute a on pv.woe_attribute_id = a.id
+            inner join woe_value wv on wv.woe_id = pv.woe_id and wv.woe_attribute_id = 11
+        where pv.player_id = ?
+        group by pv.woe_attribute_id
+        order by pv.player_id, a.sort_order
+    `, player.id);
+
+    const woe = await connection.query(`
+        select 
+            w.*,
+            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 1 and player_id = ?) pk,
+            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 4 and player_id = ?) pd,
+            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 7 and player_id = ?) ps,
+            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 8 and player_id = ?) pdb,
+            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 9 and player_id = ?) pw,
+            truncate((select max(value_int) from woe_value where woe_id = w.id and woe_attribute_id = 11)/1000000, 2) activity
+        
+        from 
+            woe w 
+            
+        where w.id in (
+            select distinct(woe_id)
+            from woe_player_value
+            where player_id = ?
+        )
+        order by w.date desc
+        
+ 
+    `, player.id, player.id, player.id, player.id, player.id, player.id);
+
+    const data = {
+        player,
+        rate,
+        woe
+    };
+
+    connection.close();
+    res.json(data);
+
+    next();
+});
+
+router.get('/woe/info/:id', async (req, res, next) => {
+    const woeId = req.params.id;
+
+    const cache = TimeCachedStore.instance().get('/woe/' + woeId);
+    if (cache) {
+        res.json(cache);
+        next();
+        return;
+    }
+
+    const connection = await getConnection();
+
+    let woe = await connection.query(`select id, post_id as postId, date, name from woe where id = ?`, woeId);
+
+    if (woe.length === 0) {
+        return {};
+    }
+
+    woe = woe[0];
+
+    const attributes = await connection.query(`select * from woe_attribute`);
+
+    const avgServerValue = await connection.query(`
+        select woe_attribute_id attributeId, TRUNCATE(avg(value), 2) avg
+        from woe_player_value
+        group by woe_attribute_id
+    `);
+
+    const players = await connection.query(`
+        select
+            -- w.*,
+            a.id as attributeId,
+            p.id as playerId,
+            p.name as playerName,
+            pv.value as value,
+            ifnull(woe_count.cnt,0) + 1 woeNumber,
+            ifnull(TRUNCATE(((sm.v)/woe_count.cnt), 2),0) avgPlayerValue,
+            ifnull(TRUNCATE(((sm.v + pv.value)/(woe_count.cnt + 1)), 2), pv.value) avgPlayerValueNew
+            
+        from
+            woe w
+            inner join woe_player_value pv on pv.woe_id = w.id
+            inner join player p on p.id = pv.player_id
+            inner join woe_attribute a on a.id = pv.woe_attribute_id
+            left join (
+                select pv.player_id, pv.woe_attribute_id, sum(value) v
+                from woe_player_value pv
+                where woe_id < ?
+                group by pv.player_id, pv.woe_attribute_id) sm on sm.player_id = p.id and sm.woe_attribute_id = a.id
+            left join (
+                select player_id, count(distinct(woe_id)) cnt
+                from woe_player_value
+                where woe_id < ?
+                group by player_id
+            ) woe_count on woe_count.player_id = p.id
+            
+        where 
+            w.id = ?
+            
+        order by
+            a.sort_order, pv.value desc, pv.id
+    `, woeId, woeId, woeId);
+
+    const data = {
+        woe,
+        stat: attributes.map(a => {
+            return {
+                id: a.id,
+                name: a.name,
+                avg: (avgServerValue.find(av => av.attributeId === a.id) || {avg: 0}).avg,
+                players: players.filter(s => s.attributeId === a.id)
+            };
+        }).filter(s => s.players.length > 0)
+
+    };
+
+    connection.close();
+
+    TimeCachedStore.instance().set('/woe/' + woeId, data);
+
+    res.json(data);
+
+    next();
+});
+
 app.use(async (req, res, next) => {
     logger.log(req.headers["x-real-ip"], req.originalUrl || req.url || req.path || '');
 
-    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
     const connection = await getConnection();
 
@@ -336,7 +569,7 @@ app.use(async (req, res, next) => {
 app.use('/rest', router);
 
 if (!process.env.LOOTER_REST_PORT) {
-    throw 'LOOTER_REST_PORT is requred';
+    throw 'LOOTER_REST_PORT is required';
 }
 
 app.listen(process.env.LOOTER_REST_PORT);

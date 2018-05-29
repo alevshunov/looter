@@ -10,6 +10,10 @@ interface Props {
 class Report24 extends React.Component<Props, {}> {
 
     render() {
+        if (!this.props.data || !this.props.data.length) {
+            return null;
+        }
+
         let max = 0;
         this.props.data.forEach((x) => {
             max = Math.max(max, x);

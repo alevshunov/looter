@@ -1,0 +1,26 @@
+.area-woe-hostory .report24-item-container {
+    width: 2%;
+}
+
+.area-woe-hostory .report24-item-container .report24-item {
+    margin: 2px 2px 0px 2px;
+}
+
+.area-woe-hostory .report24-item-container .report24-item-label,
+.area-woe-hostory .report24-item-container .report24-item-index{
+    display: none;
+}
+
+.area-woe-hostory .table-report-cell.pk {
+    padding-right: 5px;
+}
+.area-woe-hostory .table-report-cell.pd,
+.area-woe-hostory .table-report-cell.ps
+{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.area-woe-hostory .table-report-cell.pdb {
+    padding-left: 5px;
+}

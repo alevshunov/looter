@@ -3,6 +3,7 @@ import BookIcon from '@material-ui/icons/Book';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import EqualizerIcon from '@material-ui/icons/Assessment';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import { NavLink } from 'react-router-dom';
 import './MyNavigation.css';
 import * as H from 'history';
@@ -46,6 +47,11 @@ class MyNavigation extends React.Component<{active: string}> {
                 icon: <EqualizerIcon/>,
                 title: 'Статистика',
                 url: '/report/'
+            },
+            {
+                icon: <AccountBalanceIcon/>,
+                title: 'WoE',
+                url: '/woe/'
             }
         ];
 

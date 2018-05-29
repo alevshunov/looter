@@ -6,6 +6,7 @@ interface Props {
         title: React.ReactNode | string;
         field: string;
         align?: string;
+        tooltip?: string;
         render?: (value: any, obj?: any) => any
     }>;
 
@@ -41,6 +42,7 @@ class TableReport extends React.Component<Props, {}> {
                             <th
                                 className={'table-report-cell header ' + (cell.align || 'left') + ' ' + cell.field}
                                 key={index}
+                                title={cell.tooltip}
                             >
                                 {cell.title}
                             </th>
@@ -75,6 +77,7 @@ class TableReport extends React.Component<Props, {}> {
                                                 'table-report-cell data ' + (cell.align || 'left') + ' ' + cell.field
                                             }
                                             key={index2}
+                                            title={cell.tooltip}
                                         >
                                             {
                                                 cell.field === 'index' ?
