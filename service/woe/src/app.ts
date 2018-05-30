@@ -9,7 +9,7 @@ import PlayerAttributeSaverFactory from './PlayerAttributeSaverFactory';
 import WoEAttributeSaverFactory from './WoEAttributeSaverFactory';
 import ForumStatisticWatcher from './ForumStatisticWatcher';
 import WoEExistChecker from './WoEExistChecker';
-import RateAndIndexRecalculator from './IndexCalculator';
+import RateAndIndexRecalculator from './RateAndIndexRecalculator';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -33,8 +33,8 @@ const logger = new MyLogger();
         const name = threads[i].name;
         const date = threads[i].date;
 
-        if (await new WoEExistChecker(name, connection).isExist()) {
-            logger.log(`${name} already parsed.`)
+        if (await new WoEExistChecker(name, date, connection).isExist()) {
+            logger.log(`${name} already parsed.`);
             continue;
         }
 

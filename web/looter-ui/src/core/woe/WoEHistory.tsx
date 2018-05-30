@@ -34,7 +34,7 @@ class WoEHistory extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch('http://localhost:9999/rest/woe/history')
+        fetch('https://free-ro.kudesnik.cc/rest/woe/history')
             .then((response) => {
                 try {
                     return response.json();
@@ -68,10 +68,9 @@ class WoEHistory extends React.Component<Props, State> {
                 <MyNavigation active="items"/>
                 <Container>
                     <ContainerText>
-                        <Report24 data={this.state.state24} title={'График активности на за последнии 50 ГВ:'}/>
+                        <Report24 data={this.state.state24} title={'График активности за последнии 50 ГВ:'}/>
                     </ContainerText>
-                </Container>
-                <Container>
+                    <div/>
                     <TableReport
                         cells={
                             [

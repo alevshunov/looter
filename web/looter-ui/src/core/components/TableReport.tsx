@@ -69,7 +69,10 @@ class TableReport extends React.Component<Props, {}> {
                     }
                     {
                         this.props.data && this.props.data.map((item, index) => (
-                            <tr key={index} className={(this.props.rowExtraClass || (() => ''))(item, index)}>
+                            <tr
+                                key={index}
+                                className={'data-row ' + (this.props.rowExtraClass || (() => ''))(item, index)}
+                            >
                                 {
                                     this.props.cells.map((cell, index2) => (
                                         <td

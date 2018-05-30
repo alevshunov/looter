@@ -2,12 +2,35 @@
     width: 110px;
 }
 
-.area-woe-details .avgPlayerValueNew {
+.area-woe-details .delta-field {
     width: 110px;
 }
 
+.area-woe-details .delta-field.woe {
+    width: 100px;
+}
 
-.area-woe-details .delta {
+.area-woe-details .delta-field .value {
+    display: inline;
+}
+
+.area-woe-details .delta-field .delta {
+    position: relative;
+    font-size: 9px;
+    display: inline;
+    top: -10px;
+    font-weight: bold;
+}
+
+.area-woe-details .delta-field .delta .up {
+    color: green;
+}
+
+.area-woe-details .delta-field .delta .down {
+    color: red;
+}
+
+.area-woe-details .delta-field {
     width: 110px;
 }
 

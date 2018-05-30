@@ -420,7 +420,7 @@ router.get('/woe/player/:name', async (req, res, next) => {
     player = player[0];
 
     const rate = await connection.query(`
-        select pv.player_id, a.id, a.name, max(value) max, sum(value) sum, 
+        select pv.player_id, a.id, a.ui_name as name, max(value) max, sum(value) sum, 
         truncate(avg(pv.value * a.rate * wv.value_int / 1000000),2) rate
         from 
             woe_player_value pv 
@@ -435,7 +435,8 @@ router.get('/woe/player/:name', async (req, res, next) => {
         select 
             w.*,
             (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 1 and player_id = ?) pk,
-            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 4 and player_id = ?) pd,
+            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 2 and player_id = ?) pdmg,
+            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 3 and player_id = ?) pdmgget,
             (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 7 and player_id = ?) ps,
             (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 8 and player_id = ?) pdb,
             (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 9 and player_id = ?) pw,
@@ -452,7 +453,7 @@ router.get('/woe/player/:name', async (req, res, next) => {
         order by w.date desc
         
  
-    `, player.id, player.id, player.id, player.id, player.id, player.id);
+    `, player.id, player.id, player.id, player.id, player.id, player.id, player.id);
 
     const data = {
         player,
@@ -486,6 +487,25 @@ router.get('/woe/info/:id', async (req, res, next) => {
 
     woe = woe[0];
 
+    const rate = await connection.query(`
+        select a.id, a.ui_name as name, sum(value) sum, avgv.avg_all
+        from woe_player_value pv 
+        inner join woe_attribute a on a.id = pv.woe_attribute_id
+        left join (
+            select woe_attribute_id, truncate(avg(avg_all), 0) avg_all
+            from (
+                select pvi.woe_attribute_id, sum(pvi.value) avg_all
+                from woe_player_value pvi
+                where pvi.woe_id < ?
+                group by pvi.woe_id, pvi.woe_attribute_id
+            ) t
+            group by t.woe_attribute_id
+        ) avgv on avgv.woe_attribute_id = a.id
+        where pv.woe_id = ? and a.id not in (3,4, 10)
+        group by a.id
+        order by a.sort_order
+    `, woe.id, woe.id);
+
     const attributes = await connection.query(`select * from woe_attribute`);
 
     const avgServerValue = await connection.query(`
@@ -501,6 +521,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
             p.id as playerId,
             p.name as playerName,
             pv.value as value,
+            pv.position_index,
             ifnull(woe_count.cnt,0) + 1 woeNumber,
             ifnull(TRUNCATE(((sm.v)/woe_count.cnt), 2),0) avgPlayerValue,
             ifnull(TRUNCATE(((sm.v + pv.value)/(woe_count.cnt + 1)), 2), pv.value) avgPlayerValueNew
@@ -531,6 +552,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
 
     const data = {
         woe,
+        rate,
         stat: attributes.map(a => {
             return {
                 id: a.id,

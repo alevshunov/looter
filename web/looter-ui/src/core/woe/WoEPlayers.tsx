@@ -32,7 +32,7 @@ class WoEPlayers extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch('http://localhost:9999/rest/woe/players')
+        fetch('https://free-ro.kudesnik.cc/rest/woe/players')
             .then((response) => {
                 try {
                     return response.json();
@@ -104,7 +104,7 @@ class WoEPlayers extends React.Component<Props, State> {
                                     title: 'Рейтинг',
                                     field: 'rate',
                                     align: 'right',
-                                    render: (value) => asNumber(value, undefined, '0,0.00')
+                                    render: (value) => asNumber(value)
                                 }
                             ]
                         }

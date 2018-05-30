@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './WoEHistory.css';
+import './WoEPlayer.css';
 import GA from '../extra/GA';
 import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
@@ -32,7 +32,7 @@ class WoEPlayer extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch('http://localhost:9999/rest/woe/player/' + this.props.playerName)
+        fetch('https://free-ro.kudesnik.cc/rest/woe/player/' + this.props.playerName)
             .then((response) => {
                 try {
                     return response.json();
@@ -61,6 +61,14 @@ class WoEPlayer extends React.Component<Props, State> {
                                     {this.state.data && this.state.data.player.name}
                                 </td>
                             </tr>
+                            {
+                                this.state.data &&
+                                <tr>
+                                    <td className="info-item table-report-cell">
+                                        Проведено {this.state.data && this.state.data.player.games_played} ГВ
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </Container>
@@ -112,28 +120,36 @@ class WoEPlayer extends React.Component<Props, State> {
                                     title: 'Убил',
                                     field: 'pk',
                                     align: 'right',
-                                    tooltip: 'Kills',
                                     render: x => asNumber(x)
                                 },
                                 {
                                     title: 'Убит',
                                     field: 'pd',
                                     align: 'right',
-                                    tooltip: 'Deaths',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Нанес урон',
+                                    field: 'pdmg',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Получил урон',
+                                    field: 'pdmgget',
+                                    align: 'right',
                                     render: x => asNumber(x)
                                 },
                                 {
                                     title: 'Баф',
                                     field: 'ps',
                                     align: 'right',
-                                    tooltip: 'Supports',
                                     render: x => asNumber(x)
                                 },
                                 {
                                     title: 'Дебаф',
                                     field: 'pdb',
                                     align: 'right',
-                                    tooltip: 'Debuffs',
                                     render: x => asNumber(x)
                                 }
                             ]

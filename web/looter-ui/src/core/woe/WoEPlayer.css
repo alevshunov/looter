@@ -1,0 +1,12 @@
+.area-woe-player .table-report-cell {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.area-woe-player .table-report-cell:first-child {
+    padding-left: 40px;
+}
+
+.area-woe-player .table-report-cell:last-child {
+    padding-right: 40px;
+}

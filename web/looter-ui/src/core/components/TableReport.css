@@ -12,6 +12,10 @@
     border-bottom: 1px solid #f2f2f2;
 }
 
+.table-report tr.data-row:hover {
+    background-color: #ebedfb;
+}
+
 .table-report-cell.header  {
     font-size: 18px;
     color: #fa4251;

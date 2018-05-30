@@ -33,7 +33,7 @@ class WoEDetails extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch(`http://localhost:9999/rest/woe/info/${this.props.woeId}`)
+        fetch(`https://free-ro.kudesnik.cc/rest/woe/info/${this.props.woeId}`)
             .then((response) => {
                 try {
                     return response.json();
@@ -55,8 +55,9 @@ class WoEDetails extends React.Component<Props, State> {
 
         if (this.state.data) {
             this.state.data.stat.forEach((attr: any) => {
-                parts.push(this.renderAttrHeader(attr));
-                parts.push(this.renderAttr(attr));
+                parts.push(<Container key={attr.id}>{this.renderAttrHeader(attr)}{this.renderAttr(attr)}</Container>);
+                // parts.push(this.renderAttrHeader(attr));
+                // parts.push(this.renderAttr(attr));
             });
         }
 
@@ -91,6 +92,24 @@ class WoEDetails extends React.Component<Props, State> {
                             </tr>
                         </tbody>
                     </table>
+                    {this.state.data && <TableReport
+                        cells={
+                            [
+                                {
+                                    title: '',
+                                    field: 'name'
+                                },
+                                {
+                                    title: 'Всего',
+                                    align: 'right',
+                                    field: 'sum',
+                                    render: (v) => asNumber(v)
+                                }
+                            ]
+                        }
+                        data={this.state.data.rate}
+                    />
+                    }
                 </Container>
 
                 {parts}
@@ -100,90 +119,80 @@ class WoEDetails extends React.Component<Props, State> {
 
     renderAttr (attribute: any) {
         return (
-            <Container>
-                    <TableReport
-                        cells={
-                            [
-                                {
-                                    title: '',
-                                    field: 'index'
-                                },
-                                {
-                                    title: 'Игрок',
-                                    field: 'playerName',
-                                    render: (v, d) =>
-                                        <Link to={`/woe/player/${encodeURIComponent(d.playerName)}`}>
-                                            {v}
-                                        </Link>
-                                },
-                                {
-                                    title: 'Значение',
-                                    field: 'value',
-                                    align: 'right',
-                                    render: v => asNumber(v)
-                                },
-                                {
-                                    title: 'Среднее',
-                                    field: 'avgPlayerValueNew',
-                                    align: 'right',
-                                    render: (value, d) => asNumber(value)
-                                },
-                                {
-                                    title: 'Дельта',
-                                    align: 'right',
-                                    field: 'delta',
-                                    render: (value, d) => (
-                                        <div>
-                                            <span className="delta">
-                                                {
-                                                    d.avgPlayerValue < d.avgPlayerValueNew ?
-                                                        <span className="up">
-                                                            {' + '}{
-                                                            asNumber(d.avgPlayerValueNew - d.avgPlayerValue,
-                                                                undefined,
-                                                                '0,0.00'
-                                                            )}
-                                                        </span>
-                                                    :
-                                                        <span className="down">
-                                                            {' - '} {
-                                                            asNumber(d.avgPlayerValue - d.avgPlayerValueNew,
-                                                                undefined,
-                                                                '0,0.00'
-                                                            )}
-                                                        </span>
-                                                }
-                                            </span>
-                                        </div>
-                                    )
-                                }
-                            ]
+            <TableReport
+                cells={
+                    [
+                        {
+                            title: '',
+                            field: 'position_index index',
+                            render: (v, d) => { return d.position_index; }
+                        },
+                        {
+                            title: 'Игрок',
+                            field: 'playerName',
+                            render: (v, d) =>
+                                <Link to={`/woe/player/${encodeURIComponent(d.playerName)}`}>
+                                    {v}
+                                </Link>
+                        },
+                        {
+                            title: 'Значение',
+                            field: 'value',
+                            align: 'right',
+                            render: v => asNumber(v)
+                        },
+                        {
+                            title: 'Среднее',
+                            field: 'delta-field',
+                            align: 'right',
+                            render: (value, d) => (
+                                <div>
+                                    <div className="value">
+                                        {asNumber(d.avgPlayerValueNew)}
+                                    </div>
+                                    <div className="delta">
+                                        {
+                                            d.avgPlayerValue < d.avgPlayerValueNew ?
+                                                <span className="up">
+                                                    {' + '}{
+                                                    asNumber(d.avgPlayerValueNew - d.avgPlayerValue
+                                                    )}
+                                                </span>
+                                                :
+                                                <span className="down">
+                                                    {' - '} {
+                                                    asNumber(d.avgPlayerValue - d.avgPlayerValueNew
+                                                    )}
+                                                </span>
+                                        }
+                                    </div>
+                                </div>
+                            )
                         }
-                        // title={attribute.name}
-                        data={attribute.players}
-                    />
-                </Container>
+                    ]
+                }
+                // title={attribute.name}
+                data={attribute.players}
+            />
         );
     }
 
     renderAttrHeader(attribute: any) {
         return (
-            <Container>
-                <table className="table-report info">
-                    <tbody>
-                        <tr>
-                            <td className="info-item table-report-cell">
-                                {attribute.name}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="info-item table-report-cell">
-                                В среднем по серверу: {asNumber(attribute.avg, undefined, '0,0.00')}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </Container>
+            <table className="table-report info">
+                <tbody>
+                    <tr>
+                        <td className="info-item table-report-cell">
+                            {attribute.name}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="info-item table-report-cell">
+                            В среднем по серверу: {asNumber(attribute.avg)}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         );
     }
 }
