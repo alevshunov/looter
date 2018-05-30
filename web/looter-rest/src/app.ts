@@ -550,9 +550,17 @@ router.get('/woe/info/:id', async (req, res, next) => {
             a.sort_order, pv.value desc, pv.id
     `, woeId, woeId, woeId);
 
+    const log = await connection.query(`
+        select m.date, m.originalMessage as message
+        from woe w inner join woe_log l on l.woe_id = w.id inner join messages m on l.message_id = m.id
+        where w.id = ?    
+        order by m.date
+    `, woeId);
+
     const data = {
         woe,
         rate,
+        log,
         stat: attributes.map(a => {
             return {
                 id: a.id,

@@ -40,8 +40,24 @@ class RateAndIndexRecalculator {
             )
         `);
 
+        await this._connection.query(`
+            insert into woe_log(message_id, woe_id)
+            select m.id message_id, w.id woe_id
+            from messages m inner join woe w on date(m.date) = date(w.date)
+            where 
+            (
+            originalMessage like '- У гильдии [%] новый GuildMaster - %!'
+            or originalMessage like '- Война за Империум%началась!!'
+            or originalMessage like '- Замок [%] захвачен гильдией [%]! Империум разбил%.'
+            or originalMessage like '- Война за Империум%завершена!'
+            or originalMessage like '- Замком [%] владеет гильдия [%].'
+            )
+            and originalOwner = 'FreeRO'
+            and w.id not in (select distinct woe_id from (select * from woe_log) t)  
+        `);
 
         await this._connection.query(`delete from woe_player;`);
+
 
         // await this._connection.query(`
         //     insert into woe_player(woe_id, player_id, \`index\`, rate, rate_delta)

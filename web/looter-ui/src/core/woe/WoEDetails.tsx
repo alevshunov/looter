@@ -93,6 +93,28 @@ class WoEDetails extends React.Component<Props, State> {
                         </tbody>
                     </table>
                     {this.state.data && <TableReport
+                        rowExtraClass={() => 'woe-log'}
+                        cells={
+                            [
+                                {
+                                    title: '',
+                                    field: 'date',
+                                    render: (v) => moment(v)
+                                        .locale('ru')
+                                        .format('HH:mm:ss')
+                                },
+                                {
+                                    title: '',
+                                    align: 'left',
+                                    field: 'message',
+                                    render: (v) => v
+                                }
+                            ]
+                        }
+                        data={this.state.data.log}
+                    />
+                    }
+                    {this.state.data && <TableReport
                         cells={
                             [
                                 {
@@ -100,7 +122,7 @@ class WoEDetails extends React.Component<Props, State> {
                                     field: 'name'
                                 },
                                 {
-                                    title: 'Всего',
+                                    title: '',
                                     align: 'right',
                                     field: 'sum',
                                     render: (v) => asNumber(v)
