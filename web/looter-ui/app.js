@@ -11,6 +11,24 @@ titleMapper = function(url) {
     mappers.push({ exp: /^\/$/, fn: () => Promise.resolve('FreeRO - I see You!')});
 
     mappers.push({
+        exp: /^\/woe\/?$/,
+        fn: () =>
+            Promise.resolve('FreeRO - WoE')
+    });
+
+    mappers.push({
+        exp: /^\/woe\/player\/(.+)$/,
+        fn: (parts) =>
+            Promise.resolve('FreeRO - WoE - ' + decodeURIComponent(parts[1]))
+    });
+
+    mappers.push({
+        exp: /^\/woe\/(.+)$/,
+        fn: (parts) =>
+            Promise.resolve('FreeRO - WoE - #' + decodeURIComponent(parts[1]))
+    });
+
+    mappers.push({
         exp: /^\/cards\/?$/,
         fn: () =>
             Promise.resolve('FreeRO - Cards')
