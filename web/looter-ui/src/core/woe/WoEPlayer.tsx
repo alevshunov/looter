@@ -82,7 +82,7 @@ class WoEPlayer extends React.Component<Props, State> {
                                         field: 'name'
                                     },
                                     {
-                                        title: 'Среднее',
+                                        title: 'В среднем',
                                         align: 'right',
                                         field: 'avg',
                                         render: (v, d) => asNumber(

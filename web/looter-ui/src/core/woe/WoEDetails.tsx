@@ -142,7 +142,7 @@ class WoEDetails extends React.Component<Props, State> {
                             render: v => asNumber(v)
                         },
                         {
-                            title: 'Среднее',
+                            title: 'В среднем',
                             field: 'delta-field',
                             align: 'right',
                             render: (value, d) => (
