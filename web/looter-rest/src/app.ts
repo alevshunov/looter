@@ -501,7 +501,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
             ) t
             group by t.woe_attribute_id
         ) avgv on avgv.woe_attribute_id = a.id
-        where pv.woe_id = ? and a.id not in (3,4, 10)
+        where pv.woe_id = ? and a.id not in (3, 4, 10)
         group by a.id
         order by a.sort_order
     `, woe.id, woe.id);
@@ -523,8 +523,8 @@ router.get('/woe/info/:id', async (req, res, next) => {
             pv.value as value,
             pv.position_index,
             ifnull(woe_count.cnt,0) + 1 woeNumber,
-            ifnull(TRUNCATE(((sm.v)/woe_count.cnt), 2),0) avgPlayerValue,
-            ifnull(TRUNCATE(((sm.v + pv.value)/(woe_count.cnt + 1)), 2), pv.value) avgPlayerValueNew
+            TRUNCATE((ifnull(sm.v, 0)/woe_count.cnt), 2),0) avgPlayerValue,
+            TRUNCATE((ifnull(sm.v + pv.value, 0)/(woe_count.cnt + 1)), 2), pv.value) avgPlayerValueNew
             
         from
             woe w
@@ -535,7 +535,8 @@ router.get('/woe/info/:id', async (req, res, next) => {
                 select pv.player_id, pv.woe_attribute_id, sum(value) v
                 from woe_player_value pv
                 where woe_id < ?
-                group by pv.player_id, pv.woe_attribute_id) sm on sm.player_id = p.id and sm.woe_attribute_id = a.id
+                group by pv.player_id, pv.woe_attribute_id
+            ) sm on sm.player_id = p.id and sm.woe_attribute_id = a.id
             left join (
                 select player_id, count(distinct(woe_id)) cnt
                 from woe_player_value
