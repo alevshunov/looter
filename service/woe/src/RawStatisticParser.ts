@@ -1,22 +1,23 @@
 import {AttributeGroup, Statistic} from './Types';
 
 class RawStatisticParser {
+    private STATUS_EXP = /^(.+) - ([0-9]{1,3}([, ]?[0-9]{3})*)$/;
+    private NUMBER_EXP = /^([0-9]{1,3}([, ]?[0-9]{3})*)$/;
+
     private _stat: string[];
+    private _icons: string[];
 
-    private STATUS_EXP = /^(.+) - ([0-9]{1,3}(,[0-9]{3})*)$/;
-    private NUMBER_EXP = /^([0-9]{1,3}(,[0-9]{3})*)$/;
-
-    constructor(stat: string[]) {
+    constructor(stat: string[], icons: string[]) {
         this._stat = stat;
+        this._icons = icons;
         this.nextEntry = this.nextEntry.bind(this);
     }
 
-    parse() : Array<AttributeGroup> {
-        const initValue : Statistic = { groups: [], extra: [] };
+    parse() : Statistic {
+        const initValue : Statistic = { groups: [], extra: [], icons: {}, recordsCount: 0 };
 
         const result = this._stat
             .reduce<Statistic>(this.nextEntry, initValue)
-            .groups
             // .filter(x => x.players.length > 0)
         ;
 
@@ -33,6 +34,8 @@ class RawStatisticParser {
             const parts = this.STATUS_EXP.exec(entry);
             const player = {name: parts[1], value: parseInt(parts[2].replace(/,/g, ''))};
             state.groups[state.groups.length - 1].players.push(player);
+            state.icons[player.name] = this._icons[state.recordsCount] || null;
+            state.recordsCount++;
         } else if (entry.match(this.NUMBER_EXP)) {
             state.groups[state.groups.length - 1].rawInt = parseInt(entry.replace(/,/g, ''));
         } else {

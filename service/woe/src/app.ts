@@ -10,6 +10,7 @@ import WoEAttributeSaverFactory from './WoEAttributeSaverFactory';
 import ForumStatisticWatcher from './ForumStatisticWatcher';
 import WoEExistChecker from './WoEExistChecker';
 import RateAndIndexRecalculator from './RateAndIndexRecalculator';
+import IconSaver from './IconSaver';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -40,18 +41,20 @@ const logger = new MyLogger();
 
         const woeId = await new WoESaver(name, date, postId, connection).save();
 
-        const stat = await new ForumRawStatisticLoader(postId).load();
-        const parsedStatistic = new RawStatisticParser(stat).parse();
+        const { stat, icons } = await new ForumRawStatisticLoader(postId).load();
+        const parsedStatistic = new RawStatisticParser(stat, icons).parse();
 
         await new StatisticSaver(
             woeId,
-            parsedStatistic,
+            parsedStatistic.groups,
             logger,
             new PlayerSaverFactory(connection),
             new WoEAttributeLoaderFactory(connection),
             new PlayerAttributeSaverFactory(connection),
             new WoEAttributeSaverFactory(connection)
         ).save();
+
+        await new IconSaver(parsedStatistic.icons, woeId, connection).save();
     }
 
     await new RateAndIndexRecalculator(connection).recalculate();

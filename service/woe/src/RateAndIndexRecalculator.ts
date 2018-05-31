@@ -56,8 +56,7 @@ class RateAndIndexRecalculator {
             and w.id not in (select distinct woe_id from (select * from woe_log) t)  
         `);
 
-        await this._connection.query(`delete from woe_player;`);
-
+        // await this._connection.query(`delete from woe_player;`);
 
         // await this._connection.query(`
         //     insert into woe_player(woe_id, player_id, \`index\`, rate, rate_delta)

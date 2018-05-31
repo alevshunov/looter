@@ -9,8 +9,10 @@ export interface RawPlayerValue {
 }
 
 export interface Statistic {
+    icons: Object;
     groups: Array<AttributeGroup>;
     extra: Array<AttributeValue>;
+    recordsCount: number;
 }
 
 export interface AttributeValue {
