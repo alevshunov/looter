@@ -516,15 +516,14 @@ router.get('/woe/info/:id', async (req, res, next) => {
 
     const players = await connection.query(`
         select
-            -- w.*,
             a.id as attributeId,
             p.id as playerId,
             p.name as playerName,
             pv.value as value,
             pv.position_index,
             ifnull(woe_count.cnt,0) + 1 woeNumber,
-            TRUNCATE((ifnull(sm.v, 0)/woe_count.cnt), 2),0) avgPlayerValue,
-            TRUNCATE((ifnull(sm.v + pv.value, 0)/(woe_count.cnt + 1)), 2), pv.value) avgPlayerValueNew
+            TRUNCATE(ifnull(sm.v, 0)/woe_count.cnt, 2) avgPlayerValue,
+            TRUNCATE((ifnull(sm.v, 0) + pv.value)/(woe_count.cnt + 1), 2) avgPlayerValueNew
             
         from
             woe w
