@@ -522,8 +522,8 @@ router.get('/woe/info/:id', async (req, res, next) => {
             pv.value as value,
             pv.position_index,
             ifnull(woe_count.cnt,0) + 1 woeNumber,
-            TRUNCATE(ifnull(sm.v, 0)/woe_count.cnt, 2) avgPlayerValue,
-            TRUNCATE((ifnull(sm.v, 0) + pv.value)/(woe_count.cnt + 1), 2) avgPlayerValueNew
+            ifnull(TRUNCATE(ifnull(sm.v, 0)/woe_count.cnt, 2), 0) avgPlayerValue,
+            TRUNCATE((ifnull(sm.v, 0) + pv.value)/(ifnull(woe_count.cnt, 0) + 1), 2) avgPlayerValueNew
             
         from
             woe w
