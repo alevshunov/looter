@@ -531,7 +531,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
             inner join woe_player_value pv on pv.woe_id = w.id
             inner join player p on p.id = pv.player_id
             inner join woe_attribute a on a.id = pv.woe_attribute_id
-            inner join woe_player wp on wp.player_id = p.id and wp.woe_id = w.id
+            left join woe_player wp on wp.player_id = p.id and wp.woe_id = w.id
             left join (
                 select pv.player_id, pv.woe_attribute_id, sum(value) v
                 from woe_player_value pv
