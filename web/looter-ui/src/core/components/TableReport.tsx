@@ -15,6 +15,7 @@ interface Props {
     title?: string;
     emptyMessage?: string;
     loadingMessage?: string;
+    userCls?: string;
 }
 
 class TableReport extends React.Component<Props, {}> {
@@ -25,7 +26,7 @@ class TableReport extends React.Component<Props, {}> {
 
     render() {
         return (
-            <table className="table-report">
+            <table className={'table-report ' + this.props.userCls}>
                 <thead>
                     {this.props.title &&
                         <tr>

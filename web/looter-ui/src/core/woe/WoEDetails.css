@@ -6,6 +6,17 @@
     width: 130px;
 }
 
+.area-woe-details .rate tbody .table-report-cell {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.area-woe-details .data.guildIcon {
+    width: 24px;
+    /*padding-left: 5px;*/
+    padding-right: 5px;
+}
+
 .area-woe-details .delta-field.woe {
     width: 100px;
 }

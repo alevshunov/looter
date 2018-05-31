@@ -139,15 +139,40 @@ class WoEDetails extends React.Component<Props, State> {
         );
     }
 
+    renderAttrHeader(attribute: any) {
+        return (
+            <table className="table-report info">
+                <tbody>
+                    <tr>
+                        <td className="info-item table-report-cell">
+                            {attribute.name}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="info-item table-report-cell">
+                            В среднем по серверу: {asNumber(attribute.avg)}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        );
+    }
+
     renderAttr (attribute: any) {
         return (
             <TableReport
+                userCls={'rate'}
                 cells={
                     [
                         {
                             title: '',
                             field: 'position_index index',
                             render: (v, d) => { return d.position_index; }
+                        },
+                        {
+                            title: '',
+                            field: 'guildIcon',
+                            render: (v, d) => <img src={v} alt={d.playerName}/>
                         },
                         {
                             title: 'Игрок',
@@ -196,25 +221,6 @@ class WoEDetails extends React.Component<Props, State> {
                 // title={attribute.name}
                 data={attribute.players}
             />
-        );
-    }
-
-    renderAttrHeader(attribute: any) {
-        return (
-            <table className="table-report info">
-                <tbody>
-                    <tr>
-                        <td className="info-item table-report-cell">
-                            {attribute.name}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="info-item table-report-cell">
-                            В среднем по серверу: {asNumber(attribute.avg)}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         );
     }
 }

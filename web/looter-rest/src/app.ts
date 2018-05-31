@@ -521,6 +521,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
             p.name as playerName,
             pv.value as value,
             pv.position_index,
+            wp.guild_icon_url guildIcon,
             ifnull(woe_count.cnt,0) + 1 woeNumber,
             ifnull(TRUNCATE(ifnull(sm.v, 0)/woe_count.cnt, 2), 0) avgPlayerValue,
             TRUNCATE((ifnull(sm.v, 0) + pv.value)/(ifnull(woe_count.cnt, 0) + 1), 2) avgPlayerValueNew
@@ -530,6 +531,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
             inner join woe_player_value pv on pv.woe_id = w.id
             inner join player p on p.id = pv.player_id
             inner join woe_attribute a on a.id = pv.woe_attribute_id
+            inner join woe_player wp on wp.player_id = p.id and wp.woe_id = w.id
             left join (
                 select pv.player_id, pv.woe_attribute_id, sum(value) v
                 from woe_player_value pv
