@@ -18,7 +18,6 @@ class RawStatisticParser {
 
         const result = this._stat
             .reduce<Statistic>(this.nextEntry, initValue)
-            // .filter(x => x.players.length > 0)
         ;
 
         return result;

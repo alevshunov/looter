@@ -1,76 +1,86 @@
 import {MyConnection, MyLogger} from "my-core";
-import {AttributeGroup} from './Types';
+import {AttributeGroup, Statistic} from './Types';
 import PlayerSaverFactory from './PlayerSaverFactory';
 import WoEAttributeLoaderFactory from './WoEAttributeLoaderFactory';
 import PlayerAttributeSaverFactory from './PlayerAttributeSaverFactory';
 import WoEAttributeSaverFactory from './WoEAttributeSaverFactory';
+import GuildSaverFactory from './GuildSaverFactory';
+import PlayerOnWoESaverFactory from './PlayerOnWoESaverFactory';
 
 class StatisticSaver {
-    private _attributesMap = {};
-
-    private _statistic: Array<AttributeGroup>;
     private _woeId: number;
+    private _statistic: Statistic;
+
+    private _logger: MyLogger;
 
     private _playerSaverFactory: PlayerSaverFactory;
     private _woeAttributeLoaderFactory: WoEAttributeLoaderFactory;
     private _playerAttributeSaverFactory: PlayerAttributeSaverFactory;
     private _woeAttributeSaverFactory: WoEAttributeSaverFactory;
-    private _logger: MyLogger;
+    private _guildSaverFactory: GuildSaverFactory;
+    private _playerOnWoESaverFactory: PlayerOnWoESaverFactory;
 
     constructor(woeId: number,
-                statistic: Array<AttributeGroup>,
+                statistic: Statistic,
                 logger: MyLogger,
                 playerSaverFactory: PlayerSaverFactory,
                 woeAttributeLoaderFactory: WoEAttributeLoaderFactory,
                 playerAttributeSaverFactory: PlayerAttributeSaverFactory,
-                woeAttributeSaverFactory: WoEAttributeSaverFactory) {
+                woeAttributeSaverFactory: WoEAttributeSaverFactory,
+                guildSaverFactory: GuildSaverFactory,
+                playerOnWoESaverFactory: PlayerOnWoESaverFactory) {
 
         this._woeId = woeId;
         this._statistic = statistic;
+
         this._logger = logger;
+
         this._playerSaverFactory = playerSaverFactory;
         this._woeAttributeLoaderFactory = woeAttributeLoaderFactory;
         this._playerAttributeSaverFactory = playerAttributeSaverFactory;
         this._woeAttributeSaverFactory = woeAttributeSaverFactory;
+        this._guildSaverFactory = guildSaverFactory;
+        this._playerOnWoESaverFactory = playerOnWoESaverFactory;
+
     }
 
-    public async save() {
-        this._attributesMap = await this._woeAttributeLoaderFactory.create().loadAsMapByName();
+    async save() {
+        const attributesMap = await this._woeAttributeLoaderFactory.create().loadAsMapByName();
 
-        for(let i=0; i<this._statistic.length; i++) {
-            await this.saveAttribute(this._statistic[i]);
-        }
-    }
+        for (let i=0; i<this._statistic.groups.length; i++) {
+            const group = this._statistic.groups[i];
+            const attributeName = group.name;
+            const attributeId = attributesMap[attributeName];
 
-    private async saveAttribute(attributeGroup: AttributeGroup) {
-        if (attributeGroup.players && attributeGroup.players.length > 0) {
-            for (let i=0; i<attributeGroup.players.length; i++) {
-                await this.savePlayerAttribute(attributeGroup.name, attributeGroup.players[i].name, attributeGroup.players[i].value);
+            if (!attributeId) {
+                debugger;
+                continue;
             }
-        }
 
-        if (attributeGroup.rawString || attributeGroup.rawInt) {
-            await this.saveWoEAttribute(attributeGroup.name, attributeGroup.rawString, attributeGroup.rawInt);
-        }
-    }
+            if (group.rawString || group.rawInt) {
+                await this._woeAttributeSaverFactory
+                    .createFor(this._woeId, attributeId, group.rawString, group.rawInt)
+                    .save();
+            }
 
-    private async savePlayerAttribute(attribute: string, player: string, value: number) {
-        this._logger.log(attribute, player, value);
-        const playerId = await this._playerSaverFactory.createFor(player).save();
-        const attributeId = this._attributesMap[attribute];
-        if (!attributeId) {
-            debugger;
-        } else {
-            await this._playerAttributeSaverFactory.createFor(this._woeId, playerId, attributeId, value).save();
-        }
-    }
+            for (let j=0; j<this._statistic.groups[i].players.length; j++) {
 
-    private async saveWoEAttribute(attribute: string, stringValue: string, intValue: number) {
-        const attributeId = this._attributesMap[attribute];
-        if (!attributeId) {
-            debugger;
-        } else {
-            await this._woeAttributeSaverFactory.createFor(this._woeId, attributeId, stringValue, intValue).save();
+                const playerName = this._statistic.groups[i].players[j].name;
+                const playerValue = this._statistic.groups[i].players[j].value;
+                const iconUrl = this._statistic.icons[playerName];
+
+                let guildId = null, playerId;
+
+                if (iconUrl) {
+                    guildId = await this._guildSaverFactory.createFor(iconUrl).save();
+                }
+
+                playerId = await this._playerSaverFactory.createFor(playerName).save();
+
+                await this._playerOnWoESaverFactory
+                    .createFor(this._woeId, playerId, guildId, attributeId, playerValue)
+                    .save();
+            }
         }
     }
 }

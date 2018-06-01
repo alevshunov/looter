@@ -18,20 +18,12 @@ class PlayerSaver {
             allPlayers.forEach(p => PlayerSaver._players[p.name] = p.id);
         }
 
-        if (PlayerSaver._players[this._player]) {
-            return PlayerSaver._players[this._player];
+        if (!PlayerSaver._players[this._player]) {
+            let result = await this._connection.query('insert into player(name) values(?)', this._player);
+            PlayerSaver._players[this._player] = result.insertId;
         }
 
-        let result = await this._connection.query('select id from player where name = ?', this._player);
-        if (result.length > 0) {
-            PlayerSaver._players[this._player] = result[0].id;
-            return result[0].id;
-        }
-
-        result = await this._connection.query('insert into player(name) values(?)', this._player);
-        PlayerSaver._players[this._player] = result.insertId;
-
-        return result.insertId;
+        return PlayerSaver._players[this._player];
     }
 }
 

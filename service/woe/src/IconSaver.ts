@@ -23,7 +23,7 @@ class IconSaver {
 
             await this._connection.query(`
                 insert into woe_player(woe_id, player_id, game_index, rate, rate_delta, guild_icon_url)
-                values(?,(select id from player where name = ?), 0, 0, 0, ?)
+                values(?, (select id from player where name = ?), 0, 0, 0, ?)
                 `, this._woeId, playerName, icon);
         }
     }

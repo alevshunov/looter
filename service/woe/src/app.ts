@@ -11,6 +11,8 @@ import ForumStatisticWatcher from './ForumStatisticWatcher';
 import WoEExistChecker from './WoEExistChecker';
 import RateAndIndexRecalculator from './RateAndIndexRecalculator';
 import IconSaver from './IconSaver';
+import GuildSaverFactory from './GuildSaverFactory';
+import PlayerOnWoESaverFactory from './PlayerOnWoESaverFactory';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -28,6 +30,7 @@ const logger = new MyLogger();
 
     const threads = await new ForumStatisticWatcher().load();
 
+    let hasChanges = false;
 
     for (let i=0; i<threads.length; i++) {
         const postId = threads[i].id;
@@ -46,18 +49,22 @@ const logger = new MyLogger();
 
         await new StatisticSaver(
             woeId,
-            parsedStatistic.groups,
+            parsedStatistic,
             logger,
             new PlayerSaverFactory(connection),
             new WoEAttributeLoaderFactory(connection),
             new PlayerAttributeSaverFactory(connection),
-            new WoEAttributeSaverFactory(connection)
+            new WoEAttributeSaverFactory(connection),
+            new GuildSaverFactory(connection),
+            new PlayerOnWoESaverFactory(connection)
         ).save();
 
-        await new IconSaver(parsedStatistic.icons, woeId, connection).save();
+        hasChanges = true;
     }
 
-    await new RateAndIndexRecalculator(connection).recalculate();
+    if (hasChanges) {
+        await new RateAndIndexRecalculator(connection).recalculate();
+    }
 
     await connection.close();
 
@@ -65,3 +72,4 @@ const logger = new MyLogger();
 })();
 
 logger.log('Starting...');
+logger.log('Using ', process.env.LOOTER_DB_DBNAME);

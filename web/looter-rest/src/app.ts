@@ -331,11 +331,11 @@ router.get('/woe/history', async (req, res, next) => {
     const data = await connection.query(`
         select 
             w.*,
-            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 1) pk,
-            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 2) pdmg,
-            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 7) ps,
-            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 8) pdb,
-            (select sum(value) from woe_player_value where woe_id = w.id and woe_attribute_id = 9) pw
+            (select sum(value) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where woe_id = w.id and woe_attribute_id = 1) pk,
+            (select sum(value) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where woe_id = w.id and woe_attribute_id = 2) pdmg,
+            (select sum(value) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where woe_id = w.id and woe_attribute_id = 7) ps,
+            (select sum(value) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where woe_id = w.id and woe_attribute_id = 8) pdb,
+            (select sum(value) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where woe_id = w.id and woe_attribute_id = 9) pw
         from 
             woe w 
         
@@ -354,55 +354,55 @@ router.get('/woe/history', async (req, res, next) => {
 });
 
 router.get('/woe/players', async (req, res, next) => {
-    const cache = TimeCachedStore.instance().get('/woe/players');
-    if (cache) {
-        res.json(cache);
-        next();
-        return;
-    }
-
-
-    const connection = await getConnection();
-
-    const players = await connection.query(`
-        select r.*,
-        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 1) pk,
-        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 4) pd,
-        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 7) ps,
-        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 8) pdb,
-        (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 9) pw
-        from 
-        (
-            select d.player_id, d.name, truncate(sum(rate)*avgv.cnt/100, 2) rate, avgv.cnt gamesPlayed
-            from
-            (
-                select 
-                    p.id player_id, p.name, avg(pv.value * a.rate * wv.value_int / 1000000) rate
-                from 
-                    player p 
-                    inner join woe_player_value pv on p.id = pv.player_id
-                    inner join woe_attribute a on pv.woe_attribute_id = a.id
-                    inner join woe_value wv on wv.woe_id = pv.woe_id and wv.woe_attribute_id = 11
-                    
-                group by p.id, pv.woe_attribute_id
-            ) d
-            inner join (
-                select player_id, count(distinct(woe_id)) cnt
-                from woe_player_value
-                where woe_id
-                group by player_id
-            ) avgv on avgv.player_id = d.player_id
-            group by d.player_id
-            order by rate desc
-        ) r
-        limit 50
-    `);
-
-    connection.close();
-
-    TimeCachedStore.instance().set('/woe/players', players);
-
-    res.json(players);
+    // const cache = TimeCachedStore.instance().get('/woe/players');
+    // if (cache) {
+    //     res.json(cache);
+    //     next();
+    //     return;
+    // }
+    //
+    //
+    // const connection = await getConnection();
+    //
+    // const players = await connection.query(`
+    //     select r.*,
+    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 1) pk,
+    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 4) pd,
+    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 7) ps,
+    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 8) pdb,
+    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 9) pw
+    //     from
+    //     (
+    //         select d.player_id, d.name, truncate(sum(rate)*avgv.cnt/100, 2) rate, avgv.cnt gamesPlayed
+    //         from
+    //         (
+    //             select
+    //                 p.id player_id, p.name, avg(pv.value * a.rate * wv.value_int / 1000000) rate
+    //             from
+    //                 player p
+    //                 inner join woe_player_value pv on p.id = pv.player_id
+    //                 inner join woe_attribute a on pv.woe_attribute_id = a.id
+    //                 inner join woe_value wv on wv.woe_id = pv.woe_id and wv.woe_attribute_id = 11
+    //
+    //             group by p.id, pv.woe_attribute_id
+    //         ) d
+    //         inner join (
+    //             select player_id, count(distinct(woe_id)) cnt
+    //             from woe_player_value
+    //             where woe_id
+    //             group by player_id
+    //         ) avgv on avgv.player_id = d.player_id
+    //         group by d.player_id
+    //         order by rate desc
+    //     ) r
+    //     limit 50
+    // `);
+    //
+    // connection.close();
+    //
+    // TimeCachedStore.instance().set('/woe/players', players);
+    //
+    // res.json(players);
 
     next();
 });
@@ -420,40 +420,43 @@ router.get('/woe/player/:name', async (req, res, next) => {
     player = player[0];
 
     const rate = await connection.query(`
-        select pv.player_id, a.id, a.ui_name as name, max(value) max, sum(value) sum, 
-        truncate(avg(pv.value * a.rate * wv.value_int / 1000000),2) rate
+        select wp.player_id, a.id, a.ui_name as name, max(value) max, sum(value) sum, sum(value) / p.games_played avg
         from 
-            woe_player_value pv 
+            woe_player wp
+            inner join player p on p.id = wp.player_id
+            inner join woe_player_value pv on pv.woe_player_id = wp.id 
             inner join woe_attribute a on pv.woe_attribute_id = a.id
-            inner join woe_value wv on wv.woe_id = pv.woe_id and wv.woe_attribute_id = 11
-        where pv.player_id = ?
+        where wp.player_id = ?
         group by pv.woe_attribute_id
-        order by pv.player_id, a.sort_order
+        order by wp.player_id, a.sort_order
     `, player.id);
 
     const woe = await connection.query(`
         select 
             w.*,
-            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 1 and player_id = ?) pk,
-            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 2 and player_id = ?) pdmg,
-            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 3 and player_id = ?) pdmgget,
-            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 7 and player_id = ?) ps,
-            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 8 and player_id = ?) pdb,
-            (select ifnull(sum(value), 0) from woe_player_value where woe_id = w.id and woe_attribute_id = 9 and player_id = ?) pw,
-            truncate((select max(value_int) from woe_value where woe_id = w.id and woe_attribute_id = 11)/1000000, 2) activity
-        
-        from 
-            woe w 
             
-        where w.id in (
-            select distinct(woe_id)
-            from woe_player_value
-            where player_id = ?
-        )
+            g.icon_url guildIconUrl,
+            g.name guildName,
+            g.id guildId,
+		
+            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 1 and player_id = wp.player_id) pk,
+            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 2 and player_id = wp.player_id) pdmg,
+            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 3 and player_id = wp.player_id) pdmgget,
+            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 7 and player_id = wp.player_id) ps,
+            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 8 and player_id = wp.player_id) pdb,
+            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 9 and player_id = wp.player_id) pw
+			
+            
+        from 
+			woe_player wp
+			inner join woe w on wp.woe_id = w.id
+            inner join guild g on g.id = wp.guild_id
+            
+        where wp.player_id = ?
         order by w.date desc
         
  
-    `, player.id, player.id, player.id, player.id, player.id, player.id, player.id);
+    `, player.id);
 
     const data = {
         player,
@@ -488,23 +491,15 @@ router.get('/woe/info/:id', async (req, res, next) => {
     woe = woe[0];
 
     const rate = await connection.query(`
-        select a.id, a.ui_name as name, sum(value) sum, avgv.avg_all
-        from woe_player_value pv 
-        inner join woe_attribute a on a.id = pv.woe_attribute_id
-        left join (
-            select woe_attribute_id, truncate(avg(avg_all), 0) avg_all
-            from (
-                select pvi.woe_attribute_id, sum(pvi.value) avg_all
-                from woe_player_value pvi
-                where pvi.woe_id < ?
-                group by pvi.woe_id, pvi.woe_attribute_id
-            ) t
-            group by t.woe_attribute_id
-        ) avgv on avgv.woe_attribute_id = a.id
-        where pv.woe_id = ? and a.id not in (3, 4, 10)
+        select a.id, a.ui_name as name, sum(value) sum
+        from 
+            woe_player wp
+            inner join woe_player_value pv on pv.woe_player_id = wp.id
+            inner join woe_attribute a on a.id = pv.woe_attribute_id
+        where wp.woe_id = ? and a.id not in (3, 4, 10)
         group by a.id
         order by a.sort_order
-    `, woe.id, woe.id);
+    `, woe.id);
 
     const attributes = await connection.query(`select * from woe_attribute`);
 
@@ -521,32 +516,27 @@ router.get('/woe/info/:id', async (req, res, next) => {
             p.name as playerName,
             pv.value as value,
             pv.position_index,
-            wp.guild_icon_url guildIcon,
-            ifnull(woe_count.cnt,0) + 1 woeNumber,
-            ifnull(TRUNCATE(ifnull(sm.v, 0)/woe_count.cnt, 2), 0) avgPlayerValue,
-            TRUNCATE((ifnull(sm.v, 0) + pv.value)/(ifnull(woe_count.cnt, 0) + 1), 2) avgPlayerValueNew
+            g.icon_url guildIcon,
+            ifnull(wp.game_index, 0) woeNumber,
+            ifnull(TRUNCATE(ifnull(sm.v, 0)/wp.game_index, 2), 0) avgPlayerValue,
+            TRUNCATE((ifnull(sm.v, 0) + pv.value)/(ifnull(wp.game_index, 0)), 2) avgPlayerValueNew
             
         from
             woe w
-            inner join woe_player_value pv on pv.woe_id = w.id
-            inner join player p on p.id = pv.player_id
+            inner join woe_player wp on wp.woe_id = w.id
+            inner join woe_player_value pv on pv.woe_player_id = wp.id
+            inner join player p on p.id = wp.player_id
             inner join woe_attribute a on a.id = pv.woe_attribute_id
-            left join woe_player wp on wp.player_id = p.id and wp.woe_id = w.id
+            inner join guild g on g.id = wp.guild_id
             left join (
-                select pv.player_id, pv.woe_attribute_id, sum(value) v
-                from woe_player_value pv
-                where woe_id < ?
-                group by pv.player_id, pv.woe_attribute_id
+                select wp.player_id, pv.woe_attribute_id, sum(value) v
+                from woe_player_value pv inner join woe_player wp on wp.id = pv.woe_player_id
+                where woe_id < 40
+                group by wp.player_id, pv.woe_attribute_id
             ) sm on sm.player_id = p.id and sm.woe_attribute_id = a.id
-            left join (
-                select player_id, count(distinct(woe_id)) cnt
-                from woe_player_value
-                where woe_id < ?
-                group by player_id
-            ) woe_count on woe_count.player_id = p.id
             
         where 
-            w.id = ?
+            w.id = 40
             
         order by
             a.sort_order, pv.value desc, pv.id

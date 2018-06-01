@@ -12,14 +12,38 @@ class RateAndIndexRecalculator {
             update woe_player_value pv
             set pv.position_index = (
                 select count(*) + 1
-                from (select * from woe_player_value) pv2 
-                where pv2.woe_id = pv.woe_id and pv2.woe_attribute_id = pv.woe_attribute_id and pv2.value > pv.value
+                from 
+					(
+						select 
+							pv.value, wp.woe_id, wp.player_id, pv.woe_attribute_id
+                        from 
+							woe_player_value pv 
+							inner join woe_player wp on wp.id = pv.woe_player_id
+					) pv2 
+                where 
+					pv2.woe_id = (select woe_id from woe_player wp2 where wp2.id = pv.woe_player_id) 
+					and pv2.woe_attribute_id = pv.woe_attribute_id and pv2.value > pv.value
+            ),
+            rate = (
+                select 
+					pv.value / max(value)
+                from (
+						select 
+							pv.value, wp.woe_id, wp.player_id, pv.woe_attribute_id
+                        from 
+							woe_player_value pv 
+							inner join woe_player wp on wp.id = pv.woe_player_id
+                    ) t
+                where 
+					t.woe_id = (select woe_id from woe_player wp2 where wp2.id = pv.woe_player_id)
+                    and pv.woe_attribute_id = t.woe_attribute_id
             )
+            where pv.position_index = 0
         `);
 
         await this._connection.query(`
             update player
-            set games_played = (select count(distinct(woe_id)) from woe_player_value where player_id = player.id)
+            set games_played = (select count(distinct(woe_id)) from woe_player where player_id = player.id)
         `);
 
         await this._connection.query(`
@@ -31,14 +55,6 @@ class RateAndIndexRecalculator {
             )
         `);
 
-        await this._connection.query(`
-            update woe_player_value pv 
-            set rate = (
-                select pv.value / max(value)
-                from (select * from woe_player_value) t
-                where pv.woe_id = t.woe_id and pv.woe_attribute_id = t.woe_attribute_id
-            )
-        `);
 
         await this._connection.query(`
             insert into woe_log(message_id, woe_id)
@@ -56,28 +72,29 @@ class RateAndIndexRecalculator {
             and w.id not in (select distinct woe_id from (select * from woe_log) t)  
         `);
 
-        // await this._connection.query(`delete from woe_player;`);
+        const names = await this._connection.query(`
+            select g.id guildId, originalMessage message
+            from 
+            player p
+            inner join woe_player wp on wp.player_id = p.id
+            inner join woe w on w.id = wp.woe_id
+            inner join guild g on g.id = wp.guild_id
+            inner join woe_log l on l.woe_id = w.id
+            inner join messages m on m.id = l.message_id
+            where (originalMessage like concat('- Замок [%] захвачен гильдией [%]! Империум разбил ', p.name, '.')
+            or originalMessage like concat('- Замок [%] захвачен гильдией [%]! Империум разбила ', p.name, '.'))
+            and g.name is null
+        `);
 
-        // await this._connection.query(`
-        //     insert into woe_player(woe_id, player_id, \`index\`, rate, rate_delta)
-        //     select pw.*,
-        //     (
-        //         select count(distinct(pv2.woe_id)) + 1
-        //         from woe_player_value pv2
-        //         where pv2.player_id = pw.player_id and pv2.woe_id < pw.woe_id
-        //     ) idx,
-        //     (
-        //         select avg(rate) * idx / 100
-        //         from woe_player_value wpv
-        //         where wpv.woe_id <= pw.woe_id and wpv.player_id = pw.player_id
-        //     ) rate, 0
-        //     from
-        //     (
-        //         select distinct woe_id, player_id
-        //         from woe_player_value
-        //     ) pw
-        // `);
-
+        for (let i=0; i<names.length; i++) {
+            const parts = /\- Замок \[.+\] захвачен гильдией \[(.+)\]\! Империум разбила? .+\./.exec(names[i].message);
+            await this._connection.query(`
+                update guild 
+                set name = ? 
+                where id = ?
+            `,
+                parts[1], names[i].guildId);
+        }
     }
 }
 
