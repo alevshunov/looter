@@ -172,7 +172,10 @@ class WoEDetails extends React.Component<Props, State> {
                         {
                             title: '',
                             field: 'guildIcon',
-                            render: (v, d) => v ? <img src={v} alt={d.playerName}/> : ''
+                            render: (v, d) => v ?
+                                <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
+                                    <img src={v} alt={d.playerName}/>
+                                </Link> : ''
                         },
                         {
                             title: 'Игрок',

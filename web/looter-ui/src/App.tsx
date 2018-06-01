@@ -12,6 +12,8 @@ import WoEHistory from './core/woe/WoEHistory';
 import WoEDetails from './core/woe/WoEDetails';
 import WoEPlayers from './core/woe/WoEPlayers';
 import WoEPlayer from './core/woe/WoEPlayer';
+import WoEGuilds from './core/woe/WoEGuilds';
+import WoEGuild from './core/woe/WoEGuild';
 
 class App extends React.Component {
 
@@ -29,6 +31,18 @@ class App extends React.Component {
                         exact={true}
                         path="/woe/players"
                         render={(props) => <WoEPlayers />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/guilds"
+                        render={(props) => <WoEGuilds />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/guild/:id/:name"
+                        render={(props) => <WoEGuild guildId={decodeURIComponent(props.match.params.id)} />}
                     />
 
                     <Route

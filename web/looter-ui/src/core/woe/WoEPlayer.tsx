@@ -69,6 +69,20 @@ class WoEPlayer extends React.Component<Props, State> {
                                     </td>
                                 </tr>
                             }
+                            {
+                                this.state.data && this.state.data.guild &&
+                                <tr>
+                                    <td className="info-item table-report-cell">
+                                        Гильдия: <br/> <Link
+                                            to={`/woe/guild/${this.state.data.guild.id}/${
+                                                encodeURIComponent(this.state.data.guild.name)
+                                            }`}
+                                        >
+                                            <img src={this.state.data.guild.iconUrl}/><br/>{this.state.data.guild.name}
+                                        </Link>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </Container>
@@ -111,6 +125,16 @@ class WoEPlayer extends React.Component<Props, State> {
                     <TableReport
                         cells={
                             [
+                                {
+                                    title: '',
+                                    field: 'guild',
+                                    render: (name, d) =>
+                                        (
+                                            <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
+                                                <img src={d.guildIconUrl} title={d.guildName} />
+                                            </Link>
+                                        )
+                                },
                                 {
                                     title: '',
                                     field: 'name',

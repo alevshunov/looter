@@ -23,6 +23,12 @@ titleMapper = function(url) {
     });
 
     mappers.push({
+        exp: /^\/woe\/guild\/(.+)\/(.+)$/,
+        fn: (parts) =>
+            Promise.resolve('FreeRO - WoE - ' + decodeURIComponent(parts[2]))
+    });
+
+    mappers.push({
         exp: /^\/woe\/(.+)$/,
         fn: (parts) =>
             Promise.resolve('FreeRO - WoE - #' + decodeURIComponent(parts[1]))

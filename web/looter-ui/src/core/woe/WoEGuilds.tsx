@@ -1,25 +1,22 @@
 import * as React from 'react';
-import './WoEHistory.css';
+import './WoEGuilds.css';
 import { Link } from 'react-router-dom';
 import GA from '../extra/GA';
 import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
-import Report24 from '../components/Report24';
-import ContainerText from '../components/ContainerText';
 
 interface State {
     loading: boolean;
     data?: any;
-    state24?: any;
 }
 
 interface Props {
     // shopId: number;
 }
 
-class WoEHistory extends React.Component<Props, State> {
+class WoEGuilds extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -34,7 +31,7 @@ class WoEHistory extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/history')
+        fetch('https://free-ro.kudesnik.cc/rest/woe/guilds')
             .then((response) => {
                 try {
                     return response.json();
@@ -43,77 +40,69 @@ class WoEHistory extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                const past = 50;
-                const state24 = [];
-                let maxActivity = 1;
-                for (let i = 0; i < past; i++) {
-                    state24[past - 1 - i] = data[i].rate;
-                    maxActivity = Math.max(maxActivity, data[i].rate);
-                }
-
-                for (let i = 0; i < past; i++) {
-                    state24[i] = 100 * state24[i] / maxActivity;
-                }
-
-                me.setState({ state24, data, loading: false });
+                me.setState({ data, loading: false });
             });
     }
 
     render() {
-        document.title = 'FreeRO - WoE - History';
+        document.title = 'FreeRO - WoE - Players';
         GA();
 
         return (
-            <div className="limiter area-woe-hostory">
+            <div className="limiter area-woe-guilds">
                 <MyNavigation active="items"/>
                 <Container>
                     <table className="table-report info">
                         <tbody>
                         <tr>
                             <td className="info-item table-report-cell">
-                                <Link to={'/woe/guilds/'}>Посмотреть список ГВ гильдий</Link>
+                                <Link to={'/woe/'}>Посмотреть историю ГВ</Link>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </Container>
                 <Container>
-                    <ContainerText>
-                        <Report24 data={this.state.state24} title={'График активности за последнии 50 ГВ:'}/>
-                    </ContainerText>
-                    <div/>
                     <TableReport
                         cells={
                             [
                                 {
-                                    // title: 'Название',
                                     title: '',
+                                    field: 'index'
+                                },
+                                {
+                                    title: '',
+                                    field: 'guild-icon',
+                                    render: (name, d) =>
+                                        (
+                                            <Link to={`/woe/guild/${d.id}/${encodeURIComponent(d.name)}`}>
+                                                <img src={d.iconUrl} title={d.guildName} />
+                                            </Link>
+                                        )
+                                },
+                                {
+                                    title: 'Гильдия',
                                     field: 'name',
-                                    render: (name, d) => (<Link to={`/woe/${d.id}`}>{name}</Link>)
+                                    render: (name, d) => (
+                                        <Link to={`/woe/guild/${d.id}/${encodeURI(name)}`}>{name}</Link>
+                                    )
                                 },
                                 {
-                                    title: 'Убийст',
-                                    field: 'pk',
+                                    title: 'Убийств',
+                                    field: 'kills',
                                     align: 'right',
                                     render: x => asNumber(x)
                                 },
                                 {
-                                    title: 'Урон',
-                                    field: 'pdmg',
+                                    title: 'Смертей',
+                                    field: 'death',
                                     align: 'right',
                                     render: x => asNumber(x)
                                 },
                                 {
-                                    title: 'Баф',
-                                    field: 'ps',
+                                    title: 'Боев',
                                     align: 'right',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Дебаф',
-                                    field: 'pdb',
-                                    align: 'right',
-                                    render: x => asNumber(x)
+                                    field: 'woes'
                                 }
                             ]
                         }
@@ -127,4 +116,4 @@ class WoEHistory extends React.Component<Props, State> {
     }
 }
 
-export default WoEHistory;
+export default WoEGuilds;
