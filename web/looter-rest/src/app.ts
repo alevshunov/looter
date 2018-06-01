@@ -424,10 +424,10 @@ router.get('/woe/player/:name', async (req, res, next) => {
         from player p
         inner join woe_player wp on wp.player_id = p.id
         inner join guild g on g.id = wp.guild_id
-        where p.id = 1
+        where p.id = ?
         order by woe_id desc
         limit 1
-    `);
+    `, player.id);
 
     let guild;
 
