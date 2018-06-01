@@ -615,7 +615,7 @@ router.get('/woe/guild/:id', async (req, res, next) => {
                     limit 10
                 ) tt 
                 order by tt.woe_id asc
-                limit 10
+                limit 1
             )
         order by 
             p.games_played desc
