@@ -531,12 +531,12 @@ router.get('/woe/info/:id', async (req, res, next) => {
             left join (
                 select wp.player_id, pv.woe_attribute_id, sum(value) v
                 from woe_player_value pv inner join woe_player wp on wp.id = pv.woe_player_id
-                where woe_id < 40
+                where woe_id < ?
                 group by wp.player_id, pv.woe_attribute_id
             ) sm on sm.player_id = p.id and sm.woe_attribute_id = a.id
             
         where 
-            w.id = 40
+            w.id = ?
             
         order by
             a.sort_order, pv.value desc, pv.id
