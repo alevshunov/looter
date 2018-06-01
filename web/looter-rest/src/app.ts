@@ -516,7 +516,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
             pv.position_index,
             g.icon_url guildIcon,
             ifnull(wp.game_index, 0) woeNumber,
-            ifnull(TRUNCATE(ifnull(sm.v, 0)/wp.game_index, 2), 0) avgPlayerValue,
+            ifnull(TRUNCATE(ifnull(sm.v, 0)/(wp.game_index-1), 2), 0) avgPlayerValue,
             TRUNCATE((ifnull(sm.v, 0) + pv.value)/(ifnull(wp.game_index, 0)), 2) avgPlayerValueNew
             
         from
