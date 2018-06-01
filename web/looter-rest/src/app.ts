@@ -439,23 +439,21 @@ router.get('/woe/player/:name', async (req, res, next) => {
             g.name guildName,
             g.id guildId,
 		
-            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 1 and player_id = wp.player_id) pk,
-            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 2 and player_id = wp.player_id) pdmg,
-            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 3 and player_id = wp.player_id) pdmgget,
-            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 7 and player_id = wp.player_id) ps,
-            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 8 and player_id = wp.player_id) pdb,
-            (select ifnull(sum(value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and woe_attribute_id = 9 and player_id = wp.player_id) pw
+            (select ifnull(sum(pv.value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and pv.woe_attribute_id = 1 and wp.player_id = wp_b.player_id) pk,
+            (select ifnull(sum(pv.value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and pv.woe_attribute_id = 2 and wp.player_id = wp_b.player_id) pdmg,
+            (select ifnull(sum(pv.value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and pv.woe_attribute_id = 3 and wp.player_id = wp_b.player_id) pdmgget,
+            (select ifnull(sum(pv.value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and pv.woe_attribute_id = 7 and wp.player_id = wp_b.player_id) ps,
+            (select ifnull(sum(pv.value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and pv.woe_attribute_id = 8 and wp.player_id = wp_b.player_id) pdb,
+            (select ifnull(sum(pv.value), 0) from woe_player_value pv inner join woe_player wp on pv.woe_player_id = wp.id where wp.woe_id = w.id and pv.woe_attribute_id = 9 and wp.player_id = wp_b.player_id) pw
 			
             
         from 
-			woe_player wp
-			inner join woe w on wp.woe_id = w.id
-            inner join guild g on g.id = wp.guild_id
+			woe_player wp_b
+			inner join woe w on wp_b.woe_id = w.id
+            inner join guild g on g.id = wp_b.guild_id
             
-        where wp.player_id = ?
+        where wp_b.player_id = ?
         order by w.date desc
-        
- 
     `, player.id);
 
     const data = {
