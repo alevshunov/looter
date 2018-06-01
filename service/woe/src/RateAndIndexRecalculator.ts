@@ -91,7 +91,7 @@ class RateAndIndexRecalculator {
             await this._connection.query(`
                 update guild 
                 set name = ? 
-                where id = ?
+                where id = ? and name is null
             `,
                 parts[1], names[i].guildId);
         }
