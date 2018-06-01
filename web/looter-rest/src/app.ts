@@ -419,6 +419,22 @@ router.get('/woe/player/:name', async (req, res, next) => {
 
     player = player[0];
 
+    const guilds = await connection.query(`
+        select g.id, g.name, g.icon_url iconUrl
+        from player p
+        inner join woe_player wp on wp.player_id = p.id
+        inner join guild g on g.id = wp.guild_id
+        where p.id = 1
+        order by woe_id desc
+        limit 1
+    `);
+
+    let guild;
+
+    if (guilds.length) {
+        guild = guilds[0];
+    }
+
     const rate = await connection.query(`
         select wp.player_id, a.id, a.ui_name as name, max(value) max, sum(value) sum, sum(value) / p.games_played avg
         from 
@@ -458,6 +474,7 @@ router.get('/woe/player/:name', async (req, res, next) => {
     `, player.id);
 
     const data = {
+        guild,
         player,
         rate,
         woe
@@ -466,6 +483,148 @@ router.get('/woe/player/:name', async (req, res, next) => {
     connection.close();
     res.json(data);
 
+    next();
+});
+
+router.get('/woe/guilds', async (req, res, next) => {
+
+    const connection = await getConnection();
+
+    const data = await connection.query(`
+        select r.*, (r.kills - r.death) / woes rate
+        from
+        (
+            select 
+            g.id, 
+            g.name,
+            g.icon_url iconUrl, 
+            count(distinct(woe_id)) woes,
+            sum(CASE WHEN (wpv.woe_attribute_id=1) THEN wpv.value ELSE 0 END) as kills,
+            sum(CASE WHEN (wpv.woe_attribute_id=2) THEN wpv.value ELSE 0 END) as damage,
+            sum(CASE WHEN (wpv.woe_attribute_id=3) THEN wpv.value ELSE 0 END) as damagegot,
+            sum(CASE WHEN (wpv.woe_attribute_id=4) THEN wpv.value ELSE 0 END) as death,
+            sum(CASE WHEN (wpv.woe_attribute_id=5) THEN wpv.value ELSE 0 END) as emperium,
+            sum(CASE WHEN (wpv.woe_attribute_id=6) THEN wpv.value ELSE 0 END) as barricades,
+            sum(CASE WHEN (wpv.woe_attribute_id=7) THEN wpv.value ELSE 0 END) as buffs,
+            sum(CASE WHEN (wpv.woe_attribute_id=8) THEN wpv.value ELSE 0 END) as debuffs,
+            sum(CASE WHEN (wpv.woe_attribute_id=9) THEN wpv.value ELSE 0 END) as wings
+        
+            from guild g 
+            inner join woe_player wp on g.id = wp.guild_id
+            inner join woe_player_value wpv on wp.id = wpv.woe_player_id
+            where name is not null and guild_id > 1
+            group by guild_id
+        ) r
+        order by rate desc    
+    `);
+
+    connection.close();
+
+    res.json(data);
+    next();
+});
+
+router.get('/woe/guild/:id', async (req, res, next) => {
+    const guildId = req.params.id;
+
+    const connection = await getConnection();
+
+    const guilds = await connection.query(`
+        select * from guild where id = ?
+    `, guildId);
+
+    if (!guilds.length) {
+        return {};
+    }
+
+    const guild = guilds[0];
+
+    const rate = await connection.query(`
+			select 
+				a.id, a.ui_name as name, max(value) max, sum(value) sum, sum(value) / g.games_played avg
+			from 
+				woe_player wp
+				inner join guild g on g.id = wp.guild_id
+				inner join woe_player_value pv on pv.woe_player_id = wp.id 
+				inner join woe_attribute a on pv.woe_attribute_id = a.id
+			where wp.guild_id = ?
+            group by a.id
+    `, guildId);
+
+    const woes = await connection.query(`
+        	select 
+                w.id, 
+                w.date,
+                w.name,
+                count(distinct(woe_id)) woes,
+                sum(CASE WHEN (wpv.woe_attribute_id=1) THEN wpv.value ELSE 0 END) as kills,
+                sum(CASE WHEN (wpv.woe_attribute_id=2) THEN wpv.value ELSE 0 END) as damage,
+                sum(CASE WHEN (wpv.woe_attribute_id=3) THEN wpv.value ELSE 0 END) as gamagegot,
+                sum(CASE WHEN (wpv.woe_attribute_id=4) THEN wpv.value ELSE 0 END) as death,
+                sum(CASE WHEN (wpv.woe_attribute_id=5) THEN wpv.value ELSE 0 END) as emperium,
+                sum(CASE WHEN (wpv.woe_attribute_id=6) THEN wpv.value ELSE 0 END) as barricades,
+                sum(CASE WHEN (wpv.woe_attribute_id=7) THEN wpv.value ELSE 0 END) as buffs,
+                sum(CASE WHEN (wpv.woe_attribute_id=8) THEN wpv.value ELSE 0 END) as debuffs,
+                sum(CASE WHEN (wpv.woe_attribute_id=9) THEN wpv.value ELSE 0 END) as wings
+        
+            from 
+                guild g 
+                inner join woe_player wp on g.id = wp.guild_id
+                inner join woe_player_value wpv on wp.id = wpv.woe_player_id
+                inner join woe w on w.id = wp.woe_id
+            where g.id = ?
+            -- where name is not null
+            group by w.id desc  
+    `, guildId);
+
+    const players = await connection.query(`
+        select 
+            p.id, p.name,
+            p.games_played gamesPlayed,
+            max(wp.woe_id) lastPlayerWoe,
+            sum(CASE WHEN (wpv.woe_attribute_id=1) THEN wpv.value ELSE 0 END) as kills,
+            sum(CASE WHEN (wpv.woe_attribute_id=2) THEN wpv.value ELSE 0 END) as damage,
+            sum(CASE WHEN (wpv.woe_attribute_id=3) THEN wpv.value ELSE 0 END) as gamagegot,
+            sum(CASE WHEN (wpv.woe_attribute_id=4) THEN wpv.value ELSE 0 END) as death,
+            sum(CASE WHEN (wpv.woe_attribute_id=5) THEN wpv.value ELSE 0 END) as emperium,
+            sum(CASE WHEN (wpv.woe_attribute_id=6) THEN wpv.value ELSE 0 END) as barricades,
+            sum(CASE WHEN (wpv.woe_attribute_id=7) THEN wpv.value ELSE 0 END) as buffs,
+            sum(CASE WHEN (wpv.woe_attribute_id=8) THEN wpv.value ELSE 0 END) as debuffs,
+            sum(CASE WHEN (wpv.woe_attribute_id=9) THEN wpv.value ELSE 0 END) as wings
+        from 
+            player p
+            inner join woe_player wp on p.id = wp.player_id
+            inner join woe_player_value wpv on wpv.woe_player_id = wp.id
+        where 
+            p.id in (
+                select p.id
+                from player p inner join woe_player wp on p.id = wp.player_id and wp.game_index = p.games_played
+                where wp.guild_id = ?
+            )
+        group by 
+            p.id
+		having
+			max(wp.woe_id) > (
+			    select distinct(woe_id) woe_id
+                from woe_player wp2 
+                where wp2.guild_id = ? 
+                order by woe_id desc
+                limit 10, 1
+            )
+        order by 
+            p.games_played desc
+    `, guildId, guildId);
+
+    connection.close();
+
+    const data = {
+        rate,
+        guild,
+        woes,
+        players
+    };
+
+    res.json(data);
     next();
 });
 
@@ -516,6 +675,8 @@ router.get('/woe/info/:id', async (req, res, next) => {
             pv.value as value,
             pv.position_index,
             g.icon_url guildIcon,
+            g.id guildId,
+            g.name guildName,
             ifnull(wp.game_index, 0) woeNumber,
             ifnull(TRUNCATE(ifnull(sm.v, 0)/(wp.game_index-1), 2), 0) avgPlayerValue,
             TRUNCATE((ifnull(sm.v, 0) + pv.value)/(ifnull(wp.game_index, 0)), 2) avgPlayerValueNew
@@ -575,7 +736,7 @@ router.get('/woe/info/:id', async (req, res, next) => {
 app.use(async (req, res, next) => {
     logger.log(req.headers["x-real-ip"], req.originalUrl || req.url || req.path || '');
 
-    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
     const connection = await getConnection();
 

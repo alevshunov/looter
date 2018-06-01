@@ -47,6 +47,15 @@ class RateAndIndexRecalculator {
         `);
 
         await this._connection.query(`
+            update guild g
+            set games_played = (
+                select count(distinct(woe_id))
+                from woe_player
+                where guild_id = g.id
+            )
+        `);
+
+        await this._connection.query(`
             update woe 
             set rate = (
                 select truncate(value_int/1000000,2)
