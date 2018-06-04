@@ -68,7 +68,7 @@ class WoEPlayers extends React.Component<Props, State> {
                 </Container>
                 <Container>
                     <TableReport
-                        title={'Активные ГВ игроки'}
+                        title={'Активные ГВ игроки по итогам 10 ГВ'}
                         cells={
                             [
                                 {
@@ -124,8 +124,7 @@ class WoEPlayers extends React.Component<Props, State> {
                                     title: 'Боев',
                                     align: 'right',
                                     field: 'gamesPlayed',
-                                    tooltip: 'За 10 ГВ / Всего',
-                                    render: (v, d) => <span>{asNumber(d.woes)} / {asNumber(v)}</span>
+                                    render: (v, d) => <span>{asNumber(d.woes)}}</span>
                                 }
                             ]
                         }
