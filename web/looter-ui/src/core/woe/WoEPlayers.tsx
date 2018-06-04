@@ -124,7 +124,7 @@ class WoEPlayers extends React.Component<Props, State> {
                                     title: 'Боев',
                                     align: 'right',
                                     field: 'gamesPlayed',
-                                    render: (v, d) => <span>{asNumber(d.woes)}}</span>
+                                    render: (v, d) => asNumber(d.woes)
                                 }
                             ]
                         }
