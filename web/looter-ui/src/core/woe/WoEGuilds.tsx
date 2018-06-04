@@ -45,7 +45,7 @@ class WoEGuilds extends React.Component<Props, State> {
     }
 
     render() {
-        document.title = 'FreeRO - WoE - Players';
+        document.title = 'FreeRO - WoE - Guilds';
         GA();
 
         return (
