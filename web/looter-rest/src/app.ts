@@ -398,7 +398,7 @@ router.get('/woe/players', async (req, res, next) => {
         group by 
             p.id, g.id
         order by 
-            p.rate desc, woes desc
+            p.rate desc, woes desc, p.games_played desc
     `);
 
     connection.close();
