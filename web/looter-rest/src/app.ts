@@ -366,7 +366,9 @@ router.get('/woe/players', async (req, res, next) => {
 
     const players = await connection.query(`
         select 
-            p.id, p.name,
+            p.id, 
+            g.name, g.id, g.icon_url,
+            p.name,
             p.games_played gamesPlayed,
             p.rate,
             max(wp.woe_id) lastPlayerWoe,
@@ -390,8 +392,11 @@ router.get('/woe/players', async (req, res, next) => {
                 order by id desc
                 limit 10, 1
             )               
+            inner join woe_player wp_g on p.id = wp_g.player_id and wp_g.game_index = p.games_played
+			inner join guild g on g.id = wp_g.guild_id
+
         group by 
-            p.id
+            p.id, g.id
         order by 
             p.rate desc, woes desc
     `);
