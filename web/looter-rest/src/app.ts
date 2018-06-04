@@ -354,55 +354,53 @@ router.get('/woe/history', async (req, res, next) => {
 });
 
 router.get('/woe/players', async (req, res, next) => {
-    // const cache = TimeCachedStore.instance().get('/woe/players');
-    // if (cache) {
-    //     res.json(cache);
-    //     next();
-    //     return;
-    // }
-    //
-    //
-    // const connection = await getConnection();
-    //
-    // const players = await connection.query(`
-    //     select r.*,
-    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 1) pk,
-    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 4) pd,
-    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 7) ps,
-    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 8) pdb,
-    //     (select ifnull(sum(value), 0) from woe_player_value where player_id = r.player_id and woe_attribute_id = 9) pw
-    //     from
-    //     (
-    //         select d.player_id, d.name, truncate(sum(rate)*avgv.cnt/100, 2) rate, avgv.cnt gamesPlayed
-    //         from
-    //         (
-    //             select
-    //                 p.id player_id, p.name, avg(pv.value * a.rate * wv.value_int / 1000000) rate
-    //             from
-    //                 player p
-    //                 inner join woe_player_value pv on p.id = pv.player_id
-    //                 inner join woe_attribute a on pv.woe_attribute_id = a.id
-    //                 inner join woe_value wv on wv.woe_id = pv.woe_id and wv.woe_attribute_id = 11
-    //
-    //             group by p.id, pv.woe_attribute_id
-    //         ) d
-    //         inner join (
-    //             select player_id, count(distinct(woe_id)) cnt
-    //             from woe_player_value
-    //             where woe_id
-    //             group by player_id
-    //         ) avgv on avgv.player_id = d.player_id
-    //         group by d.player_id
-    //         order by rate desc
-    //     ) r
-    //     limit 50
-    // `);
-    //
-    // connection.close();
-    //
-    // TimeCachedStore.instance().set('/woe/players', players);
-    //
-    // res.json(players);
+    const cache = TimeCachedStore.instance().get('/woe/players');
+    if (cache) {
+        res.json(cache);
+        next();
+        return;
+    }
+
+
+    const connection = await getConnection();
+
+    const players = await connection.query(`
+        select 
+            p.id, p.name,
+            p.games_played gamesPlayed,
+            p.rate,
+            max(wp.woe_id) lastPlayerWoe,
+            count(distinct(wp.woe_id)) woes,
+            sum(CASE WHEN (wpv.woe_attribute_id=1) THEN wpv.value ELSE 0 END) as kills,
+            sum(CASE WHEN (wpv.woe_attribute_id=2) THEN wpv.value ELSE 0 END) as damage,
+            sum(CASE WHEN (wpv.woe_attribute_id=3) THEN wpv.value ELSE 0 END) as gamagegot,
+            sum(CASE WHEN (wpv.woe_attribute_id=4) THEN wpv.value ELSE 0 END) as death,
+            sum(CASE WHEN (wpv.woe_attribute_id=5) THEN wpv.value ELSE 0 END) as emperium,
+            sum(CASE WHEN (wpv.woe_attribute_id=6) THEN wpv.value ELSE 0 END) as barricades,
+            sum(CASE WHEN (wpv.woe_attribute_id=7) THEN wpv.value ELSE 0 END) as buffs,
+            sum(CASE WHEN (wpv.woe_attribute_id=8) THEN wpv.value ELSE 0 END) as debuffs,
+            sum(CASE WHEN (wpv.woe_attribute_id=9) THEN wpv.value ELSE 0 END) as wings
+        from 
+            player p
+            inner join woe_player wp on p.id = wp.player_id
+            inner join woe_player_value wpv on wpv.woe_player_id = wp.id
+			and wp.woe_id > (
+			    select id
+                from woe
+                order by id desc
+                limit 10, 1
+            )               
+        group by 
+            p.id
+        order by 
+            p.rate desc, woes desc
+    `);
+
+    connection.close();
+
+    TimeCachedStore.instance().set('/woe/players', players);
+
+    res.json(players);
 
     next();
 });
