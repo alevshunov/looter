@@ -71,7 +71,10 @@ class WoEHistory extends React.Component<Props, State> {
                         <tbody>
                         <tr>
                             <td className="info-item table-report-cell">
-                                <Link to={'/woe/guilds/'}>Посмотреть список ГВ гильдий</Link>
+                                Посмотреть{' '}
+                                <Link to={'/woe/players/'}>список игроков</Link>{', '}
+                                <Link to={'/woe/guilds/'}>список гильдии</Link>
+                                .
                             </td>
                         </tr>
                         </tbody>
@@ -83,6 +86,7 @@ class WoEHistory extends React.Component<Props, State> {
                     </ContainerText>
                     <div/>
                     <TableReport
+                        title={'История ГВ'}
                         cells={
                             [
                                 {

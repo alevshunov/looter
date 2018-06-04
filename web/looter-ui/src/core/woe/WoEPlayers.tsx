@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './WoEHistory.css';
+import './WoEPlayers.css';
 import { Link } from 'react-router-dom';
 import GA from '../extra/GA';
 import MyNavigation from '../components/MyNavigation';
@@ -53,12 +53,37 @@ class WoEPlayers extends React.Component<Props, State> {
             <div className="limiter area-woe-players">
                 <MyNavigation active="items"/>
                 <Container>
+                    <table className="table-report info">
+                        <tbody>
+                            <tr>
+                                <td className="info-item table-report-cell">
+                                    Посмотреть{' '}
+                                    <Link to={'/woe/'}>историю ГВ</Link>{', '}
+                                    <Link to={'/woe/guilds/'}>список гильдий</Link>
+                                    .
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </Container>
+                <Container>
                     <TableReport
+                        title={'Активные ГВ игроки'}
                         cells={
                             [
                                 {
                                     title: '',
                                     field: 'index'
+                                },
+                                {
+                                    title: '',
+                                    field: 'guild',
+                                    render: (name, d) =>
+                                        (
+                                            <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
+                                                <img src={d.guildIconUrl} title={d.guildName} />
+                                            </Link>
+                                        )
                                 },
                                 {
                                     title: 'Игрок',
@@ -68,29 +93,29 @@ class WoEPlayers extends React.Component<Props, State> {
                                     )
                                 },
                                 {
-                                    title: 'K',
-                                    field: 'pk',
+                                    title: 'Убийств',
+                                    field: 'kills',
                                     align: 'right',
                                     tooltip: 'Kills',
                                     render: x => asNumber(x)
                                 },
                                 {
-                                    title: 'D',
-                                    field: 'pd',
+                                    title: 'Смертей',
+                                    field: 'death',
                                     align: 'right',
                                     tooltip: 'Deaths',
                                     render: x => asNumber(x)
                                 },
                                 {
-                                    title: 'S',
-                                    field: 'ps',
+                                    title: 'Бафы',
+                                    field: 'buffs',
                                     align: 'right',
                                     tooltip: 'Supports',
                                     render: x => asNumber(x)
                                 },
                                 {
-                                    title: 'DB',
-                                    field: 'pdb',
+                                    title: 'Дебафы',
+                                    field: 'debuffs',
                                     align: 'right',
                                     tooltip: 'Debuffs',
                                     render: x => asNumber(x)
@@ -98,13 +123,9 @@ class WoEPlayers extends React.Component<Props, State> {
                                 {
                                     title: 'Боев',
                                     align: 'right',
-                                    field: 'gamesPlayed'
-                                },
-                                {
-                                    title: 'Рейтинг',
-                                    field: 'rate',
-                                    align: 'right',
-                                    render: (value) => asNumber(value)
+                                    field: 'gamesPlayed',
+                                    tooltip: 'За 10 ГВ / Всего',
+                                    render: (v, d) => <span>{asNumber(d.woes)} / {asNumber(v)}</span>
                                 }
                             ]
                         }

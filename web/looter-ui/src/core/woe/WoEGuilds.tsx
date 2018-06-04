@@ -56,7 +56,10 @@ class WoEGuilds extends React.Component<Props, State> {
                         <tbody>
                         <tr>
                             <td className="info-item table-report-cell">
-                                <Link to={'/woe/'}>Посмотреть историю ГВ</Link>
+                                Посмотреть{' '}
+                                <Link to={'/woe/'}>историю ГВ</Link>{', '}
+                                <Link to={'/woe/players/'}>список игроков</Link>
+                                .
                             </td>
                         </tr>
                         </tbody>
@@ -64,6 +67,7 @@ class WoEGuilds extends React.Component<Props, State> {
                 </Container>
                 <Container>
                     <TableReport
+                        title={'ГВ гильдии'}
                         cells={
                             [
                                 {
