@@ -44,14 +44,14 @@ class MyNavigation extends React.Component<{active: string}> {
                 url: '/items/'
             },
             {
-                icon: <EqualizerIcon/>,
-                title: 'Статистика',
-                url: '/report/'
-            },
-            {
                 icon: <AccountBalanceIcon/>,
                 title: 'WoE',
                 url: '/woe/'
+            },
+            {
+                icon: <EqualizerIcon/>,
+                title: 'Статистика',
+                url: '/report/'
             }
         ];
 

@@ -603,11 +603,17 @@ router.get('/woe/guild/:id', async (req, res, next) => {
             p.id
 		having
 			max(wp.woe_id) > (
-			    select distinct(woe_id) woe_id
-                from woe_player wp2 
-                where wp2.guild_id = ? 
-                order by woe_id desc
-                limit 10, 1
+				select * 
+                from
+                (
+                    select distinct(woe_id) woe_id
+                    from woe_player wp2 
+                    where wp2.guild_id = ?
+                    order by woe_id desc
+                    limit 10
+                ) tt 
+                order by tt.woe_id asc
+                limit 1
             )
         order by 
             p.games_played desc
