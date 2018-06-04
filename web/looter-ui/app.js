@@ -17,6 +17,12 @@ titleMapper = function(url) {
     });
 
     mappers.push({
+        exp: /^\/woe\/players\/$/,
+        fn: () =>
+            Promise.resolve('FreeRO - WoE - Players')
+    });
+
+    mappers.push({
         exp: /^\/woe\/player\/(.+)$/,
         fn: (parts) =>
             Promise.resolve('FreeRO - WoE - ' + decodeURIComponent(parts[1]))
