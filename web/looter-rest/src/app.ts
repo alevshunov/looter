@@ -367,7 +367,7 @@ router.get('/woe/players', async (req, res, next) => {
     const players = await connection.query(`
         select 
             p.id, 
-            g.name, g.id, g.icon_url,
+            g.name guildName, g.id guildId, g.icon_url guildIconUrl,
             p.name,
             p.games_played gamesPlayed,
             p.rate,
