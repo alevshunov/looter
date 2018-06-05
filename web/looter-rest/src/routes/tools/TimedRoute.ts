@@ -18,7 +18,7 @@ class TimedRoute implements IRoute {
         const data = await this._baseRoute.execute(request, response);
         const elapsed = Date.now() - start;
 
-        this._logger.log(`Route "${this.path}" executed in ${elapsed} ms.`);
+        this._logger.log(`Route "${this.path}" as "${request.url}" executed in ${elapsed} ms.`);
 
         return data;
     }
