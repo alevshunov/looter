@@ -55,6 +55,8 @@ class Cards extends React.Component<Props, State> {
             return;
         }
 
+        const originalTerm = me.props.term;
+
         fetch('https://free-ro.kudesnik.cc/rest/cards?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
@@ -64,8 +66,10 @@ class Cards extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                TimeCachedStore.instance().set(`cards/${me.props.term}`, data);
-                me.setState({ data, loading: false });
+                if (me.props.term === originalTerm) {
+                    TimeCachedStore.instance().set(`cards/${me.props.term}`, data);
+                    me.setState({data, loading: false});
+                }
             });
     }
 

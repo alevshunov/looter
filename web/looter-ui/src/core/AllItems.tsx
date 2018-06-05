@@ -9,6 +9,7 @@ import TableReport from './components/TableReport';
 import asNumber from './components/asNumber';
 import './AllItems.css';
 import GA from './extra/GA';
+import TimeCachedStore from './extra/TimeCachedStore';
 // import TimeCachedStore from './extra/TimeCachedStore';
 
 interface State {
@@ -47,11 +48,11 @@ class AllItems extends React.Component<Props, State> {
         this.setState({ data: undefined });
         const me = this;
 
-        // const cacheData = TimeCachedStore.instance().get(`items/${this.props.term}`);
-        // if (cacheData) {
-        //     me.setState({ data: cacheData });
-        //     return;
-        // }
+        const cacheData = TimeCachedStore.instance().get(`items/${this.props.term}`);
+        if (cacheData) {
+            me.setState({ data: cacheData });
+            return;
+        }
 
         const parts = [];
 
@@ -63,6 +64,8 @@ class AllItems extends React.Component<Props, State> {
             parts.push('order=' + encodeURIComponent(this.props.order.field));
             parts.push('direction=' + encodeURIComponent(this.props.order.direction));
         }
+
+        const originalTerm = me.props.term;
 
         let url = 'https://free-ro.kudesnik.cc/rest/shops/active'
         // let url = 'http://127.0.0.1:9999/rest/shops/active'
@@ -77,8 +80,10 @@ class AllItems extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                // TimeCachedStore.instance().set(`items/${me.props.term}`, data);
-                me.setState({ data });
+                if (originalTerm === me.props.term) {
+                    TimeCachedStore.instance().set(`items/${me.props.term}`, data);
+                    me.setState({data});
+                }
             });
 
     }

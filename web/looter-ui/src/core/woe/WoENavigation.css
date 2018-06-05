@@ -1,0 +1,7 @@
+.nav-top.sub .nav-title {
+    font-size: 12px;
+}
+
+.nav-top.sub .active .nav-item > div {
+    font-size: 13px;
+}

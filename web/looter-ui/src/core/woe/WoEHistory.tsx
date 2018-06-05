@@ -8,9 +8,10 @@ import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import Report24 from '../components/Report24';
 import ContainerText from '../components/ContainerText';
+import TimeCachedStore from '../extra/TimeCachedStore';
+import WoENavigation from './WoENavigation';
 
 interface State {
-    loading: boolean;
     data?: any;
     state24?: any;
 }
@@ -23,7 +24,7 @@ class WoEHistory extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        this.state = { data: undefined, loading: false };
+        this.state = { data: undefined };
     }
 
     componentWillMount() {
@@ -31,7 +32,13 @@ class WoEHistory extends React.Component<Props, State> {
     }
 
     doLoad() {
-        this.setState({loading: true});
+        const cacheData = TimeCachedStore.instance().get(`/woe/history`);
+        if (cacheData) {
+            this.setState(cacheData);
+            return;
+        }
+
+        this.setState({ data: undefined });
 
         const me = this;
         fetch('https://free-ro.kudesnik.cc/rest/woe/history')
@@ -55,7 +62,9 @@ class WoEHistory extends React.Component<Props, State> {
                     state24[i] = 100 * state24[i] / maxActivity;
                 }
 
-                me.setState({ state24, data, loading: false });
+                TimeCachedStore.instance().set(`/woe/history`, { state24, data });
+
+                me.setState({ state24, data });
             });
     }
 
@@ -66,20 +75,7 @@ class WoEHistory extends React.Component<Props, State> {
         return (
             <div className="limiter area-woe-hostory">
                 <MyNavigation active="items"/>
-                <Container>
-                    <table className="table-report info">
-                        <tbody>
-                        <tr>
-                            <td className="info-item table-report-cell">
-                                Посмотреть{' '}
-                                <Link to={'/woe/players/'}>список игроков</Link>{', '}
-                                <Link to={'/woe/guilds/'}>список гильдии</Link>
-                                .
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </Container>
+                <WoENavigation active="woe"/>
                 <Container>
                     <ContainerText>
                         <Report24 data={this.state.state24} title={'График активности за последнии 50 ГВ:'}/>

@@ -25,7 +25,7 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
         this.setState({loading: true});
         const me = this;
 
-        const cacheData = TimeCachedStore.instance().get(`report`);
+        const cacheData = TimeCachedStore.instance().get(`/report`);
         if (cacheData) {
             me.setState({ report: cacheData, loading: false });
             return;
@@ -40,7 +40,7 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
                 }
             })
             .then((report) => {
-                TimeCachedStore.instance().set(`report`, report, moment().add({day: 1}).toDate());
+                TimeCachedStore.instance().set(`/report`, report, moment().add({day: 1}).toDate());
                 me.setState({ report, loading: false });
             });
     }

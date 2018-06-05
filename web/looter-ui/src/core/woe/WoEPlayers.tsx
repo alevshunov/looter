@@ -6,9 +6,10 @@ import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
+import TimeCachedStore from '../extra/TimeCachedStore';
+import WoENavigation from './WoENavigation';
 
 interface State {
-    loading: boolean;
     data?: any;
     state24?: any;
 }
@@ -21,7 +22,7 @@ class WoEPlayers extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        this.state = { data: undefined, loading: false };
+        this.state = { data: undefined };
     }
 
     componentWillMount() {
@@ -29,7 +30,14 @@ class WoEPlayers extends React.Component<Props, State> {
     }
 
     doLoad() {
-        this.setState({loading: true});
+
+        const cacheData = TimeCachedStore.instance().get('/woe/players');
+        if (cacheData) {
+            this.setState(cacheData);
+            return;
+        }
+
+        this.setState({ data: undefined });
 
         const me = this;
         fetch('https://free-ro.kudesnik.cc/rest/woe/players')
@@ -41,7 +49,8 @@ class WoEPlayers extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                me.setState({ data, loading: false });
+                TimeCachedStore.instance().set('/woe/players', { data });
+                me.setState({ data });
             });
     }
 
@@ -52,20 +61,7 @@ class WoEPlayers extends React.Component<Props, State> {
         return (
             <div className="limiter area-woe-players">
                 <MyNavigation active="items"/>
-                <Container>
-                    <table className="table-report info">
-                        <tbody>
-                            <tr>
-                                <td className="info-item table-report-cell">
-                                    Посмотреть{' '}
-                                    <Link to={'/woe/'}>историю ГВ</Link>{', '}
-                                    <Link to={'/woe/guilds/'}>список гильдий</Link>
-                                    .
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </Container>
+                <WoENavigation active="players"/>
                 <Container>
                     <TableReport
                         title={'Активные ГВ игроки по итогам 10 ГВ'}
