@@ -9,25 +9,12 @@ import asShopCount from './components/asShopCount';
 import TableReport from './components/TableReport';
 import Container from './components/Container';
 import GA from './extra/GA';
+import asDate from './components/asDate';
 
 interface State {
     loading: boolean;
 
-    data?: {
-        items: Array<{
-            name: string;
-            count: { start: number, end: number };
-            price: number;
-            ids: string;
-        }>;
-        name: string;
-        location: string;
-        owner: string;
-        lastFetch: Date;
-        date: Date;
-        active: boolean;
-        type: string;
-    };
+    data?: any;
 }
 
 interface Props {
@@ -78,7 +65,7 @@ class ShopItems extends React.Component<Props, State> {
         }
 
         return (
-            <div className="limiter">
+            <div className="limiter area-shop">
                 <MyNavigation active="shops"/>
                 <Container>
                     <table className="table-report info">
@@ -138,13 +125,14 @@ class ShopItems extends React.Component<Props, State> {
                 {this.state.data.items &&
                     <Container>
                         <TableReport
+                            title="Доступный товар"
                             cells={[
                                 {
                                     title: '',
                                     field: 'index'
                                 },
                                 {
-                                    title: 'Доступный товар',
+                                    title: 'Наименование',
                                     field: 'name',
                                     render: (name, o) => (
                                         <span>
@@ -181,6 +169,61 @@ class ShopItems extends React.Component<Props, State> {
                             data={this.state.data.items}
                         />
                     </Container>
+                }
+                {this.state.data.soldHistory &&
+                <Container>
+                    <TableReport
+                        userCls="sold-history"
+                        title="История сделок"
+                        cells={[
+                            {
+                                title: '',
+                                field: 'index'
+                            },
+                            {
+                                title: 'Наименование',
+                                field: 'name',
+                                render: (name, o) => (
+                                    <span>
+                                            <span>{shopType === 'sell' ? 'S> ' : 'B> '}</span>
+                                            <NavLink to={'/shops/with/' + o.name}>{o.name}</NavLink>
+                                        {o.ids &&
+                                        <span className="item_db-ids">id: {o.ids}
+                                            <a href={'http://rodb.kudesnik.cc/item/?term=' + o.name}>
+                                                        <InfoOutline style={{height: '11px'}}/>
+                                                    </a>
+                                                </span>
+                                        }
+                                        </span>
+                                )
+                            },
+                            {
+                                title: '',
+                                field: 'count',
+                                align: 'right',
+                                render: (count) => asShopCount(count)
+                            },
+                            {
+                                title: '',
+                                field: 'price',
+                                align: 'right',
+                                render: (price) => asPrice(price)
+                            },
+                            {
+                                title: 'Время сделки',
+                                field: 'date',
+                                align: 'right',
+                                render: (v, d) => (
+                                    <span>
+                                        {asDate(d.intervalStart)} - {asDate(d.intervalEnd, 'HH:mm')}
+                                    </span>
+                                )
+                            }
+                        ]}
+                        rowExtraClass={(o, index) => o.count.end === 0 ? 'sold' : ''}
+                        data={this.state.data.soldHistory}
+                    />
+                </Container>
                 }
             </div>
         );

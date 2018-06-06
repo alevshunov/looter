@@ -1,8 +1,20 @@
-.info .info-item {
+.area-shop .info .info-item {
     text-align: center;
 }
 
-.table-report-cell.type {
+.area-shop .table-report-cell.type {
     width: 20px;
     padding-right: 0px;
+}
+
+.area-shop .sold-history .date {
+    width: 220px;
+    white-space: nowrap;
+}
+
+.area-shop .sold-history .name {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
