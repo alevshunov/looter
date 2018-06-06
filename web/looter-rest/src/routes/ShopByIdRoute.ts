@@ -19,24 +19,51 @@ class ShopByIdRoute implements IRouteWithConnection {
         if (data.length > 0) {
             shop = data[0];
 
+            shop.soldHistory = await connection.query(`
+                select s1.name, s1.price, s1.date, s3.date, (s1.count - ifnull(s2.count, 0)) count
+                from
+                (
+                    select si.fetch_index, si.name, si.price, sum(si.count) count, max(si.date) date
+                    from shop_items si inner join shops s on s.id = si.shop_id
+                    where si.shop_id = ? and si.fetch_index < s.fetch_count
+                    group by si.fetch_index, si.name, si.price
+                ) s1
+                left join
+                (
+                    select si.fetch_index, si.name, si.price, sum(si.count) count, max(si.date) date
+                    from shop_items si
+                    where si.shop_id = ?
+                    group by si.fetch_index, si.name, si.price
+                ) s2 on s1.name = s2.name and s1.price = s2.price and s1.fetch_index + 1 = s2.fetch_index 
+                left join 
+                (
+                    select fetch_index, max(date) date
+                    from shop_items
+                    where shop_id = ?
+                    group by fetch_index
+                ) s3 on s3.fetch_index = s1.fetch_index + 1
+                where s1.count != s2.count or s2.count is null
+                order by s1.date desc            
+            `, shop.id, shop.id, shop.id);
+
             const dataStart = await connection.query(`
-            select si.id, si.name, si.price, si.count, group_concat(distinct i.id order by i.id separator ', ') ids
-            from shops s inner join shop_items si on s.id = si.shop_id and 1 = si.fetch_index
-            left join item_db i on i.name_japanese = si.name
-            where s.id = ?
-            group by si.id
-            order by si.id -- si.name, si.price, si.id
-        `,
+                select si.id, si.name, si.price, si.count, group_concat(distinct i.id order by i.id separator ', ') ids
+                from shops s inner join shop_items si on s.id = si.shop_id and 1 = si.fetch_index
+                left join item_db i on i.name_japanese = si.name
+                where s.id = ?
+                group by si.id
+                order by si.id -- si.name, si.price, si.id
+            `,
                 id);
 
             const dataCurrent = await connection.query(`
-            select si.id, si.name, si.price, si.count, group_concat(distinct i.id order by i.id separator ', ') ids
-            from shops s inner join shop_items si on s.id = si.shop_id and s.fetch_count = si.fetch_index
-            left join item_db i on i.name_japanese = si.name
-            where s.id = ?
-            group by si.id
-            order by si.id -- si.name, si.price, si.id
-        `,
+                select si.id, si.name, si.price, si.count, group_concat(distinct i.id order by i.id separator ', ') ids
+                from shops s inner join shop_items si on s.id = si.shop_id and s.fetch_count = si.fetch_index
+                left join item_db i on i.name_japanese = si.name
+                where s.id = ?
+                group by si.id
+                order by si.id -- si.name, si.price, si.id
+            `,
                 id);
 
             let i=0, j=0;
