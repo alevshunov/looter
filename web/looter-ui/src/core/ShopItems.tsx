@@ -185,14 +185,13 @@ class ShopItems extends React.Component<Props, State> {
                                 field: 'name',
                                 render: (name, o) => (
                                     <span>
-                                            <span>{shopType === 'sell' ? 'S> ' : 'B> '}</span>
-                                            <NavLink to={'/shops/with/' + o.name}>{o.name}</NavLink>
+                                        <NavLink to={'/shops/with/' + o.name}>{o.name}</NavLink>
                                         {o.ids &&
-                                        <span className="item_db-ids">id: {o.ids}
+                                            <span className="item_db-ids">id: {o.ids}
                                             <a href={'http://rodb.kudesnik.cc/item/?term=' + o.name}>
-                                                        <InfoOutline style={{height: '11px'}}/>
-                                                    </a>
-                                                </span>
+                                                    <InfoOutline style={{height: '11px'}}/>
+                                                </a>
+                                            </span>
                                         }
                                         </span>
                                 )
