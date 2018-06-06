@@ -43,7 +43,7 @@ class ShopByIdRoute implements IRouteWithConnection {
                     group by fetch_index
                 ) s3 on s3.fetch_index = s1.fetch_index + 1
                 where s1.count != s2.count or s2.count is null
-                order by s1.date desc            
+                order by s1.date asc, s1.name            
             `, shop.id, shop.id, shop.id);
 
             const dataStart = await connection.query(`
