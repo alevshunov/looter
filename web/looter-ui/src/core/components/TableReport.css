@@ -73,6 +73,10 @@
     padding-right: 0px;
 }
 
+.info .info-item {
+    text-align: center;
+}
+
 @media (max-width: 899px) {
     .table-report-cell.header {
         display: none;
