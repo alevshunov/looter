@@ -20,7 +20,7 @@ class ShopByIdRoute implements IRouteWithConnection {
             shop = data[0];
 
             shop.soldHistory = await connection.query(`
-                select s1.name, s1.price, s1.date, s3.date, (s1.count - ifnull(s2.count, 0)) count
+                select s1.name, s1.price, s1.date intervalStart, s3.date intervalEnd, (s1.count - ifnull(s2.count, 0)) count
                 from
                 (
                     select si.fetch_index, si.name, si.price, sum(si.count) count, max(si.date) date
