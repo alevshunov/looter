@@ -19,6 +19,7 @@ import WoEPlayerByNameRoute from './routes/WoEPlayerByNameRoute';
 import WoEPlayersRoute from './routes/WoEPlayersRoute';
 import TimedRoute from './routes/tools/TimedRoute';
 import CachedRoute from './routes/tools/CachedRoute';
+import WoECastles from './routes/WoECastles';
 
 const app = express();
 const router = express.Router();
@@ -49,6 +50,7 @@ new RoutesRegister(logger, db, router)
             .add(new WoEInfoByIdRoute())
             .add(new WoEPlayerByNameRoute())
             .add(new WoEPlayersRoute())
+            .add(new WoECastles())
             .wrapWith(x => new CachedRoute(x))
             .wrapWith(x => new TimedRoute(x, logger))
             .all()
