@@ -9,7 +9,7 @@ import PlayerAttributeSaverFactory from './PlayerAttributeSaverFactory';
 import WoEAttributeSaverFactory from './WoEAttributeSaverFactory';
 import ForumStatisticWatcher from './ForumStatisticWatcher';
 import WoEExistChecker from './WoEExistChecker';
-import RateAndIndexRecalculator from './RateAndIndexRecalculator';
+import RateAndIndexRecalculator from './indexes/RateAndIndexRecalculator';
 import IconSaver from './IconSaver';
 import GuildSaverFactory from './GuildSaverFactory';
 import PlayerOnWoESaverFactory from './PlayerOnWoESaverFactory';

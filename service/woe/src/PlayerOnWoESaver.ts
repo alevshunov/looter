@@ -53,10 +53,11 @@ class PlayerOnWoESaver {
         const woePlayerId = PlayerOnWoESaver._woePlayerMap[this._woeId][this._playerId];
 
         await this._connection.query(`
-                insert into woe_player_value(woe_player_id, woe_attribute_id, value)
-                values(?, ?, ?)
-            `, woePlayerId, this._attributeId, this._playerValue);
+            insert into woe_player_value(woe_player_id, woe_attribute_id, value)
+            values(?, ?, ?)
+        `, woePlayerId, this._attributeId, this._playerValue);
 
+        return woePlayerId;
     }
 }
 
