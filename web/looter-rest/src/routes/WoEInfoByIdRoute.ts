@@ -78,10 +78,31 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
             order by m.date
         `, woeId);
 
+        const castlesLog = await connection.query(`
+            select date, c.id castleId, c.name castleName, c.location castleLocation, g.id guildId, g.name guildName, g.icon_url guildIconUrl, p.id playerId, p.name playerName
+            from woe_castle wc
+            inner join castle c on c.id = wc.castle_id
+            inner join player p on p.id = wc.player_id
+            inner join guild g on g.id = wc.guild_id
+            where woe_id = ?
+            order by date
+        `, woeId);
+
+        const castleOwnership = await connection.query(`
+            select c.id castleId, c.name castleName, c.location castleLocation, g.id guildId, g.name guildName, g.icon_url guildIconUrl
+            from woe_castle_ownership o
+            inner join guild g on g.id = o.guild_id
+            inner join castle c on c.id = o.castle_id
+            where o.woe_id = ?
+            order by c.sort_order        
+        `, woeId);
+
         const data = {
             woe,
             rate,
             log,
+            castlesLog,
+            castleOwnership,
             stat: attributes.map(a => {
                 return {
                     id: a.id,
