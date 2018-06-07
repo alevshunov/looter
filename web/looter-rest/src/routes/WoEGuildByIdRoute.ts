@@ -28,6 +28,7 @@ class WoEGuildByIdRoute implements IRouteWithConnection {
                     inner join woe_attribute a on pv.woe_attribute_id = a.id
                 where wp.guild_id = ?
                 group by a.id
+                order by a.sort_order
         `, guildId);
 
         const woes = await connection.query(`
