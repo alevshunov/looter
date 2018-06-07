@@ -8,7 +8,7 @@ class WoECastles implements IRouteWithConnection {
     public async execute(connection: MyConnection, request: Request): Promise<any> {
         const data = await connection.query(`
             select 
-                c.id castleId, c.name castleName, w.id woeId, w.name woeName, datediff(now(), w.date) days,
+                c.id castleId, c.name castleName, c.location castleLocation, w.id woeId, w.name woeName, datediff(now(), w.date) days,
                 g.id guildId, g.name guildName, g.icon_url guildIconUrl, 
                 p.id playerId, p.name playerName,
                 l.date date
