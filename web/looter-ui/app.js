@@ -17,15 +17,21 @@ titleMapper = function(url) {
     });
 
     mappers.push({
+        exp: /^\/woe\/castles\/$/,
+        fn: () =>
+            Promise.resolve('FreeRO - WoE - Замки')
+    });
+
+    mappers.push({
         exp: /^\/woe\/players\/$/,
         fn: () =>
-            Promise.resolve('FreeRO - WoE - Players')
+            Promise.resolve('FreeRO - WoE - Игроки')
     });
 
     mappers.push({
         exp: /^\/woe\/guilds\/$/,
         fn: () =>
-            Promise.resolve('FreeRO - WoE - Guilds')
+            Promise.resolve('FreeRO - WoE - Гильдии')
     });
 
     mappers.push({
@@ -49,63 +55,63 @@ titleMapper = function(url) {
     mappers.push({
         exp: /^\/cards\/?$/,
         fn: () =>
-            Promise.resolve('FreeRO - Cards')
+            Promise.resolve('FreeRO - Карты')
     });
 
     mappers.push({
         exp: /^\/cards\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Cards - ' + decodeURIComponent(parts[1]))
+            Promise.resolve('FreeRO - Карты - ' + decodeURIComponent(parts[1]))
     });
 
     mappers.push({
         exp: /^\/shop\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Shop - #' + decodeURIComponent(parts[1]))
+            Promise.resolve('FreeRO - Магазин - #' + decodeURIComponent(parts[1]))
     });
 
     mappers.push({
         exp: /^\/shops\/?$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Shops')
+            Promise.resolve('FreeRO - Магазины')
     });
 
     mappers.push({
         exp: /^\/shops\/with\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Shops - ' + decodeURIComponent(parts[1]))
+            Promise.resolve('FreeRO - Магазины - ' + decodeURIComponent(parts[1]))
     });
 
     mappers.push({
         exp: /^\/shops\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Shops - ' + decodeURIComponent(parts[1]))
+            Promise.resolve('FreeRO - Магазины - ' + decodeURIComponent(parts[1]))
     });
 
     mappers.push({
         exp: /^\/items\/?$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Price list')
+            Promise.resolve('FreeRO - Товары')
     });
 
 
     mappers.push({
         exp: /^\/items\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Price - ' + decodeURIComponent(parts[1]))
+            Promise.resolve('FreeRO - Товар - ' + decodeURIComponent(parts[1]))
     });
 
     mappers.push({
         exp: /^\/item\/history\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Price History - ' + decodeURIComponent(parts[1]))
+            Promise.resolve('FreeRO - История - ' + decodeURIComponent(parts[1]))
     });
 
 
     mappers.push({
         exp: /^\/report\/?$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - Weekly report')
+            Promise.resolve('FreeRO - Отчет')
     });
 
 

@@ -1,18 +1,9 @@
 import * as React from 'react';
-// import BookIcon from '@material-ui/icons/Book';
-// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-// import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-// import EqualizerIcon from '@material-ui/icons/Assessment';
-// import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import People from '@material-ui/icons/People';
-// import Person from '@material-ui/icons/Person';
-import Public from '@material-ui/icons/Public';
-import LocationCity from '@material-ui/icons/LocationCity';
 import { NavLink } from 'react-router-dom';
 import './WoENavigation.css';
 import * as H from 'history';
 
-class WoENavigation extends React.Component<{active: string}> {
+class WoENavigation extends React.Component<{active?: string}> {
 
     constructor(props: { active: string }, context: any) {
         super(props, context);
@@ -25,19 +16,24 @@ class WoENavigation extends React.Component<{active: string}> {
     render() {
         const items = [
             {
-                icon: <Public/>,
+                icon: <i className="fas fa-flag"/>,
                 title: 'История ГВ',
                 url: '/woe/'
             },
             {
-                icon: <LocationCity/>,
+                icon: <i className="fas fa-crown"/>,
                 title: 'Гильдии',
                 url: '/woe/guilds/'
             },
             {
-                icon: <People/>,
+                icon: <i className="fas fa-users"/>,
                 title: 'Активные игроки',
                 url: '/woe/players/'
+            },
+            {
+                icon: <i className="fab fa-fort-awesome"/>,
+                title: 'Замки',
+                url: '/woe/castles/'
             }
         ];
 

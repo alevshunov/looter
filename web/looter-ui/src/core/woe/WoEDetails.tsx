@@ -7,6 +7,8 @@ import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import { Link } from 'react-router-dom';
+import asDate from '../components/asDate';
+import TextIcon from '../components/TextIcon';
 
 interface State {
     loading: boolean;
@@ -51,15 +53,21 @@ class WoEDetails extends React.Component<Props, State> {
 
         GA();
 
+        if (!this.state.data) {
+            return (
+                <div className="limiter area-woe-details">
+                    <MyNavigation active="woe"/>
+                </div>
+            );
+        }
+
         const parts: any[] = [];
 
-        if (this.state.data) {
-            this.state.data.stat.forEach((attr: any) => {
-                parts.push(<Container key={attr.id}>{this.renderAttrHeader(attr)}{this.renderAttr(attr)}</Container>);
-                // parts.push(this.renderAttrHeader(attr));
-                // parts.push(this.renderAttr(attr));
-            });
-        }
+        this.state.data.stat.forEach((attr: any) => {
+            parts.push(<Container key={attr.id}>{this.renderAttrHeader(attr)}{this.renderAttr(attr)}</Container>);
+            // parts.push(this.renderAttrHeader(attr));
+            // parts.push(this.renderAttr(attr));
+        });
 
         return (
             <div className="limiter area-woe-details">
@@ -75,46 +83,21 @@ class WoEDetails extends React.Component<Props, State> {
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    {this.state.data && moment(this.state.data.woe.date)
+                                    {moment(this.state.data.woe.date)
                                         .locale('ru')
                                         .format('DD MMMM YYYY')}
                                 </td>
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    {
-                                        this.state.data &&
-                                        <a href={`https://forum.free-ro.com/posts/${this.state.data.woe.postId}/`}>
-                                            Источник
-                                        </a>
-                                    }
+                                    <a href={`https://forum.free-ro.com/posts/${this.state.data.woe.postId}/`}>
+                                        Источник
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    {this.state.data && <TableReport
-                        rowExtraClass={() => 'woe-log'}
-                        cells={
-                            [
-                                {
-                                    title: '',
-                                    field: 'date',
-                                    render: (v) => moment(v)
-                                        .locale('ru')
-                                        .format('HH:mm:ss')
-                                },
-                                {
-                                    title: '',
-                                    align: 'left',
-                                    field: 'message',
-                                    render: (v) => v
-                                }
-                            ]
-                        }
-                        data={this.state.data.log}
-                    />
-                    }
-                    {this.state.data && <TableReport
+                    <TableReport
                         cells={
                             [
                                 {
@@ -131,7 +114,71 @@ class WoEDetails extends React.Component<Props, State> {
                         }
                         data={this.state.data.rate}
                     />
-                    }
+                </Container>
+
+                <Container>
+                    <TableReport
+                        title={'Владения замками'}
+                        cells={
+                            [
+                                {
+                                    title: 'Гильдия',
+                                    field: 'owner',
+                                    render: (v, d) =>
+                                        <TextIcon
+                                            linkUrl={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}
+                                            iconUrl={d.guildIconUrl}
+                                        >
+                                            <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
+                                                {d.guildName}
+                                            </Link>
+                                        </TextIcon>
+                                },
+                                {
+                                    title: 'Замок',
+                                    field: 'castle',
+                                    render: (v, d) => <span>{d.castleName} / {d.castleLocation}</span>
+                                },
+
+                            ]
+                        }
+                        data={this.state.data.castleOwnership}
+                    />
+                </Container>
+
+                <Container>
+                    <TableReport
+                        title={'История захватов'}
+                        cells={
+                            [
+                                {
+                                    title: 'Время',
+                                    field: 'date',
+                                    render: (v) => asDate(v, 'HH:mm:ss')
+                                },
+                                {
+                                    title: 'Игрок',
+                                    field: 'owner',
+                                    render: (v, d) =>
+                                        <TextIcon
+                                            linkUrl={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}
+                                            iconUrl={d.guildIconUrl}
+                                        >
+                                            <Link to={`/woe/player/${encodeURIComponent(d.playerName)}`}>
+                                                {d.playerName}
+                                            </Link>
+                                        </TextIcon>
+                                },
+                                {
+                                    title: 'Замок',
+                                    field: 'castle',
+                                    render: (v, d) => <span>{d.castleName} / {d.castleLocation}</span>
+                                },
+
+                            ]
+                        }
+                        data={this.state.data.castlesLog}
+                    />
                 </Container>
 
                 {parts}
@@ -140,28 +187,30 @@ class WoEDetails extends React.Component<Props, State> {
     }
 
     renderAttrHeader(attribute: any) {
-        return (
-            <table className="table-report info">
-                <tbody>
-                    <tr>
-                        <td className="info-item table-report-cell">
-                            {attribute.name}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="info-item table-report-cell">
-                            В среднем по серверу: {asNumber(attribute.avg)}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        );
+        return null;
+        // return (
+        //     <table className="table-report info">
+        //         <tbody>
+        //             <tr>
+        //                 <td className="info-item table-report-cell">
+        //                     {attribute.name}
+        //                 </td>
+        //             </tr>
+        //             <tr>
+        //                 <td className="info-item table-report-cell">
+        //                     В среднем по серверу: {asNumber(attribute.avg)}
+        //                 </td>
+        //             </tr>
+        //         </tbody>
+        //     </table>
+        // );
     }
 
     renderAttr (attribute: any) {
         return (
             <TableReport
                 userCls={'rate'}
+                title={attribute.name}
                 cells={
                     [
                         {

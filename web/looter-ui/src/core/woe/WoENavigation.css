@@ -1,7 +1,18 @@
-.nav-top.sub .nav-title {
+.nav-top.sub .nav-item .nav-icon {
+    font-size: 20px;
+}
+
+.nav-top.sub .nav-item .nav-title {
+    padding-top: 6px;
     font-size: 12px;
 }
 
-.nav-top.sub .active .nav-item > div {
-    font-size: 13px;
+.nav-top.sub .active .nav-item .nav-icon {
+    font-size: 24px;
 }
+
+.nav-top.sub .active .nav-item .nav-title {
+    padding-top: 6px;
+    font-size: 16px;
+}
+

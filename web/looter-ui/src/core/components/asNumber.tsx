@@ -11,7 +11,7 @@ export default function(value: number, postfix?: string) {
     return (
         <span>
             {value ? numeral(value).format(format) : '-'}
-            {postfix ? ' ' + postfix : ''}
+            {value && postfix ? ' ' + postfix : ''}
         </span>
     );
 }

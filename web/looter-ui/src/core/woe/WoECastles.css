@@ -1,0 +1,27 @@
+.area-woe-castles .castles .castle-icon {
+    font-size: 24px;
+    width: 24px;
+    padding-right: 5px;
+}
+
+.area-woe-castles .castles .castleName .location {
+    font-size: 11px;
+}
+
+.area-woe-castles .castles .guildName {
+    width: 380px;
+}
+
+.area-woe-castles .castles .guildName .description {
+    font-size: 11px;
+    margin-top: 3px;
+    padding-left: 32px;
+}
+
+.area-woe-castles .castles .guildName .text-icon .icon-wrapper img {
+    margin-top: 4px;
+}
+
+.area-woe-castles .castles .data-row .table-report-cell.data  {
+    padding-bottom: 13px;
+}

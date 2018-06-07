@@ -14,6 +14,7 @@ import WoEPlayers from './core/woe/WoEPlayers';
 import WoEPlayer from './core/woe/WoEPlayer';
 import WoEGuilds from './core/woe/WoEGuilds';
 import WoEGuild from './core/woe/WoEGuild';
+import WoECastles from './core/woe/WoECastles';
 
 class App extends React.Component {
 
@@ -25,6 +26,12 @@ class App extends React.Component {
                         exact={true}
                         path="/woe/"
                         render={(props) => <WoEHistory />}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/castles"
+                        render={(props) => <WoECastles />}
                     />
 
                     <Route

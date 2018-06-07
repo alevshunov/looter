@@ -1,0 +1,8 @@
+.text-icon .icon-wrapper img {
+    position: absolute;
+    margin-top: -3px;
+}
+
+.text-icon .text-wrapper {
+    padding-left: 32px;
+}
