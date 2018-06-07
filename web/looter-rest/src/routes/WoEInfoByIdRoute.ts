@@ -28,7 +28,7 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
             order by a.sort_order
         `, woe.id);
 
-        const attributes = await connection.query(`select * from woe_attribute`);
+        const attributes = await connection.query(`select * from woe_attribute order by sort_order`);
 
         const avgServerValue = await connection.query(`
             select woe_attribute_id attributeId, TRUNCATE(avg(value), 2) avg
