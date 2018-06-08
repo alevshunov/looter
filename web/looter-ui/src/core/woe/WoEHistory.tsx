@@ -1,15 +1,13 @@
 import * as React from 'react';
 import './WoEHistory.css';
 import { Link } from 'react-router-dom';
-import GA from '../extra/GA';
-import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import Report24 from '../components/Report24';
 import ContainerText from '../components/ContainerText';
 import TimeCachedStore from '../extra/TimeCachedStore';
-import WoENavigation from './WoENavigation';
+import GA from '../extra/GA';
 
 interface State {
     data?: any;
@@ -69,60 +67,57 @@ class WoEHistory extends React.Component<Props, State> {
     }
 
     render() {
-        document.title = 'FreeRO - WoE - History';
+        document.title = 'FreeRO - WoE - История';
+
         GA();
 
         return (
-            <div className="limiter area-woe-hostory">
-                <MyNavigation active="items"/>
-                <WoENavigation active="woe"/>
-                <Container>
-                    <ContainerText>
-                        <Report24 data={this.state.state24} title={'График активности за последние 50 ГВ:'}/>
-                    </ContainerText>
-                    <div/>
-                    <TableReport
-                        title={'История ГВ'}
-                        cells={
-                            [
-                                {
-                                    // title: 'Название',
-                                    title: '',
-                                    field: 'name',
-                                    render: (name, d) => (<Link to={`/woe/${d.id}`}>{name}</Link>)
-                                },
-                                {
-                                    title: 'Убийст',
-                                    field: 'pk',
-                                    align: 'right',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Урон',
-                                    field: 'pdmg',
-                                    align: 'right',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Баф',
-                                    field: 'ps',
-                                    align: 'right',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Дебаф',
-                                    field: 'pdb',
-                                    align: 'right',
-                                    render: x => asNumber(x)
-                                }
-                            ]
-                        }
-                        data={this.state.data}
-                        emptyMessage="Данные отсутствуют"
-                    />
+            <Container userCls="area-woe-hostory">
+                <ContainerText>
+                    <Report24 data={this.state.state24} title={'График активности за последние 50 ГВ:'}/>
+                </ContainerText>
+                <div/>
+                <TableReport
+                    title={'История ГВ'}
+                    cells={
+                        [
+                            {
+                                // title: 'Название',
+                                title: '',
+                                field: 'name',
+                                render: (name, d) => (<Link to={`/woe/${d.id}`}>{name}</Link>)
+                            },
+                            {
+                                title: 'Убийст',
+                                field: 'pk',
+                                align: 'right',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Урон',
+                                field: 'pdmg',
+                                align: 'right',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Баф',
+                                field: 'ps',
+                                align: 'right',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Дебаф',
+                                field: 'pdb',
+                                align: 'right',
+                                render: x => asNumber(x)
+                            }
+                        ]
+                    }
+                    data={this.state.data}
+                    emptyMessage="Данные отсутствуют"
+                />
 
-                </Container>
-            </div>
+            </Container>
         );
     }
 }

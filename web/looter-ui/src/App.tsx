@@ -15,6 +15,7 @@ import WoEPlayer from './core/woe/WoEPlayer';
 import WoEGuilds from './core/woe/WoEGuilds';
 import WoEGuild from './core/woe/WoEGuild';
 import WoECastles from './core/woe/WoECastles';
+import WoELayout from './core/woe/WoELayout';
 
 class App extends React.Component {
 
@@ -25,43 +26,61 @@ class App extends React.Component {
                     <Route
                         exact={true}
                         path="/woe/"
-                        render={(props) => <WoEHistory />}
+                        render={(props) => <WoELayout><WoECastles /></WoELayout>}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/history"
+                        render={(props) => <WoELayout><WoEHistory /></WoELayout>}
                     />
 
                     <Route
                         exact={true}
                         path="/woe/castles"
-                        render={(props) => <WoECastles />}
+                        render={(props) => <WoELayout><WoECastles /></WoELayout>}
                     />
 
                     <Route
                         exact={true}
                         path="/woe/players"
-                        render={(props) => <WoEPlayers />}
+                        render={(props) => <WoELayout><WoEPlayers /></WoELayout>}
                     />
 
                     <Route
                         exact={true}
                         path="/woe/guilds"
-                        render={(props) => <WoEGuilds />}
+                        render={(props) => <WoELayout><WoEGuilds /></WoELayout>}
                     />
 
                     <Route
                         exact={true}
                         path="/woe/guild/:id/:name"
-                        render={(props) => <WoEGuild guildId={decodeURIComponent(props.match.params.id)} />}
+                        render={(props) =>
+                            <WoELayout>
+                                <WoEGuild guildId={decodeURIComponent(props.match.params.id)} />
+                            </WoELayout>
+                        }
                     />
 
                     <Route
                         exact={true}
                         path="/woe/player/:playerName"
-                        render={(props) => <WoEPlayer playerName={decodeURIComponent(props.match.params.playerName)} />}
+                        render={(props) =>
+                            <WoELayout>
+                                <WoEPlayer playerName={decodeURIComponent(props.match.params.playerName)} />
+                            </WoELayout>
+                        }
                     />
 
                     <Route
                         exact={true}
                         path="/woe/:woeId"
-                        render={(props) => <WoEDetails woeId={decodeURIComponent(props.match.params.woeId)} />}
+                        render={(props) =>
+                            <WoELayout>
+                                <WoEDetails woeId={decodeURIComponent(props.match.params.woeId)} />
+                            </WoELayout>
+                        }
                     />
 
                     <Route

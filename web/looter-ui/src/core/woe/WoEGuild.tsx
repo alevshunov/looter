@@ -1,7 +1,6 @@
 import * as React from 'react';
 import GA from '../extra/GA';
 import './WoEGuild.css';
-import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
@@ -47,17 +46,18 @@ class WoEGuild extends React.Component<Props, State> {
 
     render() {
         document.title =
-            (!this.state.data ? 'FreeRO - WoE - Guild' : 'FreeRO - Guild - ' + this.state.data.guild.name);
+            (!this.state.data ? 'FreeRO - WoE - Гильдии' : 'FreeRO - ' + this.state.data.guild.name);
 
         GA();
 
+        if (!this.state.data) {
+            return null;
+        }
+
         return (
-            <div className="limiter area-woe-guild">
-                <MyNavigation active="woe"/>
+            <div className="area-woe-guild">
                 <Container>
                     <table className="table-report info">
-                        {
-                            this.state.data &&
                         <tbody>
                             <tr>
                                 <td className="info-item table-report-cell">
@@ -75,147 +75,140 @@ class WoEGuild extends React.Component<Props, State> {
                                 </td>
                             </tr>
                         </tbody>
-                            }
                     </table>
 
-                    {this.state.data &&
-                        <TableReport
-                            cells={
-                                [
-                                    {
-                                        title: '',
-                                        field: 'name'
-                                    },
-                                    {
-                                        title: 'В среднем',
-                                        align: 'right',
-                                        field: 'avg',
-                                        render: (v, d) => asNumber(v)
-                                    },
-                                    {
-                                        title: 'Максимум',
-                                        align: 'right',
-                                        field: 'max',
-                                        render: (v) => asNumber(v)
-                                    },
-                                    {
-                                        title: 'Всего',
-                                        align: 'right',
-                                        field: 'sum',
-                                        render: (v) => asNumber(v)
-                                    }
-                                ]
-                            }
-                            data={this.state.data.rate}
-                        />
-                    }
+                    <TableReport
+                        cells={
+                            [
+                                {
+                                    title: '',
+                                    field: 'name'
+                                },
+                                {
+                                    title: 'В среднем',
+                                    align: 'right',
+                                    field: 'avg',
+                                    render: (v, d) => asNumber(v)
+                                },
+                                {
+                                    title: 'Максимум',
+                                    align: 'right',
+                                    field: 'max',
+                                    render: (v) => asNumber(v)
+                                },
+                                {
+                                    title: 'Всего',
+                                    align: 'right',
+                                    field: 'sum',
+                                    render: (v) => asNumber(v)
+                                }
+                            ]
+                        }
+                        data={this.state.data.rate}
+                    />
                 </Container>
-                {this.state.data &&
-                    <Container>
-                        <TableReport
-                            userCls={'players'}
-                            title={'Состав'}
-                            cells={
-                                [
-                                    {
-                                        title: '',
-                                        field: 'index'
-                                    },
-                                    {
-                                        title: 'Игрок',
-                                        field: 'name',
-                                        render: (name, d) => (
-                                            <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
-                                        )
-                                    },
-                                    {
-                                        title: 'Убийств',
-                                        field: 'kills',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Смертей',
-                                        field: 'death',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Бафы',
-                                        field: 'buffs',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Дебафы',
-                                        field: 'debuffs',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Боев',
-                                        align: 'right',
-                                        field: 'gamesPlayed'
-                                    }
-                                ]
-                            }
-                            data={this.state.data.players}
-                        />
-                    </Container>
-                }
-                {this.state.data &&
-                    <Container>
-                        <TableReport
-                            userCls={'woes'}
-                            title={'История боев'}
-                            cells={
-                                [
-                                    {
-                                        title: '',
-                                        field: 'index'
-                                    },
-                                    {
-                                        title: 'ГВ',
-                                        field: 'name',
-                                        render: (name, d) => (
-                                            <Link to={`/woe/${encodeURI(d.id)}`}>{name}</Link>
-                                        )
-                                    },
-                                    {
-                                        title: 'Убийств',
-                                        field: 'kills',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Смертей',
-                                        field: 'death',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Бафы',
-                                        field: 'buffs',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Дебафы',
-                                        field: 'debuffs',
-                                        align: 'right',
-                                        render: x => asNumber(x)
-                                    },
-                                    {
-                                        title: 'Уши',
-                                        align: 'right',
-                                        field: 'wings'
-                                    }
-                                ]
-                            }
-                            data={this.state.data.woes}
-                        />
-                    </Container>
-                }
+                <Container>
+                    <TableReport
+                        userCls={'players'}
+                        title={'Состав'}
+                        cells={
+                            [
+                                {
+                                    title: '',
+                                    field: 'index'
+                                },
+                                {
+                                    title: 'Игрок',
+                                    field: 'name',
+                                    render: (name, d) => (
+                                        <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+                                    )
+                                },
+                                {
+                                    title: 'Убийств',
+                                    field: 'kills',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Смертей',
+                                    field: 'death',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Бафы',
+                                    field: 'buffs',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Дебафы',
+                                    field: 'debuffs',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Боев',
+                                    align: 'right',
+                                    field: 'gamesPlayed'
+                                }
+                            ]
+                        }
+                        data={this.state.data.players}
+                    />
+                </Container>
+                <Container>
+                    <TableReport
+                        userCls={'woes'}
+                        title={'История боев'}
+                        cells={
+                            [
+                                {
+                                    title: '',
+                                    field: 'index'
+                                },
+                                {
+                                    title: 'ГВ',
+                                    field: 'name',
+                                    render: (name, d) => (
+                                        <Link to={`/woe/${encodeURI(d.id)}`}>{name}</Link>
+                                    )
+                                },
+                                {
+                                    title: 'Убийств',
+                                    field: 'kills',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Смертей',
+                                    field: 'death',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Бафы',
+                                    field: 'buffs',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Дебафы',
+                                    field: 'debuffs',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Уши',
+                                    align: 'right',
+                                    field: 'wings'
+                                }
+                            ]
+                        }
+                        data={this.state.data.woes}
+                    />
+                </Container>
             </div>
         );
     }

@@ -1,13 +1,11 @@
 import * as React from 'react';
 import './WoEPlayers.css';
 import { Link } from 'react-router-dom';
-import GA from '../extra/GA';
-import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import TimeCachedStore from '../extra/TimeCachedStore';
-import WoENavigation from './WoENavigation';
+import GA from '../extra/GA';
 
 interface State {
     data?: any;
@@ -55,81 +53,78 @@ class WoEPlayers extends React.Component<Props, State> {
     }
 
     render() {
-        document.title = 'FreeRO - WoE - Players';
+        document.title = 'FreeRO - WoE - Игроки';
+
         GA();
 
         return (
-            <div className="limiter area-woe-players">
-                <MyNavigation active="items"/>
-                <WoENavigation active="players"/>
-                <Container>
-                    <TableReport
-                        title={'Активные ГВ игроки по итогам 10 ГВ'}
-                        cells={
-                            [
-                                {
-                                    title: '',
-                                    field: 'index'
-                                },
-                                {
-                                    title: '',
-                                    field: 'guild',
-                                    render: (name, d) =>
-                                        (
-                                            <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
-                                                <img src={d.guildIconUrl} title={d.guildName} />
-                                            </Link>
-                                        )
-                                },
-                                {
-                                    title: 'Игрок',
-                                    field: 'name',
-                                    render: (name, d) => (
-                                        <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+            <Container userCls="area-woe-players">
+                <TableReport
+                    title={'Активные ГВ игроки по итогам 10 ГВ'}
+                    cells={
+                        [
+                            {
+                                title: '',
+                                field: 'index'
+                            },
+                            {
+                                title: '',
+                                field: 'guild',
+                                render: (name, d) =>
+                                    (
+                                        <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
+                                            <img src={d.guildIconUrl} title={d.guildName} />
+                                        </Link>
                                     )
-                                },
-                                {
-                                    title: 'Убийств',
-                                    field: 'kills',
-                                    align: 'right',
-                                    tooltip: 'Kills',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Смертей',
-                                    field: 'death',
-                                    align: 'right',
-                                    tooltip: 'Deaths',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Бафы',
-                                    field: 'buffs',
-                                    align: 'right',
-                                    tooltip: 'Supports',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Дебафы',
-                                    field: 'debuffs',
-                                    align: 'right',
-                                    tooltip: 'Debuffs',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Боев',
-                                    align: 'right',
-                                    field: 'gamesPlayed',
-                                    render: (v, d) => asNumber(d.woes)
-                                }
-                            ]
-                        }
-                        data={this.state.data}
-                        emptyMessage="Данные отсутствуют"
-                    />
+                            },
+                            {
+                                title: 'Игрок',
+                                field: 'name',
+                                render: (name, d) => (
+                                    <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+                                )
+                            },
+                            {
+                                title: 'Убийств',
+                                field: 'kills',
+                                align: 'right',
+                                tooltip: 'Kills',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Смертей',
+                                field: 'death',
+                                align: 'right',
+                                tooltip: 'Deaths',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Бафы',
+                                field: 'buffs',
+                                align: 'right',
+                                tooltip: 'Supports',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Дебафы',
+                                field: 'debuffs',
+                                align: 'right',
+                                tooltip: 'Debuffs',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Боев',
+                                align: 'right',
+                                field: 'gamesPlayed',
+                                render: (v, d) => asNumber(d.woes)
+                            }
+                        ]
+                    }
+                    data={this.state.data}
+                    emptyMessage="Данные отсутствуют"
+                />
 
-                </Container>
-            </div>
+            </Container>
         );
     }
 }

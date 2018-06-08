@@ -8,9 +8,9 @@ import { NavLink } from 'react-router-dom';
 import './MyNavigation.css';
 import * as H from 'history';
 
-class MyNavigation extends React.Component<{active: string}> {
+class MyNavigation extends React.Component<{active?: string}> {
 
-    constructor(props: { active: string }, context: any) {
+    constructor(props: { active?: string }, context: any) {
         super(props, context);
     }
 

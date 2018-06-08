@@ -1,11 +1,10 @@
 import * as React from 'react';
 import './WoEPlayer.css';
-import GA from '../extra/GA';
-import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import { Link } from 'react-router-dom';
+import GA from '../extra/GA';
 
 interface State {
     loading: boolean;
@@ -46,13 +45,12 @@ class WoEPlayer extends React.Component<Props, State> {
     }
 
     render() {
-        document.title = (!this.state.data ? 'FreeRO - WoE - Player' : 'FreeRO - WoE - ' + this.state.data.player.name);
+        document.title = (!this.state.data ? 'FreeRO - WoE - Игроки' : 'FreeRO - ' + this.state.data.player.name);
 
         GA();
 
         return (
-            <div className="limiter area-woe-player">
-                <MyNavigation active="woe"/>
+            <div className="area-woe-player">
                 <Container>
                     <table className="table-report info">
                         <tbody>

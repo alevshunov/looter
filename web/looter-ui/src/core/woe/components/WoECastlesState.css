@@ -1,0 +1,27 @@
+.area-castles .castle-icon {
+    font-size: 24px;
+    width: 24px;
+    padding-right: 5px;
+}
+
+.area-castles .castleName .location {
+    font-size: 11px;
+}
+
+.area-castles .guildName {
+    width: 380px;
+}
+
+.area-castles .guildName .description {
+    font-size: 11px;
+    margin-top: 3px;
+    padding-left: 32px;
+}
+
+.area-castles .guildName .text-icon .icon-wrapper img {
+    margin-top: 4px;
+}
+
+.area-castles .data-row .table-report-cell.data  {
+    padding-bottom: 13px;
+}

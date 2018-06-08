@@ -1,14 +1,13 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import './WoEDetails.css';
-import GA from '../extra/GA';
-import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import { Link } from 'react-router-dom';
 import asDate from '../components/asDate';
 import TextIcon from '../components/TextIcon';
+import GA from '../extra/GA';
 
 interface State {
     loading: boolean;
@@ -49,30 +48,24 @@ class WoEDetails extends React.Component<Props, State> {
     }
 
     render() {
-        document.title = (this.state.data ? 'FreeRO - WoE - ' + this.state.data.woe.name : 'FreeRO - WoE');
+        document.title = (this.state.data ? 'FreeRO - ' + this.state.data.woe.name : 'FreeRO - WoE');
 
         GA();
 
         if (!this.state.data) {
             return (
-                <div className="limiter area-woe-details">
-                    <MyNavigation active="woe"/>
-                </div>
+                <div className="area-woe-details"/>
             );
         }
 
         const parts: any[] = [];
 
         this.state.data.stat.forEach((attr: any) => {
-            parts.push(<Container key={attr.id}>{this.renderAttrHeader(attr)}{this.renderAttr(attr)}</Container>);
-            // parts.push(this.renderAttrHeader(attr));
-            // parts.push(this.renderAttr(attr));
+            parts.push(<Container key={attr.id}>{this.renderAttr(attr)}</Container>);
         });
 
         return (
-            <div className="limiter area-woe-details">
-                <MyNavigation active="woe"/>
-
+            <div className="area-woe-details">
                 <Container>
                     <table className="table-report info">
                         <tbody>
@@ -186,26 +179,6 @@ class WoEDetails extends React.Component<Props, State> {
         );
     }
 
-    renderAttrHeader(attribute: any) {
-        return null;
-        // return (
-        //     <table className="table-report info">
-        //         <tbody>
-        //             <tr>
-        //                 <td className="info-item table-report-cell">
-        //                     {attribute.name}
-        //                 </td>
-        //             </tr>
-        //             <tr>
-        //                 <td className="info-item table-report-cell">
-        //                     В среднем по серверу: {asNumber(attribute.avg)}
-        //                 </td>
-        //             </tr>
-        //         </tbody>
-        //     </table>
-        // );
-    }
-
     renderAttr (attribute: any) {
         return (
             <TableReport
@@ -270,7 +243,6 @@ class WoEDetails extends React.Component<Props, State> {
                         }
                     ]
                 }
-                // title={attribute.name}
                 data={attribute.players}
             />
         );

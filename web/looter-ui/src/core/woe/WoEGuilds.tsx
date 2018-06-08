@@ -1,13 +1,11 @@
 import * as React from 'react';
 import './WoEGuilds.css';
 import { Link } from 'react-router-dom';
-import GA from '../extra/GA';
-import MyNavigation from '../components/MyNavigation';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import TimeCachedStore from '../extra/TimeCachedStore';
-import WoENavigation from './WoENavigation';
+import GA from '../extra/GA';
 
 interface State {
     data?: any;
@@ -53,64 +51,61 @@ class WoEGuilds extends React.Component<Props, State> {
     }
 
     render() {
-        document.title = 'FreeRO - WoE - Guilds';
+        document.title = 'FreeRO - WoE - Гильдии';
+
         GA();
 
         return (
-            <div className="limiter area-woe-guilds">
-                <MyNavigation active="items"/>
-                <WoENavigation active="guilds"/>
-                <Container>
-                    <TableReport
-                        title={'ГВ гильдии'}
-                        cells={
-                            [
-                                {
-                                    title: '',
-                                    field: 'index'
-                                },
-                                {
-                                    title: '',
-                                    field: 'guild-icon',
-                                    render: (name, d) =>
-                                        (
-                                            <Link to={`/woe/guild/${d.id}/${encodeURIComponent(d.name)}`}>
-                                                <img src={d.iconUrl} title={d.guildName} />
-                                            </Link>
-                                        )
-                                },
-                                {
-                                    title: 'Гильдия',
-                                    field: 'name',
-                                    render: (name, d) => (
-                                        <Link to={`/woe/guild/${d.id}/${encodeURI(name)}`}>{name}</Link>
+            <Container userCls="area-woe-guilds">
+                <TableReport
+                    title={'ГВ гильдии'}
+                    cells={
+                        [
+                            {
+                                title: '',
+                                field: 'index'
+                            },
+                            {
+                                title: '',
+                                field: 'guild-icon',
+                                render: (name, d) =>
+                                    (
+                                        <Link to={`/woe/guild/${d.id}/${encodeURIComponent(d.name)}`}>
+                                            <img src={d.iconUrl} title={d.guildName} />
+                                        </Link>
                                     )
-                                },
-                                {
-                                    title: 'Убийств',
-                                    field: 'kills',
-                                    align: 'right',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Смертей',
-                                    field: 'death',
-                                    align: 'right',
-                                    render: x => asNumber(x)
-                                },
-                                {
-                                    title: 'Боев',
-                                    align: 'right',
-                                    field: 'woes'
-                                }
-                            ]
-                        }
-                        data={this.state.data}
-                        emptyMessage="Данные отсутствуют"
-                    />
+                            },
+                            {
+                                title: 'Гильдия',
+                                field: 'name',
+                                render: (name, d) => (
+                                    <Link to={`/woe/guild/${d.id}/${encodeURI(name)}`}>{name}</Link>
+                                )
+                            },
+                            {
+                                title: 'Убийств',
+                                field: 'kills',
+                                align: 'right',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Смертей',
+                                field: 'death',
+                                align: 'right',
+                                render: x => asNumber(x)
+                            },
+                            {
+                                title: 'Боев',
+                                align: 'right',
+                                field: 'woes'
+                            }
+                        ]
+                    }
+                    data={this.state.data}
+                    emptyMessage="Данные отсутствуют"
+                />
 
-                </Container>
-            </div>
+            </Container>
         );
     }
 }

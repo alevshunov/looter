@@ -17,6 +17,12 @@ titleMapper = function(url) {
     });
 
     mappers.push({
+        exp: /^\/woe\/history\/$/,
+        fn: () =>
+            Promise.resolve('FreeRO - WoE - История')
+    });
+
+    mappers.push({
         exp: /^\/woe\/castles\/$/,
         fn: () =>
             Promise.resolve('FreeRO - WoE - Замки')
@@ -37,13 +43,13 @@ titleMapper = function(url) {
     mappers.push({
         exp: /^\/woe\/player\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - WoE - ' + decodeURIComponent(parts[1]))
+            Promise.resolve('FreeRO - ' + decodeURIComponent(parts[1]))
     });
 
     mappers.push({
         exp: /^\/woe\/guild\/(.+)\/(.+)$/,
         fn: (parts) =>
-            Promise.resolve('FreeRO - WoE - ' + decodeURIComponent(parts[2]))
+            Promise.resolve('FreeRO - ' + decodeURIComponent(parts[2]))
     });
 
     mappers.push({
