@@ -78,7 +78,7 @@ class WoEHistory extends React.Component<Props, State> {
                 <WoENavigation active="woe"/>
                 <Container>
                     <ContainerText>
-                        <Report24 data={this.state.state24} title={'График активности за последнии 50 ГВ:'}/>
+                        <Report24 data={this.state.state24} title={'График активности за последние 50 ГВ:'}/>
                     </ContainerText>
                     <div/>
                     <TableReport
