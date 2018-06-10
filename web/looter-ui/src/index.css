@@ -5,6 +5,15 @@ body * {
 
   font-family: 'Roboto', sans-serif;
   /*font-family: 'Open Sans', sans-serif;*/
+  /*font-family: 'PT Sans', sans-serif;*/
+  /*font-family: 'Noto Sans', sans-serif;*/
+
+  /*font-family: 'EB Garamond', serif;*/
+  /*font-family: 'PT Sans Caption', sans-serif;*/
+
+  /*font-family: 'Vollkorn', serif;*/
+  /*font-family: 'IBM Plex Serif', serif;*/
+
   /*font-family: 'Roboto Condensed', sans-serif;*/
   /*font-family: 'Montserrat', sans-serif;*/
   /*font-family: 'Merriweather', serif;*/
@@ -43,7 +52,7 @@ body * {
   }
 }
 
-a { color: gray; }
+body, a { color: gray; }
 
 input[type="text"] {
   padding: 10px 36px;

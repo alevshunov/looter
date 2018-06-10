@@ -18,9 +18,11 @@
 
 .table-report-cell.header  {
     font-size: 18px;
-    color: #fa4251;
+    color: #5f6fca;
+    /*color: #3f51b5;*/
     line-height: 1.4;
     background-color: transparent;
+    font-weight: 900;
 
     padding-top: 18px;
     padding-bottom: 18px;

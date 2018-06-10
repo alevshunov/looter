@@ -41,7 +41,6 @@ class StatisticSaver {
         this._woeAttributeSaverFactory = woeAttributeSaverFactory;
         this._guildSaverFactory = guildSaverFactory;
         this._playerOnWoESaverFactory = playerOnWoESaverFactory;
-
     }
 
     async save() {
