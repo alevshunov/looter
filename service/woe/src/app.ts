@@ -13,6 +13,7 @@ import RateAndIndexRecalculator from './indexes/RateAndIndexRecalculator';
 import IconSaver from './IconSaver';
 import GuildSaverFactory from './GuildSaverFactory';
 import PlayerOnWoESaverFactory from './PlayerOnWoESaverFactory';
+import PlayerRatingCalculator from './indexes/PlayerRatingCalculator';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,
@@ -65,6 +66,10 @@ const logger = new MyLogger();
     if (hasChanges) {
         await new RateAndIndexRecalculator(connection).recalculate();
     }
+
+    const rate = await new PlayerRatingCalculator(connection, logger).calculate();
+
+    debugger;
 
     await connection.close();
 
