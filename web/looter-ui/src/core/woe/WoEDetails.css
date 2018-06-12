@@ -48,3 +48,22 @@
 }
 
 .area-woe-details .woe-log .date { width: 70px; }
+
+.area-woe-details .data.playerName .rate {
+    position: relative;
+    display: inline-block;
+    top: -5px;
+    font-size: 10px;
+    left: 5px;
+}
+
+.area-woe-details .data.playerName .perk {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.area-woe-details .rate .header.title i {
+    font-size: 18px;
+    margin-left: 10px;
+    color: #cccccc;
+}

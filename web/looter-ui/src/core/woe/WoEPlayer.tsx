@@ -5,6 +5,7 @@ import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import { Link } from 'react-router-dom';
 import GA from '../extra/GA';
+import TextIcon from '../components/TextIcon';
 
 interface State {
     loading: boolean;
@@ -49,6 +50,13 @@ class WoEPlayer extends React.Component<Props, State> {
 
         GA();
 
+        if (!this.state.data) {
+            return null;
+        }
+
+        const guild = this.state.data.guild;
+        const player = this.state.data.player;
+
         return (
             <div className="area-woe-player">
                 <Container>
@@ -56,31 +64,35 @@ class WoEPlayer extends React.Component<Props, State> {
                         <tbody>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    {this.state.data && this.state.data.player.name}
+                                    <TextIcon
+                                        linkUrl={
+                                            `/woe/guild/${guild.id}/${encodeURIComponent(guild.name)}`}
+                                        iconUrl={guild.iconUrl}
+                                    >
+                                            {player.name}
+                                    </TextIcon>
                                 </td>
                             </tr>
-                            {
-                                this.state.data &&
-                                <tr>
-                                    <td className="info-item table-report-cell">
-                                        Проведено {this.state.data && this.state.data.player.games_played} ГВ
-                                    </td>
-                                </tr>
-                            }
-                            {
-                                this.state.data && this.state.data.guild &&
-                                <tr>
-                                    <td className="info-item table-report-cell">
-                                        Гильдия: <br/> <Link
-                                            to={`/woe/guild/${this.state.data.guild.id}/${
-                                                encodeURIComponent(this.state.data.guild.name)
-                                            }`}
-                                        >
-                                            <img src={this.state.data.guild.iconUrl}/><br/>{this.state.data.guild.name}
-                                        </Link>
-                                    </td>
-                                </tr>
-                            }
+                            <tr>
+                                <td className="info-item table-report-cell">
+                                    Рейтинг: {asNumber(Math.round(this.state.data.player.rate))}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="info-item table-report-cell">
+                                    <i className={player.playerSpec1Icon}/> {player.playerSpec1Name}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="info-item table-report-cell">
+                                    <i className={player.playerSpec2Icon}/> {player.playerSpec2Name}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="info-item table-report-cell">
+                                    Проведено {player.games_played} ГВ
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </Container>

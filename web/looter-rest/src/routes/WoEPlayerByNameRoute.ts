@@ -8,7 +8,21 @@ class WoEPlayerByNameRoute implements IRouteWithConnection {
     public async execute(connection: MyConnection, request: Request): Promise<any> {
         const playerName = request.params.name;
 
-        let player = await connection.query(`select * from player where name = ?`, playerName);
+        let player = await connection.query(`
+        select p.*, 
+            p.rate,
+            p.rate_aux rateAux,
+            wa1.id playerSpec1Id,
+            wa1.special_name playerSpec1Name,
+            wa1.fa_icon playerSpec1Icon,
+            wa2.id playerSpec2Id,
+            wa2.special_name playerSpec2Name,
+            wa2.fa_icon playerSpec2Icon
+        from player p
+        left join woe_attribute wa1 on wa1.id = p.rate_woe_attribute_id
+        left join woe_attribute wa2 on wa2.id = p.rate_aux_woe_attribute_id
+ 
+        where p.name = ?`, playerName);
 
         if (player.length === 0) {
             return {};

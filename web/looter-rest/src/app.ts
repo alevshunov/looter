@@ -61,7 +61,9 @@ new RoutesRegister(logger, db, router)
 app.use(async (req, res, next) => {
     logger.log(req.headers["x-real-ip"], req.originalUrl || req.url || req.path || '');
 
-    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    if (process.env.LOOTER_DEV === 'true') {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    }
 
     const connection = await new MyConnection(db, logger).open();
 

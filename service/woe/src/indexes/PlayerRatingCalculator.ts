@@ -16,12 +16,19 @@ class PlayerRatingCalculator {
         const data = await this.loadAllInfo();
         const woes = await this.getWoEs();
         const attributes = await this.loadAttributes();
+        for (let attributeIndex=0; attributeIndex<attributes.length; attributeIndex++) {
+            const attribute = attributes[attributeIndex];
 
-        for (let woeIndex=0; woeIndex<woes.length; woeIndex++) {
-            const woe = woes[woeIndex];
+            const attributePlayers = {};
 
-            for (let attributeIndex=0; attributeIndex<attributes.length; attributeIndex++) {
-                const attribute = attributes[attributeIndex];
+            for (let woeIndex=0; woeIndex<woes.length; woeIndex++) {
+                const woe = woes[woeIndex];
+                if (woe.name.startsWith('WoE:SE')) {
+                    woe.rate *= 2;
+                }
+
+                const woePlayersSet = {};
+                const woePlayers = [];
 
                 const rate = data
                     .filter(x => x.woeId == woe.id && x.attributeId == attribute.id)
@@ -29,22 +36,122 @@ class PlayerRatingCalculator {
 
                 for (let playerAIndex = 0; playerAIndex<rate.length; playerAIndex++) {
                     const playerA = this.getPlayerWithRate(rate[playerAIndex]);
+                    this.recalculate(playerA, rate[playerAIndex], playerA, {rate: 0});
 
-                    for (let playerBIndex = rate.length-1; playerBIndex>=0; playerBIndex--) {
-                        if (playerAIndex === playerBIndex) {
-                            continue
-                        }
+                    if (!woePlayersSet[playerA.id]) {
+                        woePlayersSet[playerA.id] = playerA;
+                        woePlayers.push(playerA);
+                    }
 
+                    attributePlayers[playerA.id] = playerA;
+
+                    for (let playerBIndex = playerAIndex+1; playerBIndex<rate.length; playerBIndex++) {
                         const playerB = this.getPlayerWithRate(rate[playerBIndex]);
-
 
                         this.recalculate(playerA, rate[playerAIndex], playerB, rate[playerBIndex]);
                     }
                 }
+
+                woePlayers.forEach(p => { p.rate = p.rate2 + p.rate2 / 1000 * p.games; p.games++; p.h.push(p.rate); });
+
+                for (let id in attributePlayers) {
+                    if (!attributePlayers.hasOwnProperty(id)) {
+                        continue;
+                    }
+
+                    const player = attributePlayers[id];
+
+                    if (woePlayersSet[player.id]) {
+                        continue;
+                    }
+
+                    player.rate -= (player.rate - 1000) / 100 * 2;
+                }
+
+
+                const arr = this.makeRating();
+            }
+
+
+
+            const arr = this.makeRating();
+
+            for (let id in this._players) {
+                if (!this._players.hasOwnProperty(id)) {
+                    continue;
+                }
+
+                const player = this._players[id];
+                // player.rate += player.rate / 1000 * player.games;
+                player.rates[attribute.id] = { attribute: attribute, rate: player.rate, h: player.h };
+                player.totalRate = Math.max(player.totalRate, player.rate);
+                player.rate = 1000;
+                player.rate2 = 1000;
+                player.games = 0;
+                player.h = [];
             }
         }
 
-        const arr = [];
+        const arr = this.makeRating(x => x.totalRate);
+
+        for (let i=0; i<arr.length; i++) {
+            const p = arr[i];
+
+            let rate = 0;
+            let rateId = 12;
+
+            let rateAux = 0;
+            let rateAuxId = 12;
+
+            for (let id in p.rates) {
+                if (!p.rates.hasOwnProperty(id)) {
+                    continue;
+                }
+
+                const r = p.rates[id];
+                if (r.rate > rate) {
+                    rateAux = rate;
+                    rateAuxId = rateId;
+
+                    rate = r.rate;
+                    rateId = r.attribute.id;
+                } else if (r.rate > rateAux) {
+                    rateAux = r.rate;
+                    rateAuxId = r.attribute.id;
+                }
+            }
+
+            if (rate === 1000) {
+                rateId = 12;
+            }
+
+            if (rateAux === 1000) {
+                rateAuxId = 12;
+            }
+
+            await this._connection.query(`
+                update player
+                set rate = ?, rate_woe_attribute_id = ?, rate_aux = ?, rate_aux_woe_attribute_id = ?
+                where id = ?
+            `, rate, rateId, rateAux, rateAuxId, p.id);
+        }
+
+    }
+
+    private dump(p) {
+        console.log(p.id, p.name);
+        for (let id in p.rates) {
+            if (!p.rates.hasOwnProperty(id)) {
+                continue;
+            }
+
+            const r = p.rates[id];
+            console.log(r.attribute.id, r.attribute.ui_name, r.rate);
+        }
+    }
+
+    private makeRating(by = (x) => x.rate) {
+        let arr = [];
 
         for (let id in this._players) {
             if (!this._players.hasOwnProperty(id)) {
@@ -55,33 +162,24 @@ class PlayerRatingCalculator {
             arr.push(player);
         }
 
-        return arr.sort((a,b) => a.rate < b.rate ? 1 : a.rate === b.rate ? 0 : -1);
-
+        arr = arr.sort((a,b) => by(a) < by(b) ? 1 : by(a) === by(b) ? 0 : -1);
+        return arr;
     }
 
     private recalculate(playerA, rateA, playerB, rateB) {
-        const Ra = this.getNewPlayerARate(playerA, rateA, playerB, rateB);
-        const Rb = this.getNewPlayerARate(playerB, rateB, playerA, rateA);
+        const delta = this.getNewPlayerARate(playerA, rateA, playerB, rateB);
 
-        playerA.rate = Ra;
-        playerA.games++;
+        playerA.rate2 += delta * rateA.woeRate;
+        // playerB.rate2 -= delta  * rateA.rateRate * rateA.woeRate;
 
-        playerB.rate = Rb;
-        playerB.games++;
-
-        if (rateA.rate > rateB.rate) {
+        if (delta > 0) {
             playerA.wins++;
             playerB.loses++;
         }
 
-        if (rateA.rate < rateB.rate) {
+        if (delta < 0) {
             playerA.loses++;
             playerB.wins++;
-        }
-
-        if (rateA.rate === rateB.rate) {
-            playerA.pat++
-            playerB.pat++;
         }
     }
 
@@ -91,9 +189,10 @@ class PlayerRatingCalculator {
         const Ea = 1.0 / (1 + Math.pow(10, (Rb - Ra) / 400));
 
         const K = playerA.getK();
-        const Sa = rateA.rate > rateB.rate ? 1.0 : rateA.rate === rateB.rate ? 0.5 : 0.0;
+        // const Sa = rateA.rate > rateB.rate ? 1.0 : rateA.rate === rateB.rate ? 0.5 : 0.0;
+        const Sa = 0.5 + rateA.rate - (rateA.rate + rateB.rate) / 2;
 
-        const Ra2 = Ra + K * (Sa - Ea) * rateA.rateRate;
+        const Ra2 = K * (Sa - Ea);
 
         return Ra2;
     }
@@ -103,18 +202,22 @@ class PlayerRatingCalculator {
             this._players[rate.playerId] = {
                 id: rate.playerId,
                 name: rate.playerName,
+                totalRate: 1000,
                 rate: 1000,
+                rate2: 1000,
+                rates: {},
                 games: 0,
                 wins: 0,
                 loses: 0,
                 pat: 0,
+                h: [1000],
                 getK() {
-                    if (this.rate > 2400) {
+                    if (this.rate > 1300) {
                         return 10;
-                    } else if (this.games > 300) {
-                        return 15;
+                    } else if (this.games > 15) {
+                        return 20;
                     } else {
-                        return 30;
+                        return 40;
                     }
                 }
             }
@@ -130,7 +233,7 @@ class PlayerRatingCalculator {
     private async loadAllInfo() {
         return await this._connection.query(`
             select 
-                w.id woeId, 
+                w.id woeId, w.rate woeRate,
                 p.id playerId, p.name playerName, 
                 a.id attributeId, a.name attributeName, 
                 wpv.position_index playerIndex, wpv.rate,
@@ -145,7 +248,7 @@ class PlayerRatingCalculator {
     }
 
     private async loadAttributes() {
-        return await this._connection.query(`select * from woe_attribute order by sort_order`);
+        return await this._connection.query(`select * from woe_attribute where rate != 0 order by sort_order`);
     }
 }
 

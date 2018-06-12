@@ -60,7 +60,7 @@ class WoEPlayers extends React.Component<Props, State> {
         return (
             <Container userCls="area-woe-players">
                 <TableReport
-                    title={'Активные ГВ игроки по итогам 10 ГВ'}
+                    title={'Активные ГВ игроки'}
                     cells={
                         [
                             {
@@ -81,42 +81,49 @@ class WoEPlayers extends React.Component<Props, State> {
                                 title: 'Игрок',
                                 field: 'name',
                                 render: (name, d) => (
-                                    <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+                                    <div>
+                                        <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+                                        <div className="perks">
+                                            <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                            {' '}
+                                            {d.playerSpec1Name}
+                                            <br/>
+                                            <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                            {' '}
+                                            {d.playerSpec2Name}
+                                        </div>
+                                    </div>
                                 )
                             },
                             {
                                 title: 'Убийств',
                                 field: 'kills',
                                 align: 'right',
-                                tooltip: 'Kills',
                                 render: x => asNumber(x)
                             },
                             {
                                 title: 'Смертей',
                                 field: 'death',
                                 align: 'right',
-                                tooltip: 'Deaths',
                                 render: x => asNumber(x)
                             },
                             {
                                 title: 'Бафы',
                                 field: 'buffs',
                                 align: 'right',
-                                tooltip: 'Supports',
                                 render: x => asNumber(x)
                             },
                             {
                                 title: 'Дебафы',
                                 field: 'debuffs',
                                 align: 'right',
-                                tooltip: 'Debuffs',
                                 render: x => asNumber(x)
                             },
                             {
-                                title: 'Боев',
+                                title: 'Рейтинг',
                                 align: 'right',
-                                field: 'gamesPlayed',
-                                render: (v, d) => asNumber(d.woes)
+                                field: 'rate',
+                                render: (v, d) => asNumber(v)
                             }
                         ]
                     }

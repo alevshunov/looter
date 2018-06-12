@@ -65,11 +65,8 @@ const logger = new MyLogger();
 
     if (hasChanges) {
         await new RateAndIndexRecalculator(connection).recalculate();
+        await new PlayerRatingCalculator(connection, logger).calculate();
     }
-
-    const rate = await new PlayerRatingCalculator(connection, logger).calculate();
-
-    debugger;
 
     await connection.close();
 

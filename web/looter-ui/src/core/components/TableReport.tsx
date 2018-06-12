@@ -12,7 +12,7 @@ interface Props {
 
     data: Array<Object> | undefined;
     rowExtraClass?: (obj?: any, index?: number) => string;
-    title?: string;
+    title?: React.ReactNode | string;
     emptyMessage?: string;
     loadingMessage?: string;
     userCls?: string;

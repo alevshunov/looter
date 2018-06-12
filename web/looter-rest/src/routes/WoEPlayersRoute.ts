@@ -1,7 +1,6 @@
 import IRouteWithConnection from './tools/IRouteWithConnection';
 import {Request} from 'express';
 import {MyConnection} from 'my-core';
-import TimeCachedStore from '../../../looter-ui/src/core/extra/TimeCachedStore';
 
 class WoEPlayersRoute implements IRouteWithConnection {
     public path = '/woe/players';
@@ -14,6 +13,13 @@ class WoEPlayersRoute implements IRouteWithConnection {
                 p.name,
                 p.games_played gamesPlayed,
                 p.rate,
+                p.rate_aux rateAux,
+                wa1.id playerSpec1Id,
+                wa1.special_name playerSpec1Name,
+                wa1.fa_icon playerSpec1Icon,
+                wa2.id playerSpec2Id,
+                wa2.special_name playerSpec2Name,
+                wa2.fa_icon playerSpec2Icon,
                 max(wp.woe_id) lastPlayerWoe,
                 count(distinct(wp.woe_id)) woes,
                 sum(CASE WHEN (wpv.woe_attribute_id=1) THEN wpv.value ELSE 0 END) as kills,
@@ -27,6 +33,8 @@ class WoEPlayersRoute implements IRouteWithConnection {
                 sum(CASE WHEN (wpv.woe_attribute_id=9) THEN wpv.value ELSE 0 END) as wings
             from 
                 player p
+                left join woe_attribute wa1 on wa1.id = p.rate_woe_attribute_id
+                left join woe_attribute wa2 on wa2.id = p.rate_aux_woe_attribute_id
                 inner join woe_player wp on p.id = wp.player_id
                 inner join woe_player_value wpv on wpv.woe_player_id = wp.id
                 and wp.woe_id > (

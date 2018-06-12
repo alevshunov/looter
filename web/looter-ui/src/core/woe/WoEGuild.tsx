@@ -121,7 +121,19 @@ class WoEGuild extends React.Component<Props, State> {
                                     title: 'Игрок',
                                     field: 'name',
                                     render: (name, d) => (
-                                        <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+                                        <div>
+                                            <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+                                            <div className="rate">{Math.round(d.rate)}</div>
+                                            <div className="perks">
+                                                <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                                {' '}
+                                                {d.playerSpec1Name}
+                                                <br/>
+                                                <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                                {' '}
+                                                {d.playerSpec2Name}
+                                            </div>
+                                        </div>
                                     )
                                 },
                                 {

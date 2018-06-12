@@ -41,6 +41,14 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
                 a.id as attributeId,
                 p.id as playerId,
                 p.name as playerName,
+                p.rate,
+                p.rate_aux rateAux,
+                wa1.id playerSpec1Id,
+                wa1.special_name playerSpec1Name,
+                wa1.fa_icon playerSpec1Icon,
+                wa2.id playerSpec2Id,
+                wa2.special_name playerSpec2Name,
+                wa2.fa_icon playerSpec2Icon,                
                 pv.value as value,
                 pv.position_index,
                 g.icon_url guildIcon,
@@ -55,6 +63,8 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
                 inner join woe_player wp on wp.woe_id = w.id
                 inner join woe_player_value pv on pv.woe_player_id = wp.id
                 inner join player p on p.id = wp.player_id
+                left join woe_attribute wa1 on wa1.id = p.rate_woe_attribute_id
+                left join woe_attribute wa2 on wa2.id = p.rate_aux_woe_attribute_id
                 inner join woe_attribute a on a.id = pv.woe_attribute_id
                 inner join guild g on g.id = wp.guild_id
                 left join (
@@ -107,6 +117,7 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
                 return {
                     id: a.id,
                     name: a.name,
+                    icon: a.fa_icon,
                     avg: (avgServerValue.find(av => av.attributeId === a.id) || {avg: 0}).avg,
                     players: players.filter(s => s.attributeId === a.id)
                 };

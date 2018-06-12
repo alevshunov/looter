@@ -183,7 +183,7 @@ class WoEDetails extends React.Component<Props, State> {
         return (
             <TableReport
                 userCls={'rate'}
-                title={attribute.name}
+                title={<span>{attribute.name} <i className={attribute.icon}/></span>}
                 cells={
                     [
                         {
@@ -202,10 +202,19 @@ class WoEDetails extends React.Component<Props, State> {
                         {
                             title: 'Игрок',
                             field: 'playerName',
-                            render: (v, d) =>
-                                <Link to={`/woe/player/${encodeURIComponent(d.playerName)}`}>
-                                    {v}
-                                </Link>
+                            render: (name, d) =>
+                                <div>
+                                    <Link to={`/woe/player/${encodeURI(name)}`}>{name}
+                                    <div className="rate">
+                                        Рейтинг: {Math.round(d.rate)}
+                                        <div className="perk">
+                                            Перки: <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                            {' + '}
+                                            <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                        </div>
+                                    </div>
+                                    </Link>
+                                </div>
                         },
                         {
                             title: 'Значение',

@@ -1,12 +1,13 @@
 .area-woe-players .table-report-cell.guild {
     width: 24px;
-    padding-right: 5px;
+    padding-right: 0px;
 }
 
 .area-woe-players .table-report-cell.name {
     white-space: nowrap;
     overflow: hidden;
     max-width: 150px;
+    /*padding-right: 0px;*/
 }
 
 .area-woe-players .table-report-cell.kills,
@@ -18,7 +19,21 @@
     padding-right: 5px;
 }
 
-.area-woe-players .table-report-cell.gamesPlayed {
+.area-woe-players .table-report-cell.rate {
     padding-left: 5px;
 }
 
+.area-woe-players .table-report-cell.data.rate {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.area-woe-players .table-report-cell.name .perks {
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+.area-woe-players .table-report-cell.name .perks i {
+    width: 20px;
+    text-align: center;
+}
