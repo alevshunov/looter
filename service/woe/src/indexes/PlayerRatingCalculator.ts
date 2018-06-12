@@ -12,6 +12,7 @@ class PlayerRatingCalculator {
     
     public async calculate() {
         this._players = {};
+        const d = {};
 
         const data = await this.loadAllInfo();
         const woes = await this.getWoEs();
@@ -66,15 +67,17 @@ class PlayerRatingCalculator {
                     }
 
                     player.rate -= (player.rate - 1000) / 100 * 2;
+                    player.h.push(player.rate);
                 }
 
 
                 const arr = this.makeRating();
             }
 
-
-
             const arr = this.makeRating();
+            if (arr) {
+                d[attribute.name] = arr.map(p => { return {name: p.name, rate: p.rate, games: p.games, h: p.h};});
+            }
 
             for (let id in this._players) {
                 if (!this._players.hasOwnProperty(id)) {
@@ -83,12 +86,13 @@ class PlayerRatingCalculator {
 
                 const player = this._players[id];
                 // player.rate += player.rate / 1000 * player.games;
+                player.rate = 1000 + (player.rate - 1000) * attribute.rate;
                 player.rates[attribute.id] = { attribute: attribute, rate: player.rate, h: player.h };
                 player.totalRate = Math.max(player.totalRate, player.rate);
                 player.rate = 1000;
                 player.rate2 = 1000;
                 player.games = 0;
-                player.h = [];
+                player.h = [1000];
             }
         }
 

@@ -36,20 +36,14 @@ class WoEPlayersRoute implements IRouteWithConnection {
                 left join woe_attribute wa1 on wa1.id = p.rate_woe_attribute_id
                 left join woe_attribute wa2 on wa2.id = p.rate_aux_woe_attribute_id
                 inner join woe_player wp on p.id = wp.player_id
-                inner join woe_player_value wpv on wpv.woe_player_id = wp.id
-                and wp.woe_id > (
-                    select id
-                    from woe
-                    order by id desc
-                    limit 10, 1
-                )               
+                inner join woe_player_value wpv on wpv.woe_player_id = wp.id              
                 inner join woe_player wp_g on p.id = wp_g.player_id and wp_g.game_index = p.games_played
                 inner join guild g on g.id = wp_g.guild_id
-    
             group by 
                 p.id, g.id
             order by 
                 p.rate desc, woes desc, p.games_played desc
+			limit 200
         `);
 
         return players;
