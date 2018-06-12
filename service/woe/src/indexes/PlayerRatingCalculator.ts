@@ -16,6 +16,12 @@ class PlayerRatingCalculator {
 
         const data = await this.loadAllInfo();
         const woes = await this.getWoEs();
+        woes.forEach(woe => {
+            if (woe.name.startsWith('WoE:SE')) {
+                woe.rate = woe.rate * 1.25;
+            }
+        });
+
         const attributes = await this.loadAttributes();
         for (let attributeIndex=0; attributeIndex<attributes.length; attributeIndex++) {
             const attribute = attributes[attributeIndex];
@@ -24,9 +30,6 @@ class PlayerRatingCalculator {
 
             for (let woeIndex=0; woeIndex<woes.length; woeIndex++) {
                 const woe = woes[woeIndex];
-                if (woe.name.startsWith('WoE:SE')) {
-                    woe.rate *= 2;
-                }
 
                 const woePlayersSet = {};
                 const woePlayers = [];
@@ -37,7 +40,7 @@ class PlayerRatingCalculator {
 
                 for (let playerAIndex = 0; playerAIndex<rate.length; playerAIndex++) {
                     const playerA = this.getPlayerWithRate(rate[playerAIndex]);
-                    this.recalculate(playerA, rate[playerAIndex], playerA, {rate: 0});
+                    this.recalculate(playerA, rate[playerAIndex], playerA, {rate: 0}, woe.rate);
 
                     if (!woePlayersSet[playerA.id]) {
                         woePlayersSet[playerA.id] = playerA;
@@ -49,7 +52,7 @@ class PlayerRatingCalculator {
                     for (let playerBIndex = playerAIndex+1; playerBIndex<rate.length; playerBIndex++) {
                         const playerB = this.getPlayerWithRate(rate[playerBIndex]);
 
-                        this.recalculate(playerA, rate[playerAIndex], playerB, rate[playerBIndex]);
+                        this.recalculate(playerA, rate[playerAIndex], playerB, rate[playerBIndex], woe.rate);
                     }
                 }
 
@@ -170,11 +173,11 @@ class PlayerRatingCalculator {
         return arr;
     }
 
-    private recalculate(playerA, rateA, playerB, rateB) {
+    private recalculate(playerA, rateA, playerB, rateB, rate) {
         const delta = this.getNewPlayerARate(playerA, rateA, playerB, rateB);
 
-        playerA.rate2 += delta * rateA.woeRate;
-        // playerB.rate2 -= delta  * rateA.rateRate * rateA.woeRate;
+        playerA.rate2 += delta * rate;
+        // playerB.rate2 -= delta * rate * 0.01;
 
         if (delta > 0) {
             playerA.wins++;
