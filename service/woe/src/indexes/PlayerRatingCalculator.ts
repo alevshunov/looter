@@ -28,8 +28,14 @@ class PlayerRatingCalculator {
 
             const attributePlayers = {};
 
+            console.log(attribute.name);
+
             for (let woeIndex=0; woeIndex<woes.length; woeIndex++) {
                 const woe = woes[woeIndex];
+
+                console.log('');
+                console.log('---------------------------');
+                console.log(woe.name);
 
                 const woePlayersSet = {};
                 const woePlayers = [];
@@ -37,26 +43,71 @@ class PlayerRatingCalculator {
                 const rate = data
                     .filter(x => x.woeId == woe.id && x.attributeId == attribute.id)
                     .sort((a,b) => a.playerIndex < b.playerIndex ? -1 : a.playerIndex === b.playerIndex ? 0 : 1);
+                rate.push({rate: 0});
 
-                for (let playerAIndex = 0; playerAIndex<rate.length; playerAIndex++) {
-                    const playerA = this.getPlayerWithRate(rate[playerAIndex]);
-                    this.recalculate(playerA, rate[playerAIndex], playerA, {rate: 0}, woe.rate);
+                for (let playerAIndex = 0; playerAIndex<rate.length-1; playerAIndex++) {
+                    const playerA = { player: this.getPlayerWithRate(rate[playerAIndex]), rate: rate[playerAIndex] };
 
-                    if (!woePlayersSet[playerA.id]) {
-                        woePlayersSet[playerA.id] = playerA;
-                        woePlayers.push(playerA);
+                    if (!woePlayersSet[playerA.player.id]) {
+                        woePlayersSet[playerA.player.id] = playerA.player;
+                        woePlayers.push(playerA.player);
                     }
 
-                    attributePlayers[playerA.id] = playerA;
+                    attributePlayers[playerA.player.id] = playerA.player;
 
-                    for (let playerBIndex = playerAIndex+1; playerBIndex<rate.length; playerBIndex++) {
-                        const playerB = this.getPlayerWithRate(rate[playerBIndex]);
+                    console.log('');
 
-                        this.recalculate(playerA, rate[playerAIndex], playerB, rate[playerBIndex], woe.rate);
+                    this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate);
+
+                    let playerB;
+                    for (let playerBIndex = 0; playerBIndex<playerAIndex; playerBIndex++) {
+                        const player = this.getPlayerWithRate(rate[playerBIndex]);
+
+                        if (player.games > 10) {
+                            this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate);
+                        }
+
+                        if (!playerB || playerB.player.rate > player.rate && player.rate > 1100) {
+                            playerB = { player, rate: rate[playerBIndex] };
+                        }
                     }
+
+                    let playerC;
+                    for (let playerCIndex = playerAIndex+1; playerCIndex<rate.length; playerCIndex++) {
+                        const player = this.getPlayerWithRate(rate[playerCIndex]);
+
+                        if (player.games > 10) {
+                            this.recalculate(playerA.player, playerA.rate, player, rate[playerCIndex], woe.rate);
+                        }
+
+                        if (!playerC || playerC.player.rate <= player.rate && player.rate > 1100) {
+                            playerC = { player, rate: rate[playerCIndex] };
+                        }
+                    }
+
+                    if (playerB) {
+                        // this.recalculate(playerA.player, playerA.rate, playerB.player, playerB.rate, woe.rate);
+                    }
+
+                    if (playerC) {
+                        // this.recalculate(playerA.player, playerA.rate, playerC.player, playerC.rate, woe.rate);
+                    } else {
+                        // this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate);
+                    }
+
+                    console.log(`${playerA.player.name} ${playerA.player.rate2}`);
                 }
 
-                woePlayers.forEach(p => { p.rate = p.rate2 + p.rate2 / 1000 * p.games; p.games++; p.h.push(p.rate); });
+                woePlayers.forEach(player => {
+                    // player.rate2 = Math.max(1000, player.rate2);
+
+                    player.rate = player.rate2;
+                    // player.rate = player.rate2 + Math.abs(player.rate2 - 1100) / 100 * 3;
+                    // console.log(`${player.name} +${(player.rate2 - 1100) / 100 * 5} = ${player.rate}`);
+
+                    player.games++;
+                    player.h.push({woe, rate: player.rate});
+                });
 
                 for (let id in attributePlayers) {
                     if (!attributePlayers.hasOwnProperty(id)) {
@@ -69,8 +120,11 @@ class PlayerRatingCalculator {
                         continue;
                     }
 
-                    player.rate -= (player.rate - 1000) / 100 * 2;
-                    player.h.push(player.rate);
+                    // console.log(`${player.name} ${player.rate} - ${(player.rate - 1100) / 100 * 5}`);
+
+                    player.rate = player.rate - (player.rate - 1100) / 100;
+
+                    player.h.push({woe, rate: player.rate});
                 }
 
 
@@ -91,24 +145,36 @@ class PlayerRatingCalculator {
                 // player.rate += player.rate / 1000 * player.games;
                 player.rate = 1000 + (player.rate - 1000) * attribute.rate;
                 player.rates[attribute.id] = { attribute: attribute, rate: player.rate, h: player.h };
-                player.totalRate = Math.max(player.totalRate, player.rate);
-                player.rate = 1000;
-                player.rate2 = 1000;
+
+                if (player.rate > player.totalRate) {
+                    player.totalRate2 = player.totalRate;
+                    player.totalRate = player.rate;
+                } else if (player.rate > player.totalRate2) {
+                    player.totalRate2 = player.rate;
+                }
+
+                player.rate = 1100;
+                player.rate2 = 1100;
                 player.games = 0;
-                player.h = [1000];
+                player.h = [1100];
             }
         }
 
-        const arr = this.makeRating(x => x.totalRate);
+        const arr = this.makeRating(x => x.totalRate + (x.totalRate2 - 1000) * 0.25);
+        debugger;
 
         for (let i=0; i<arr.length; i++) {
             const p = arr[i];
+
+            p.totalRate = p.totalRate + (p.totalRate2 - 1000) * 0.25;
 
             let rate = 0;
             let rateId = 12;
 
             let rateAux = 0;
             let rateAuxId = 12;
+
+            let rateAuxA, rateA = undefined;
 
             for (let id in p.rates) {
                 if (!p.rates.hasOwnProperty(id)) {
@@ -119,12 +185,15 @@ class PlayerRatingCalculator {
                 if (r.rate > rate) {
                     rateAux = rate;
                     rateAuxId = rateId;
+                    rateAuxA = rateA;
 
                     rate = r.rate;
                     rateId = r.attribute.id;
+                    rateA = r.attribute;
                 } else if (r.rate > rateAux) {
                     rateAux = r.rate;
                     rateAuxId = r.attribute.id;
+                    rateAuxA = r.attribute;
                 }
             }
 
@@ -136,11 +205,13 @@ class PlayerRatingCalculator {
                 rateAuxId = 12;
             }
 
-            await this._connection.query(`
-                update player
-                set rate = ?, rate_woe_attribute_id = ?, rate_aux = ?, rate_aux_woe_attribute_id = ?
-                where id = ?
-            `, rate, rateId, rateAux, rateAuxId, p.id);
+            console.log(`${p.name} ${p.totalRate} ${rateA.name} ${rateAuxA.name}`);
+
+            // await this._connection.query(`
+            //     update player
+            //     set rate = ?, rate_woe_attribute_id = ?, rate_aux = ?, rate_aux_woe_attribute_id = ?
+            //     where id = ?
+            // `, rate, rateId, rateAux, rateAuxId, p.id);
         }
 
     }
@@ -174,54 +245,69 @@ class PlayerRatingCalculator {
     }
 
     private recalculate(playerA, rateA, playerB, rateB, rate) {
-        const delta = this.getNewPlayerARate(playerA, rateA, playerB, rateB);
+        const deltaA = this.getNewPlayerARate(playerA.rate, rateA.rate, playerA.getK(), playerB.rate, rateB.rate);
+        // const deltaB = this.getNewPlayerARate(playerB.rate, rateB.rate, playerB.getK(), playerA.rate, rateA.rate);
 
-        playerA.rate2 += delta * rate;
-        // playerB.rate2 -= delta * rate * 0.01;
+        // if (playerA.rate2 + deltaA * rate > 1000) {
+        let realDelat = deltaA;// * rate;
+        // if (playerA.rate2 < 1150 && realDelat < 0) {
+        //     realDelat = 0;
+        // }
 
-        if (delta > 0) {
-            playerA.wins++;
-            playerB.loses++;
-        }
+        playerA.rate2 += realDelat;
+        // }
+        // playerB.rate2 += deltaB * rate
 
-        if (delta < 0) {
-            playerA.loses++;
-            playerB.wins++;
-        }
+        console.log(`${playerA.name} ${playerA.rate} ${rateA.rate} vs ${playerB.name} ${playerB.rate} ${rateB.rate} -> delta: ${deltaA}, with WoE: ${realDelat}`)
     }
 
-    private getNewPlayerARate(playerA, rateA, playerB, rateB) {
-        const Ra = playerA.rate;
-        const Rb = playerB.rate;
-        const Ea = 1.0 / (1 + Math.pow(10, (Rb - Ra) / 400));
-
-        const K = playerA.getK();
-        // const Sa = rateA.rate > rateB.rate ? 1.0 : rateA.rate === rateB.rate ? 0.5 : 0.0;
-        const Sa = 0.5 + rateA.rate - (rateA.rate + rateB.rate) / 2;
-
-        const Ra2 = K * (Sa - Ea);
+    private getNewPlayerARate(ra, va, ka, rb, vb) {
+        const Ea = 1.0 / (1 + Math.pow(10, (rb - ra) / 400));
+        const Sa = 0.5 + va - (va + vb) / 2;
+        const Ra2 = ka * (Sa - Ea);
 
         return Ra2;
     }
 
     private getPlayerWithRate(rate) {
+        if (!rate || !rate.playerName) {
+            return {
+                id: -99,
+                name: 'SYSTEM',
+                totalRate: 1200,
+                totalRate2: 1200,
+                rate: 1200,
+                rate2: 1200,
+                rates: {},
+                games: 100,
+                h: [1200],
+                getK() {
+                    if (this.rate > 1300) {
+                        return 10;
+                    } else if (this.games > 5) {
+                        return 20;
+                    } else {
+                        return 40;
+                    }
+                }
+            }
+        }
+
         if (!this._players[rate.playerId]) {
             this._players[rate.playerId] = {
                 id: rate.playerId,
                 name: rate.playerName,
-                totalRate: 1000,
-                rate: 1000,
-                rate2: 1000,
+                totalRate: 1100,
+                totalRate2: 1100,
+                rate: 1100,
+                rate2: 1100,
                 rates: {},
                 games: 0,
-                wins: 0,
-                loses: 0,
-                pat: 0,
-                h: [1000],
+                h: [1100],
                 getK() {
                     if (this.rate > 1300) {
                         return 10;
-                    } else if (this.games > 15) {
+                    } else if (this.games > 5) {
                         return 20;
                     } else {
                         return 40;
