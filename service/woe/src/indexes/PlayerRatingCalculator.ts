@@ -5,6 +5,13 @@ class PlayerRatingCalculator {
     private _logger: MyLogger;
     private _players = {};
 
+    private GAMES_TO_RATE = 10;
+    private WOESE_RATE = 1.25;
+    private INIT_RATE = 1100;
+    private AUX_MULTI = 0.15;
+    private INACTIVE_DECREASE = 0.02;
+    private RATE_STEP = 400;
+
     constructor(connection: MyConnection, logger: MyLogger) {
         this._connection = connection;
         this._logger = logger;
@@ -18,7 +25,7 @@ class PlayerRatingCalculator {
         const woes = await this.getWoEs();
         woes.forEach(woe => {
             if (woe.name.startsWith('WoE:SE')) {
-                woe.rate = woe.rate * 1.25;
+                woe.rate = woe.rate * this.WOESE_RATE;
             }
         });
 
@@ -64,11 +71,11 @@ class PlayerRatingCalculator {
                     for (let playerBIndex = 0; playerBIndex<playerAIndex; playerBIndex++) {
                         const player = this.getPlayerWithRate(rate[playerBIndex]);
 
-                        if (player.games > 10) {
+                        if (player.games > this.GAMES_TO_RATE) {
                             // this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate);
                         }
 
-                        if (!playerB || playerB.player.rate > player.rate && player.games > 10) {
+                        if (!playerB || playerB.player.rate > player.rate && player.games > this.GAMES_TO_RATE) {
                             playerB = { player, rate: rate[playerBIndex] };
                         }
                     }
@@ -77,11 +84,11 @@ class PlayerRatingCalculator {
                     for (let playerCIndex = playerAIndex+1; playerCIndex<rate.length; playerCIndex++) {
                         const player = this.getPlayerWithRate(rate[playerCIndex]);
 
-                        if (player.games > 10) {
+                        if (player.games > this.GAMES_TO_RATE) {
                             this.recalculate(playerA.player, playerA.rate, player, rate[playerCIndex], woe.rate);
                         }
 
-                        if (!playerC || playerC.player.rate <= player.rate && player.games > 10) {
+                        if (!playerC || playerC.player.rate <= player.rate && player.games > this.GAMES_TO_RATE) {
                             playerC = { player, rate: rate[playerCIndex] };
                         }
                     }
@@ -114,7 +121,7 @@ class PlayerRatingCalculator {
                         continue;
                     }
 
-                    player.rate2 = player.rate - (player.rate - 1000) / 100 * 2;
+                    player.rate2 = player.rate - (player.rate - this.INIT_RATE) * this.INACTIVE_DECREASE;
                     player.h.push({woe, attribute, player, rate: player.rate, delta: player.rate2 - player.rate, active: false});
                     player.rate = player.rate2;
                 }
@@ -131,8 +138,8 @@ class PlayerRatingCalculator {
                 }
 
                 const player = this._players[id];
-                // player.rate += player.rate / 1000 * player.games;
-                player.rate = 1000 + (player.rate - 1000) * attribute.rate;
+                // player.rate += player.rate / this.INIT_RATE * player.games;
+                player.rate = this.INIT_RATE + (player.rate - this.INIT_RATE) * attribute.rate;
                 player.rates[attribute.id] = { attribute: attribute, rate: player.rate, h: player.h };
 
                 if (player.rate > player.totalRate) {
@@ -142,14 +149,14 @@ class PlayerRatingCalculator {
                     player.totalRate2 = player.rate;
                 }
 
-                player.rate = 1000;
-                player.rate2 = 1000;
+                player.rate = this.INIT_RATE;
+                player.rate2 = this.INIT_RATE;
                 player.games = 0;
                 player.h = [];
             }
         }
 
-        const arr = this.makeRating(x => x.totalRate + (x.totalRate2 - 1000) * 0.25);
+        const arr = this.makeRating(x => x.totalRate + (x.totalRate2 - this.INIT_RATE) * this.AUX_MULTI);
 
         let woesRate = [];
 
@@ -204,10 +211,10 @@ class PlayerRatingCalculator {
                     .sort((a, b) => a.rate < b.rate ? 1 : a.rate === b.rate ? 0 : -1);
 
                 const main = playerRates[0];
-                const aux = playerRates[1] || { attributeId: 12, rate: 1000, delta: 0, active: false };
+                const aux = playerRates[1] || { attributeId: 12, rate: this.INIT_RATE, delta: 0, active: false };
 
-                const rate = main.rate + (aux.rate - 1000) * 0.25;
-                let rateDelta = rate - 1000;
+                const rate = main.rate + (aux.rate - this.INIT_RATE) * this.AUX_MULTI;
+                let rateDelta = rate - this.INIT_RATE;
 
                 const prevWoe = woesRate.find(ww => ww.woeId === w.woeId - 1);
 
@@ -272,13 +279,13 @@ class PlayerRatingCalculator {
         let realDelta = deltaA * Math.min(1, rate);
 
         playerA.rate2 = playerA.rate2 + realDelta;
-        playerA.rate2 = Math.round(playerA.rate2 * 100) / 100;
+        playerA.rate2 = Math.round(playerA.rate2 * 10000) / 10000;
 
         this._logger.log(`${playerA.name} ${playerA.rate} ${rateA.rate} vs ${playerB.name} ${playerB.rate} ${rateB.rate} -> delta: ${deltaA}, with WoE: ${realDelta} = ${playerA.rate2}`)
     }
 
     private getNewPlayerARate(ra, va, ka, rb, vb) {
-        const Ea = 1.0 / (1 + Math.pow(10, (rb - ra) / 400));
+        const Ea = 1.0 / (1 + Math.pow(10, (rb - ra) / this.RATE_STEP));
         const Sa = 0.5 + va - (va + vb) / 2;
         const Ra2 = ka * (Sa - Ea);
 
@@ -290,20 +297,22 @@ class PlayerRatingCalculator {
             this._players[rate.playerId] = {
                 id: rate.playerId,
                 name: rate.playerName,
-                totalRate: 1000,
-                totalRate2: 1000,
-                rate: 1000,
-                rate2: 1000,
+                totalRate: this.INIT_RATE,
+                totalRate2: this.INIT_RATE,
+                rate: this.INIT_RATE,
+                rate2: this.INIT_RATE,
                 rates: {},
                 games: 0,
                 h: [],
                 getK() {
-                    if (this.rate > 1400) {
-                        return 10;
+                    if (this.rate > 1600) {
+                        return 25;
+                    } else if (this.rate > 1400) {
+                        return 50;
                     } else if (this.games > 5) {
-                        return 20;
+                        return 100;
                     } else {
-                        return 40;
+                        return 150;
                     }
                 }
             }
