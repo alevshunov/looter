@@ -3,7 +3,7 @@
 }
 
 .area-woe-details .delta-field {
-    width: 130px;
+    width: 100px;
 }
 
 .area-woe-details .rate tbody .table-report-cell {
@@ -21,23 +21,49 @@
     width: 100px;
 }
 
-.area-woe-details .delta-field .value {
+.area-woe-details .table-report-cell.data.rate {
+    padding-right: 70px;
+    width: 85px;
+}
+
+.area-woe-details .table-report-cell.data.delta-field {
+    padding-right: 50px;
+}
+
+.area-woe-details .table-report-cell.rate .is-main {
+    /*color: goldenrod;*/
+}
+
+.area-woe-details .table-report-cell.rate .is-aux {
+    /*color: silver;*/
+    /*color: silver;*/
+}
+
+.area-woe-details .table-report-cell.rate .is-extra {
+    color: silver;
+    display: none;
+}
+
+.area-woe-details .table-report-cell.data .value {
     display: inline;
 }
 
-.area-woe-details .delta-field .delta {
-    position: relative;
+.area-woe-details .table-report-cell.data .delta {
     font-size: 9px;
     display: inline;
-    top: -10px;
-    /*font-weight: bold;*/
+    margin-left: 5px;
+    /* top: -10px; */
+    /* min-width: 32px; */
+    /* display: inline-block; */
+    /* font-weight: bold; */
+    position: absolute;
 }
 
-.area-woe-details .delta-field .delta .up {
+.area-woe-details .table-report-cell.data .delta .up {
     color: #3da75a;
 }
 
-.area-woe-details .delta-field .delta .down {
+.area-woe-details .table-report-cell.data .delta .down {
     color: #ff7160;
 }
 

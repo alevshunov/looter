@@ -34,7 +34,8 @@ class WoEDetails extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch(`https://free-ro.kudesnik.cc/rest/woe/info/${this.props.woeId}`)
+        // fetch(`https://free-ro.kudesnik.cc/rest/woe/info/${this.props.woeId}`)
+        fetch(`http://localhost:9999/rest/woe/info/${this.props.woeId}`)
             .then((response) => {
                 try {
                     return response.json();
@@ -206,9 +207,8 @@ class WoEDetails extends React.Component<Props, State> {
                                 <div>
                                     <Link to={`/woe/player/${encodeURI(name)}`}>{name}
                                     <div className="rate">
-                                        Рейтинг: {Math.round(d.rate)}
                                         <div className="perk">
-                                            Перки: <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                            <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
                                             {' + '}
                                             <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
                                         </div>
@@ -249,7 +249,37 @@ class WoEDetails extends React.Component<Props, State> {
                                     </div>
                                 </div>
                             )
-                        }
+                        },
+                        {
+                            title: 'Рейтинг',
+                            field: 'rate',
+                            align: 'right',
+                            render: (v, d) => (
+                                <div className={d.isMain ? 'is-main' : d.isAux ? 'is-aux' : 'is-extra'}>
+                                    <div className="value">
+                                        {asNumber(d.playerRate)}
+                                    </div>
+                                    <div className="delta">
+                                        {
+                                            d.rateDelta > 0 ?
+                                                <span className="up">
+                                                    {' + '}
+                                                    {asNumber(d.isMain ?
+                                                        d.rateDelta :
+                                                        d.isAux ? d.rateDelta / 4 : 0)}
+                                                </span>
+                                                :
+                                                <span className="down">
+                                                    {' - '}
+                                                    {asNumber(d.isMain ?
+                                                        -d.rateDelta :
+                                                        d.isAux ? -d.rateDelta / 4 : 0)}
+                                                </span>
+                                        }
+                                    </div>
+                                </div>
+                            )
+                        },
                     ]
                 }
                 data={attribute.players}
