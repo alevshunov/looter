@@ -195,7 +195,7 @@ class PlayerRatingCalculator {
 
         woesRate.forEach(w => {
             w.rates.forEach(r => {
-                r.rateIndex = w.rates.filter(rr => rr.attributeId === r.attributeId && rr.rateIndex > r.rateIndex).length + 1;
+                r.rateIndex = w.rates.filter(rr => rr.attributeId === r.attributeId && rr.rate > r.rate).length + 1;
             });
         });
 
@@ -357,7 +357,7 @@ class PlayerRatingCalculator {
                 const player = woe.players[j];
 
                 const result = await this._connection.query(`
-                    insert into woe_player_rate(player_id, woe_id, rate, rate_delta, rate_index, active, rate_woe_attribute_id, rate_aux_woe_attribute_id)
+                    insert into woe_player_rate(player_id, woe_id, rate, rate_delta, rate_index, active, main_woe_attribute_id, aux_woe_attribute_id)
                     value(?,?,?,?,?,?,?,?)
                 `, player.id, woe.woeId, player.rate, player.rateDelta, player.rateIndex, player.active, player.mainAttributeId, player.auxAttributeId
                 );
