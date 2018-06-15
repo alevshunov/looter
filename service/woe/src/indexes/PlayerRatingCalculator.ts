@@ -65,14 +65,14 @@ class PlayerRatingCalculator {
 
                     this._logger.log('');
 
-                    this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate);
+                    this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate);
 
                     let playerB;
                     for (let playerBIndex = 0; playerBIndex<playerAIndex; playerBIndex++) {
                         const player = this.getPlayerWithRate(rate[playerBIndex]);
 
                         if (player.games > this.GAMES_TO_RATE) {
-                            // this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate);
+                            // this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate * attribute.rate);
                         }
 
                         if (!playerB || playerB.player.rate > player.rate && player.games > this.GAMES_TO_RATE) {
@@ -85,7 +85,7 @@ class PlayerRatingCalculator {
                         const player = this.getPlayerWithRate(rate[playerCIndex]);
 
                         if (player.games > this.GAMES_TO_RATE) {
-                            this.recalculate(playerA.player, playerA.rate, player, rate[playerCIndex], woe.rate);
+                            this.recalculate(playerA.player, playerA.rate, player, rate[playerCIndex], woe.rate * attribute.rate);
                         }
 
                         if (!playerC || playerC.player.rate <= player.rate && player.games > this.GAMES_TO_RATE) {
@@ -94,11 +94,11 @@ class PlayerRatingCalculator {
                     }
 
                     if (playerB) {
-                        // this.recalculate(playerA.player, playerA.rate, playerB.player, playerB.rate, woe.rate);
+                        // this.recalculate(playerA.player, playerA.rate, playerB.player, playerB.rate, woe.rate * attribute.rate);
                     }
 
                     if (playerC) {
-                        // this.recalculate(playerA.player, playerA.rate, playerC.player, playerC.rate, woe.rate);
+                        // this.recalculate(playerA.player, playerA.rate, playerC.player, playerC.rate, woe.rate * attribute.rate);
                     }
 
                     this._logger.log(`${playerA.player.name} ${playerA.player.rate2}`);
@@ -122,7 +122,7 @@ class PlayerRatingCalculator {
                     }
 
                     player.rate2 = player.rate - (player.rate - this.INIT_RATE) * this.INACTIVE_DECREASE;
-                    player.h.push({woe, attribute, player, rate: player.rate, delta: player.rate2 - player.rate, active: false});
+                    player.h.push({woe, attribute, player, rate: player.rate2, delta: player.rate2 - player.rate, active: false});
                     player.rate = player.rate2;
                 }
             }
@@ -138,17 +138,8 @@ class PlayerRatingCalculator {
                 }
 
                 const player = this._players[id];
-                // player.rate += player.rate / this.INIT_RATE * player.games;
-                player.rate = this.INIT_RATE + (player.rate - this.INIT_RATE) * attribute.rate;
+
                 player.rates[attribute.id] = { attribute: attribute, rate: player.rate, h: player.h };
-
-                if (player.rate > player.totalRate) {
-                    player.totalRate2 = player.totalRate;
-                    player.totalRate = player.rate;
-                } else if (player.rate > player.totalRate2) {
-                    player.totalRate2 = player.rate;
-                }
-
                 player.rate = this.INIT_RATE;
                 player.rate2 = this.INIT_RATE;
                 player.games = 0;
@@ -231,6 +222,8 @@ class PlayerRatingCalculator {
                     rate,
                     rateDelta,
                     active: main.active || aux.active,
+                    mainRate: main.rate,
+                    auxRate: aux.rate,
                     mainAttributeId: main.attributeId,
                     auxAttributeId: aux.attributeId
                 });
@@ -297,8 +290,6 @@ class PlayerRatingCalculator {
             this._players[rate.playerId] = {
                 id: rate.playerId,
                 name: rate.playerName,
-                totalRate: this.INIT_RATE,
-                totalRate2: this.INIT_RATE,
                 rate: this.INIT_RATE,
                 rate2: this.INIT_RATE,
                 rates: {},
