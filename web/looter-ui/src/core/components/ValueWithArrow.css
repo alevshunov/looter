@@ -1,0 +1,15 @@
+.with-arrow {
+    display: inline-block;
+}
+
+.with-arrow > .value {
+    display: inline-block;
+}
+
+.with-arrow .up {
+    color: #3da75a;
+}
+
+.with-arrow .down {
+    color: #ff7160;
+}

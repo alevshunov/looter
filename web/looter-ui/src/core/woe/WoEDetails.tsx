@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import asDate from '../components/asDate';
 import TextIcon from '../components/TextIcon';
 import GA from '../extra/GA';
+import ValueWithDelta from '../components/ValueWithDelta';
+import ValueWithArrow from '../components/ValueWithArrow';
 
 interface State {
     loading: boolean;
@@ -205,14 +207,30 @@ class WoEDetails extends React.Component<Props, State> {
                             field: 'playerName',
                             render: (name, d) =>
                                 <div>
-                                    <Link to={`/woe/player/${encodeURI(name)}`}>{name}
-                                    <div className="rate">
-                                        <div className="perk">
-                                            <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
-                                            {' + '}
-                                            <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                    <Link to={`/woe/player/${encodeURI(name)}`}>
+                                        {name}
+                                        <div className="rate">
+                                            <div className="value">
+                                                <ValueWithArrow
+                                                    value={d.playerRate}
+                                                    delta={d.playerRateDelta}
+                                                    index={d.playerRateIndex}
+                                                />
+                                                {/*<Colored value={d.playerRate}>*/}
+                                                    {/*{d.playerRate}*/}
+                                                {/*</Colored>*/}
+                                                {/*<ValueWithDelta*/}
+                                                {/*value={d.playerRate}*/}
+                                                {/*delta={d.isMain ? d.rateDelta : d.isAux ? d.rateDelta * 0.15 : 0}*/}
+                                                {/*index={d.playerRateIndex}*/}
+                                                {/*/>*/}
+                                            </div>
+                                            <div className="perk">
+                                                <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                                {' + '}
+                                                <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                            </div>
                                         </div>
-                                    </div>
                                     </Link>
                                 </div>
                         },
@@ -224,30 +242,13 @@ class WoEDetails extends React.Component<Props, State> {
                         },
                         {
                             title: 'В среднем',
-                            field: 'delta-field',
+                            field: 'avg',
                             align: 'right',
                             render: (value, d) => (
-                                <div>
-                                    <div className="value">
-                                        {asNumber(d.avgPlayerValueNew)}
-                                    </div>
-                                    <div className="delta">
-                                        {
-                                            d.avgPlayerValue < d.avgPlayerValueNew ?
-                                                <span className="up">
-                                                    {' + '}{
-                                                    asNumber(d.avgPlayerValueNew - d.avgPlayerValue
-                                                    )}
-                                                </span>
-                                                :
-                                                <span className="down">
-                                                    {' - '} {
-                                                    asNumber(d.avgPlayerValue - d.avgPlayerValueNew
-                                                    )}
-                                                </span>
-                                        }
-                                    </div>
-                                </div>
+                                <ValueWithDelta
+                                    value={d.avgPlayerValueNew}
+                                    delta={d.avgPlayerValueNew - d.avgPlayerValue}
+                                />
                             )
                         },
                         {
@@ -255,29 +256,13 @@ class WoEDetails extends React.Component<Props, State> {
                             field: 'rate',
                             align: 'right',
                             render: (v, d) => (
-                                <div className={d.isMain ? 'is-main' : d.isAux ? 'is-aux' : 'is-extra'}>
-                                    <div className="value">
-                                        {asNumber(d.playerRate)}
-                                    </div>
-                                    <div className="delta">
-                                        {
-                                            d.rateDelta > 0 ?
-                                                <span className="up">
-                                                    {' + '}
-                                                    {asNumber(d.isMain ?
-                                                        d.rateDelta :
-                                                        d.isAux ? d.rateDelta / 4 : 0)}
-                                                </span>
-                                                :
-                                                <span className="down">
-                                                    {' - '}
-                                                    {asNumber(d.isMain ?
-                                                        -d.rateDelta :
-                                                        d.isAux ? -d.rateDelta / 4 : 0)}
-                                                </span>
-                                        }
-                                    </div>
-                                </div>
+                                <ValueWithDelta
+                                    value={d.rate}
+                                    index={d.rateIndex}
+                                    // delta={d.isMain ? d.rateDelta : d.isAux ? d.rateDelta * 0.15 : 0}
+                                    delta={d.rateDelta}
+                                    userCls={d.isMain ? 'is-main' : d.isAux ? 'is-aux' : 'is-extra'}
+                                />
                             )
                         },
                     ]

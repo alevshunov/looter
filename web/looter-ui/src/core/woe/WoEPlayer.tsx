@@ -6,6 +6,7 @@ import asNumber from '../components/asNumber';
 import { Link } from 'react-router-dom';
 import GA from '../extra/GA';
 import TextIcon from '../components/TextIcon';
+import ValueWithDelta from '../components/ValueWithDelta';
 
 interface State {
     loading: boolean;
@@ -32,7 +33,8 @@ class WoEPlayer extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/player/' + this.props.playerName)
+        // fetch('https://free-ro.kudesnik.cc/rest/woe/player/' + this.props.playerName)
+        fetch('http://localhost:9999/rest/woe/player/' + this.props.playerName)
             .then((response) => {
                 try {
                     return response.json();
@@ -69,28 +71,48 @@ class WoEPlayer extends React.Component<Props, State> {
                                             `/woe/guild/${guild.id}/${encodeURIComponent(guild.name)}`}
                                         iconUrl={guild.iconUrl}
                                     >
-                                            {player.name}
+                                            {player.name} #{asNumber(player.rateIndex)}
                                     </TextIcon>
                                 </td>
                             </tr>
                             <tr>
-                                <td className="info-item table-report-cell">
-                                    Рейтинг: {asNumber(Math.round(this.state.data.player.rate))}
+                                <td className="info-item table-report-cell rate-area">
+                                    {'Рейтинг: '}
+                                    <ValueWithDelta
+                                        value={player.rate}
+                                        delta={player.rateDelta}
+                                        index={player.rateIndex}
+                                    />
+                                    {' = '}
+                                    <i className={player.mainAttributeIcon}/>
+                                    <ValueWithDelta
+                                        value={player.mainRate}
+                                        delta={player.mainRateDelta}
+                                        index={player.mainRateIndex}
+                                    />
+                                    {' + '}
+                                    <i className={player.auxAttributeIcon}/>
+                                    <ValueWithDelta
+                                        value={player.auxRate}
+                                        delta={player.auxRateDelta}
+                                        index={player.auxRateIndex}
+                                    />
+                                    {' * 15%'}
                                 </td>
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    <i className={player.playerSpec1Icon}/> {player.playerSpec1Name}
+                                    <i className={player.mainAttributeIcon}/> {player.mainAttributeName}
                                 </td>
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    <i className={player.playerSpec2Icon}/> {player.playerSpec2Name}
+                                    <i className={player.auxAttributeIcon}/> {player.auxAttributeName}
                                 </td>
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    Проведено {player.games_played} ГВ
+                                    Проведено {player.gamesPlayed} ГВ
                                 </td>
                             </tr>
                         </tbody>

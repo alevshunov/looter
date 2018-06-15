@@ -1,92 +1,81 @@
-.area-woe-details .value {
-    width: 110px;
-}
-
-.area-woe-details .delta-field {
-    width: 100px;
-}
-
 .area-woe-details .rate tbody .table-report-cell {
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
-.area-woe-details .data.guildIcon {
-    width: 24px;
-    /*padding-left: 5px;*/
-    padding-right: 5px;
+
+.area-woe-details .table-report-cell.data.playerName {
+    white-space: nowrap;
 }
 
-.area-woe-details .delta-field.woe {
-    width: 100px;
-}
-
-.area-woe-details .table-report-cell.data.rate {
-    padding-right: 70px;
-    width: 85px;
-}
-
-.area-woe-details .table-report-cell.data.delta-field {
-    padding-right: 50px;
-}
-
-.area-woe-details .table-report-cell.rate .is-main {
-    /*color: goldenrod;*/
-}
-
-.area-woe-details .table-report-cell.rate .is-aux {
-    /*color: silver;*/
-    /*color: silver;*/
-}
-
-.area-woe-details .table-report-cell.rate .is-extra {
-    color: silver;
-    display: none;
-}
-
-.area-woe-details .table-report-cell.data .value {
-    display: inline;
-}
-
-.area-woe-details .table-report-cell.data .delta {
-    font-size: 9px;
-    display: inline;
-    margin-left: 5px;
-    /* top: -10px; */
-    /* min-width: 32px; */
-    /* display: inline-block; */
-    /* font-weight: bold; */
-    position: absolute;
-}
-
-.area-woe-details .table-report-cell.data .delta .up {
-    color: #3da75a;
-}
-
-.area-woe-details .table-report-cell.data .delta .down {
-    color: #ff7160;
-}
-
-.area-woe-details .woe-log td {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    font-size: 12px;
-}
-
-.area-woe-details .woe-log .date { width: 70px; }
-
-.area-woe-details .data.playerName .rate {
+.area-woe-details .table-report-cell.data.playerName .rate {
     position: relative;
     display: inline-block;
-    top: -5px;
+    top: -7px;
     font-size: 10px;
     left: 5px;
 }
 
-.area-woe-details .data.playerName .perk {
+.area-woe-details .table-report-cell.data.playerName .rate > .perk {
     display: inline-block;
     margin-left: 5px;
+    margin-top: 2px;
+    position: absolute;
+    color: #cccccc;
 }
+
+.area-woe-details .table-report-cell.data.playerName .rate > .value {
+    position: relative;
+    left: 4px;
+    top: -2px;
+}
+
+.area-woe-details .table-report-cell.data.guildIcon {
+    width: 24px;
+}
+
+.area-woe-details .table-report-cell.data.guildIcon {
+    padding-right: 5px;
+}
+
+.area-woe-details .table-report-cell.value {
+    width: 90px;
+}
+
+.area-woe-details .table-report-cell.avg {
+    width: 70px;
+}
+
+.area-woe-details .table-report-cell.data.avg {
+    padding-right: 50px;
+}
+
+.area-woe-details .table-report-cell.rate {
+    width: 45px;
+}
+
+.area-woe-details .table-report-cell.data.rate {
+    padding-right: 70px;
+}
+
+.area-woe-details .table-report-cell.data.rate .is-main {
+    /*color: goldenrod;*/
+    /*color: #6B6B6B;*/
+    /*color: gray;*/
+    font-weight: bold;
+}
+
+.area-woe-details .table-report-cell.data.rate .is-aux {
+    color: silver;
+    /*color: silver;*/
+}
+
+.area-woe-details .table-report-cell.data.rate .is-extra {
+    color: silver;
+    /*display: none;*/
+}
+
+
 
 .area-woe-details .rate .header.title i {
     font-size: 18px;

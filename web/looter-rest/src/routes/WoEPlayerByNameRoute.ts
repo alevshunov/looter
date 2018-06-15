@@ -9,20 +9,43 @@ class WoEPlayerByNameRoute implements IRouteWithConnection {
         const playerName = request.params.name;
 
         let player = await connection.query(`
-        select p.*, 
-            p.rate,
-            p.rate_aux rateAux,
-            wa1.id playerSpec1Id,
-            wa1.special_name playerSpec1Name,
-            wa1.fa_icon playerSpec1Icon,
-            wa2.id playerSpec2Id,
-            wa2.special_name playerSpec2Name,
-            wa2.fa_icon playerSpec2Icon
-        from player p
-        left join woe_attribute wa1 on wa1.id = p.rate_woe_attribute_id
-        left join woe_attribute wa2 on wa2.id = p.rate_aux_woe_attribute_id
- 
-        where p.name = ?`, playerName);
+            select 
+                p.id, 
+                p.name, 
+                p.games_played gamesPlayed, 
+                pr.rate rate,
+                pr.rate_delta rateDelta,
+                pr.rate_index rateIndex,
+                pr.active,
+                wa1.id mainAttributeId,
+                wa1.special_name mainAttributeName,
+                wa1.fa_icon mainAttributeIcon,
+                ar1.rate mainRate, 
+                ar1.rate_delta mainRateDelta, 
+                ar1.rate_index mainRateIndex,
+                wa2.id auxAttributeId,
+                wa2.special_name auxAttributeName,
+                wa2.fa_icon auxAttributeIcon,
+                ar2.rate auxRate, 
+                ar2.rate_delta auxRateDelta, 
+                ar2.rate_index auxRateIndex
+                
+            from player p
+            left join woe_player wp on wp.player_id = p.id and wp.woe_id = (select max(id) from woe)
+            left join woe_player_rate pr on pr.player_id = p.id
+            
+            left join woe_attribute wa1 on wa1.id = pr.main_woe_attribute_id
+            left join woe_attribute wa2 on wa2.id = pr.aux_woe_attribute_id
+            
+            left join woe_player_value pv1 on pv1.woe_player_id = wp.id and pv1.woe_attribute_id = wa1.id
+            left join woe_player_attribute_rate ar1 on ar1.woe_player_rate_id = pr.id and ar1.woe_player_value_id = pv1.id
+    
+            left join woe_player_value pv2 on pv2.woe_player_id = wp.id and pv2.woe_attribute_id = wa2.id
+            left join woe_player_attribute_rate ar2 on ar2.woe_player_rate_id = pr.id and ar2.woe_player_value_id = pv2.id
+            
+            where p.name = ?
+            and pr.woe_id = (select max(id) from woe)
+        `, playerName);
 
         if (player.length === 0) {
             return {};
