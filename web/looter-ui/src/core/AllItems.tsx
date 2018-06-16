@@ -45,10 +45,11 @@ class AllItems extends React.Component<Props, State> {
     }
 
     doLoad() {
-        this.setState({ data: undefined });
         const me = this;
 
-        const cacheData = TimeCachedStore.instance().get(`items/${this.props.term}`);
+        const cacheKey = `items/${this.props.order.field}/${this.props.order.direction}/${this.props.term}`;
+
+        const cacheData = TimeCachedStore.instance().get(cacheKey);
         if (cacheData) {
             me.setState({ data: cacheData });
             return;
@@ -68,7 +69,6 @@ class AllItems extends React.Component<Props, State> {
         const originalTerm = me.props.term;
 
         let url = 'https://free-ro.kudesnik.cc/rest/shops/active'
-        // let url = 'http://127.0.0.1:9999/rest/shops/active'
             + (parts.length > 0 ? '?' + parts.join('&') : '');
 
         fetch(url)
@@ -81,7 +81,7 @@ class AllItems extends React.Component<Props, State> {
             })
             .then((data) => {
                 if (originalTerm === me.props.term) {
-                    TimeCachedStore.instance().set(`items/${me.props.term}`, data);
+                    TimeCachedStore.instance().set(cacheKey, data);
                     me.setState({data});
                 }
             });
