@@ -26,6 +26,7 @@
 .area-woe-players .table-report-cell.data.rate {
     font-weight: bold;
     font-size: 18px;
+    padding-right: 70px;
 }
 
 .area-woe-players .table-report-cell.name .perks {

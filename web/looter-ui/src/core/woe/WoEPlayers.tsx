@@ -6,6 +6,8 @@ import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import TimeCachedStore from '../extra/TimeCachedStore';
 import GA from '../extra/GA';
+import ValueWithDelta from '../components/ValueWithDelta';
+import asDeltaArrow from '../components/asDeltaArrow';
 
 interface State {
     data?: any;
@@ -38,7 +40,7 @@ class WoEPlayers extends React.Component<Props, State> {
         this.setState({ data: undefined });
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/players')
+        fetch('/rest/woe/players')
             .then((response) => {
                 try {
                     return response.json();
@@ -84,26 +86,30 @@ class WoEPlayers extends React.Component<Props, State> {
                                     <div>
                                         <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
                                         <div className="perks">
-                                            <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                            <i className={d.mainIcon} title={d.mainName}/>
                                             {' '}
-                                            {d.playerSpec1Name}
+                                            {d.mainName}
+                                            {' #'}{d.mainRateIndex}
+                                            {asDeltaArrow(d.mainRateDelta)}
                                             <br/>
-                                            <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                            <i className={d.auxIcon} title={d.auxName}/>
                                             {' '}
-                                            {d.playerSpec2Name}
+                                            {d.auxName}
+                                            {' #'}{d.auxRateIndex}
+                                            {asDeltaArrow(d.auxRateDelta)}
                                         </div>
                                     </div>
                                 )
                             },
                             {
-                                title: 'Убийств',
-                                field: 'kills',
+                                title: 'Боев',
+                                field: 'woes',
                                 align: 'right',
                                 render: x => asNumber(x)
                             },
                             {
-                                title: 'Смертей',
-                                field: 'death',
+                                title: 'Убийств',
+                                field: 'kills',
                                 align: 'right',
                                 render: x => asNumber(x)
                             },
@@ -123,7 +129,9 @@ class WoEPlayers extends React.Component<Props, State> {
                                 title: 'Рейтинг',
                                 align: 'right',
                                 field: 'rate',
-                                render: (v, d) => asNumber(v)
+                                render: (v, d) => (
+                                    <ValueWithDelta value={d.playerRate} delta={d.playerRateDelta}/>
+                                )
                             }
                         ]
                     }

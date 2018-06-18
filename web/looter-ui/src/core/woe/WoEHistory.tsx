@@ -39,7 +39,7 @@ class WoEHistory extends React.Component<Props, State> {
         this.setState({ data: undefined });
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/history')
+        fetch('/rest/woe/history')
             .then((response) => {
                 try {
                     return response.json();

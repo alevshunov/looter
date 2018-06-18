@@ -3,10 +3,10 @@ import './WoEPlayer.css';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
-import { Link } from 'react-router-dom';
 import GA from '../extra/GA';
 import TextIcon from '../components/TextIcon';
 import ValueWithDelta from '../components/ValueWithDelta';
+import { Link } from 'react-router-dom';
 
 interface State {
     loading: boolean;
@@ -33,8 +33,7 @@ class WoEPlayer extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        // fetch('https://free-ro.kudesnik.cc/rest/woe/player/' + this.props.playerName)
-        fetch('http://localhost:9999/rest/woe/player/' + this.props.playerName)
+        fetch('/rest/woe/player/' + this.props.playerName)
             .then((response) => {
                 try {
                     return response.json();
@@ -90,14 +89,13 @@ class WoEPlayer extends React.Component<Props, State> {
                                         delta={player.mainRateDelta}
                                         index={player.mainRateIndex}
                                     />
-                                    {' + '}
+                                    {' && '}
                                     <i className={player.auxAttributeIcon}/>
                                     <ValueWithDelta
                                         value={player.auxRate}
                                         delta={player.auxRateDelta}
                                         index={player.auxRateIndex}
                                     />
-                                    {' * 15%'}
                                 </td>
                             </tr>
                             <tr>
@@ -118,59 +116,56 @@ class WoEPlayer extends React.Component<Props, State> {
                         </tbody>
                     </table>
                 </Container>
-                {this.state.data &&
-                    <Container>
-                        <TableReport
-                            cells={
-                                [
-                                    {
-                                        title: '',
-                                        field: 'name'
-                                    },
-                                    {
-                                        title: 'В среднем',
-                                        align: 'right',
-                                        field: 'avg',
-                                        render: (v, d) => asNumber(
-                                            d.sum / this.state.data.woe.length)
-                                    },
-                                    {
-                                        title: 'Максимум',
-                                        align: 'right',
-                                        field: 'max',
-                                        render: (v) => asNumber(v)
-                                    },
-                                    {
-                                        title: 'Всего',
-                                        align: 'right',
-                                        field: 'sum',
-                                        render: (v) => asNumber(v)
-                                    }
-                                ]
-                            }
-                            data={this.state.data.rate}
-                        />
-                    </Container>
-                }
-                {this.state.data &&
                 <Container>
                     <TableReport
                         cells={
                             [
                                 {
                                     title: '',
-                                    field: 'guild',
-                                    render: (name, d) =>
-                                        (
-                                            <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
-                                                <img src={d.guildIconUrl} title={d.guildName} />
-                                            </Link>
-                                        )
+                                    field: 'name'
                                 },
+                                {
+                                    title: 'В среднем',
+                                    align: 'right',
+                                    field: 'avg',
+                                    render: (v, d) => asNumber(
+                                        d.sum / this.state.data.woe.length)
+                                },
+                                {
+                                    title: 'Максимум',
+                                    align: 'right',
+                                    field: 'max',
+                                    render: (v) => asNumber(v)
+                                },
+                                {
+                                    title: 'Всего',
+                                    align: 'right',
+                                    field: 'sum',
+                                    render: (v) => asNumber(v)
+                                }
+                            ]
+                        }
+                        data={this.state.data.rate}
+                    />
+                </Container>
+                <Container>
+                    <TableReport
+                        title={'История боев'}
+                        cells={
+                            [
                                 {
                                     title: '',
                                     field: 'name',
-                                    render: (name, d) => (<Link to={`/woe/${d.id}`}>{name}</Link>)
+                                    render: (name, d) => (
+                                        <TextIcon
+                                            linkUrl={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}
+                                            iconUrl={d.guildIconUrl}
+                                        >
+                                            <Link to={`/woe/${d.id}`}>
+                                                {name}
+                                            </Link>
+                                        </TextIcon>
+                                    )
                                 },
                                 {
                                     title: 'Убил',
@@ -214,7 +209,77 @@ class WoEPlayer extends React.Component<Props, State> {
                         emptyMessage="Данные отсутствуют"
                     />
                 </Container>
-                }
+                <Container>
+                    <TableReport
+                        userCls="rate-history"
+                        rowExtraClass={(d) => (d.active ? 'is-active' : 'is-inactive')}
+                        title="История рейтинга"
+                        cells={
+                            [
+                                {
+                                    title: 'ГВ',
+                                    field: 'woeName',
+                                    render: (name, d) => (
+                                        <TextIcon
+                                            linkUrl={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}
+                                            iconUrl={d.guildIconUrl}
+                                        >
+                                            <Link to={`/woe/${d.woeId}`}>
+                                                {name}
+                                            </Link>
+                                        </TextIcon>
+                                    )
+                                },
+                                {
+                                    title: '',
+                                    field: 'rate',
+                                    align: 'right',
+                                    render: (v, d) => (
+                                        <span>
+                                            <i className={d.mainIcon} />
+                                            {' '}
+                                            <ValueWithDelta
+                                                value={d.mainRate}
+                                                delta={d.mainRateDelta}
+                                                index={d.mainRateIndex}
+                                            />
+                                        </span>
+                                    )
+                                },
+                                {
+                                    title: '',
+                                    field: 'rate',
+                                    align: 'right',
+                                    render: (v, d) => (
+                                        <span>
+                                            <i className={d.auxIcon} />
+                                            {' '}
+                                            <ValueWithDelta
+                                                value={d.auxRate}
+                                                delta={d.auxRateDelta}
+                                                index={d.auxRateIndex}
+                                            />
+                                        </span>
+                                    )
+                                },
+                                {
+                                    title: 'Рейтинг',
+                                    field: 'rate',
+                                    align: 'right',
+                                    render: (v, d) => (
+                                        <ValueWithDelta
+                                            value={d.playerRate}
+                                            delta={d.playerRateDelta}
+                                            index={d.playerRateIndex}
+                                        />
+                                    )
+                                }
+                            ]
+                        }
+                        data={this.state.data.rates}
+                        emptyMessage="Данные отсутствуют"
+                    />
+                </Container>
             </div>
         );
     }

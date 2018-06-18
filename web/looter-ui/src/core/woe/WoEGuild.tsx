@@ -5,6 +5,7 @@ import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
 import { Link } from 'react-router-dom';
+import ValueWithArrow from '../components/ValueWithArrow';
 
 interface State {
     loading: boolean;
@@ -31,7 +32,7 @@ class WoEGuild extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/guild/' + this.props.guildId)
+        fetch('/rest/woe/guild/' + this.props.guildId)
             .then((response) => {
                 try {
                     return response.json();
@@ -122,16 +123,24 @@ class WoEGuild extends React.Component<Props, State> {
                                     field: 'name',
                                     render: (name, d) => (
                                         <div>
-                                            <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
-                                            <div className="rate">{Math.round(d.rate)}</div>
+                                            <Link to={`/woe/player/${encodeURI(name)}`}>
+                                                {name}
+                                                <div className="rate">
+                                                    <ValueWithArrow
+                                                        value={d.playerRate}
+                                                        delta={d.playerRateDelta}
+                                                        index={d.playerRateIndex}
+                                                    />
+                                                </div>
+                                            </Link>
                                             <div className="perks">
-                                                <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                                <i className={d.mainIcon} title={d.mainName}/>
                                                 {' '}
-                                                {d.playerSpec1Name}
+                                                {d.mainName} #{d.mainRateIndex}
                                                 <br/>
-                                                <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                                <i className={d.auxIcon} title={d.auxName}/>
                                                 {' '}
-                                                {d.playerSpec2Name}
+                                                {d.auxName} #{d.auxRateIndex}
                                             </div>
                                         </div>
                                     )

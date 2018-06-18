@@ -45,7 +45,7 @@ class OwnerHistory extends React.Component<Props, State> {
             return;
         }
 
-        fetch('https://free-ro.kudesnik.cc/rest/shops/by/' + encodeURIComponent(this.props.owner))
+        fetch('/rest/shops/by/' + encodeURIComponent(this.props.owner))
             .then((response) => {
                 try {
                     return response.json();

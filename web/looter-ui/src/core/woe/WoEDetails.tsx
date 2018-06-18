@@ -36,7 +36,7 @@ class WoEDetails extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        // fetch(`https://free-ro.kudesnik.cc/rest/woe/info/${this.props.woeId}`)
+        // fetch(`/rest/woe/info/${this.props.woeId}`)
         fetch(`http://localhost:9999/rest/woe/info/${this.props.woeId}`)
             .then((response) => {
                 try {
@@ -216,14 +216,6 @@ class WoEDetails extends React.Component<Props, State> {
                                                     delta={d.playerRateDelta}
                                                     index={d.playerRateIndex}
                                                 />
-                                                {/*<Colored value={d.playerRate}>*/}
-                                                    {/*{d.playerRate}*/}
-                                                {/*</Colored>*/}
-                                                {/*<ValueWithDelta*/}
-                                                {/*value={d.playerRate}*/}
-                                                {/*delta={d.isMain ? d.rateDelta : d.isAux ? d.rateDelta * 0.15 : 0}*/}
-                                                {/*index={d.playerRateIndex}*/}
-                                                {/*/>*/}
                                             </div>
                                             <div className="perk">
                                                 <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>

@@ -46,7 +46,7 @@ class Shops extends React.Component<Props, State> {
             return;
         }
 
-        fetch('https://free-ro.kudesnik.cc/rest/shops/all?term=' + encodeURIComponent(this.props.term))
+        fetch('/rest/shops/all?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
                     return response.json();

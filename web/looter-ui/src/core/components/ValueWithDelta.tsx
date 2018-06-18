@@ -13,6 +13,10 @@ interface Props {
 
 class ValueWithDelta extends React.Component<Props> {
     render() {
+        if (!this.props.value) {
+            return '';
+        }
+
         const {delta, value, userCls, index, colorized} = this.props;
         const isUp = delta >= 0;
         let extraCls;

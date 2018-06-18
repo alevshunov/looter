@@ -19,3 +19,17 @@
 .area-woe-player .rate-area i {
     padding-left: 5px;
 }
+
+.area-woe-player .rate-history .is-inactive {
+    opacity: 0.4;
+}
+
+.area-woe-player .rate-history .data.rate {
+    width: 80px;
+    padding-right: 50px;
+}
+
+.area-woe-player .rate-history .data.rate:last-child {
+    width: 60px;
+    padding-right:70px;
+}

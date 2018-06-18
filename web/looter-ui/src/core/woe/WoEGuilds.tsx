@@ -36,7 +36,7 @@ class WoEGuilds extends React.Component<Props, State> {
         this.setState({ data: undefined });
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/guilds')
+        fetch('/rest/woe/guilds')
             .then((response) => {
                 try {
                     return response.json();

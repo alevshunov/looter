@@ -1,0 +1,11 @@
+i.ud-up, .ud-down {
+    width: 10px !important;
+}
+
+.ud-up {
+    color: #3da75a;
+}
+
+.ud-down {
+    color: #ff7160;
+}

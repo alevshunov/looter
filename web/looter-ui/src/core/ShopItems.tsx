@@ -33,7 +33,7 @@ class ShopItems extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/shop/' + this.props.shopId)
+        fetch('/rest/shop/' + this.props.shopId)
             .then((response) => {
                 try {
                     return response.json();

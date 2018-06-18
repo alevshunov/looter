@@ -57,7 +57,7 @@ class Cards extends React.Component<Props, State> {
 
         const originalTerm = me.props.term;
 
-        fetch('https://free-ro.kudesnik.cc/rest/cards?term=' + encodeURIComponent(this.props.term))
+        fetch('/rest/cards?term=' + encodeURIComponent(this.props.term))
             .then((response) => {
                 try {
                     return response.json();
