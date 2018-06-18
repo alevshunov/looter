@@ -60,13 +60,13 @@ const logger = new MyLogger();
             new PlayerOnWoESaverFactory(connection)
         ).save();
 
+        await new RateAndIndexRecalculator(connection).recalculate();
         hasChanges = true;
     }
 
     if (hasChanges) {
-        await new RateAndIndexRecalculator(connection).recalculate();
+        await new PlayerRatingCalculator(connection, logger).calculate();
     }
-    await new PlayerRatingCalculator(connection, logger).calculate();
 
     await connection.close();
 
