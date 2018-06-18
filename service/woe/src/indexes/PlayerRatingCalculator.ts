@@ -312,9 +312,9 @@ class PlayerRatingCalculator {
                     } else if (this.rate > 1400) {
                         return 50;
                     } else if (this.games > 5) {
-                        return 100;
+                        return 75;
                     } else {
-                        return 150;
+                        return 100;
                     }
                 }
             }
