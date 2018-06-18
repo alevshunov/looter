@@ -244,7 +244,7 @@ class PlayerRatingCalculator {
             });
         });
 
-        debugger;
+        // debugger;
         await this.save(woesRate);
 
     }
