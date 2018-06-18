@@ -62,7 +62,7 @@ class WoEPlayers extends React.Component<Props, State> {
         return (
             <Container userCls="area-woe-players">
                 <TableReport
-                    title={'Активные ГВ игроки'}
+                    // title={'Рейтинг ГВ игроков'}
                     cells={
                         [
                             {

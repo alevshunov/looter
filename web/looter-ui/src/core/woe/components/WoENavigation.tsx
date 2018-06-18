@@ -29,7 +29,7 @@ class WoENavigation extends React.Component<{active?: string}> {
             },
             {
                 icon: <i className="fas fa-users"/>,
-                title: 'Активные игроки',
+                title: 'Рейтинг игроков',
                 url: '/woe/players/',
                 test: /^\/woe\/players?\/?.+$/
             },

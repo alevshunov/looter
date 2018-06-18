@@ -3,9 +3,10 @@
     padding-bottom: 5px;
 }
 
-
-.area-woe-details .table-report-cell.data.playerName {
-    white-space: nowrap;
+@media (min-width: 900px) {
+    .area-woe-details .table-report-cell.data.playerName {
+        white-space: normal;
+    }
 }
 
 .area-woe-details .table-report-cell.data.playerName .rate {
@@ -75,10 +76,34 @@
     /*display: none;*/
 }
 
-
-
 .area-woe-details .rate .header.title i {
     font-size: 18px;
     margin-left: 10px;
     color: #cccccc;
+}
+
+.area-woe-details .castle-o .date {
+    width: 65px;
+}
+
+@media (max-width: 899px) {
+    .area-woe-details .common .table-report-cell {
+        display: table-cell;
+    }
+
+    .area-woe-details .rate .table-report-cell {
+        display: table-cell;
+    }
+
+    .area-woe-details .rate .table-report-cell.value {
+        text-align: right !important;
+    }
+
+    .area-woe-details .rate .table-report-cell.position_index,
+    .area-woe-details .rate .table-report-cell.guildIcon,
+    .area-woe-details .rate .table-report-cell.avg,
+    .area-woe-details .rate .table-report-cell.rate
+    {
+        display: none !important;
+    }
 }

@@ -38,3 +38,18 @@
     width: 20px;
     text-align: center;
 }
+
+@media (max-width: 899px) {
+    .area-woe-players .table-report-cell {
+        display: table-cell;
+    }
+
+    .area-woe-players .table-report-cell.index,
+    .area-woe-players .table-report-cell.woes,
+    .area-woe-players .table-report-cell.kills,
+    .area-woe-players .table-report-cell.buffs,
+    .area-woe-players .table-report-cell.debuffs
+    {
+        display: none !important;
+    }
+}

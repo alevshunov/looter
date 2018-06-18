@@ -53,7 +53,7 @@ class WoECastlesState extends React.Component<Props, State> {
         return (
             <TableReport
                 userCls={'area-castles'}
-                title={'Состояние замков'}
+                // title={'Состояние замков'}
                 cells={
                     [
                         {

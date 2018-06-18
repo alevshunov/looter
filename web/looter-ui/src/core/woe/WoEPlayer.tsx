@@ -118,6 +118,7 @@ class WoEPlayer extends React.Component<Props, State> {
                 </Container>
                 <Container>
                     <TableReport
+                        userCls={'common'}
                         cells={
                             [
                                 {
@@ -150,6 +151,7 @@ class WoEPlayer extends React.Component<Props, State> {
                 </Container>
                 <Container>
                     <TableReport
+                        userCls={'woes'}
                         title={'История боев'}
                         cells={
                             [
@@ -232,7 +234,7 @@ class WoEPlayer extends React.Component<Props, State> {
                                 },
                                 {
                                     title: '',
-                                    field: 'rate',
+                                    field: 'rate main',
                                     align: 'right',
                                     render: (v, d) => (
                                         <span>
@@ -248,7 +250,7 @@ class WoEPlayer extends React.Component<Props, State> {
                                 },
                                 {
                                     title: '',
-                                    field: 'rate',
+                                    field: 'rate aux',
                                     align: 'right',
                                     render: (v, d) => (
                                         <span>

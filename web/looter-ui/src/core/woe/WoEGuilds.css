@@ -8,3 +8,16 @@
 .area-woe-guilds .table-report-cell.guild-icon {
     padding-right: 5px;
 }
+
+@media (max-width: 899px) {
+    .area-woe-guilds .table-report-cell {
+        display: table-cell;
+    }
+
+    .area-woe-guilds .table-report-cell.kills,
+    .area-woe-guilds .table-report-cell.death,
+    .area-woe-guilds .table-report-cell.woes
+    {
+        display: none;
+    }
+}

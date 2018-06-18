@@ -58,7 +58,8 @@ class WoEGuilds extends React.Component<Props, State> {
         return (
             <Container userCls="area-woe-guilds">
                 <TableReport
-                    title={'ГВ гильдии'}
+
+                    // title={'ГВ гильдии'}
                     cells={
                         [
                             {

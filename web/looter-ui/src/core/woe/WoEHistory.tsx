@@ -72,13 +72,13 @@ class WoEHistory extends React.Component<Props, State> {
         GA();
 
         return (
-            <Container userCls="area-woe-hostory">
+            <Container userCls="area-woe-history">
                 <ContainerText>
                     <Report24 data={this.state.state24} title={'График активности за последние 50 ГВ:'}/>
                 </ContainerText>
                 <div/>
                 <TableReport
-                    title={'История ГВ'}
+                    // title={'История ГВ'}
                     cells={
                         [
                             {

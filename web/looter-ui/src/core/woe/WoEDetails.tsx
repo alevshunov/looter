@@ -94,6 +94,7 @@ class WoEDetails extends React.Component<Props, State> {
                         </tbody>
                     </table>
                     <TableReport
+                        userCls={'common'}
                         cells={
                             [
                                 {
@@ -144,6 +145,7 @@ class WoEDetails extends React.Component<Props, State> {
 
                 <Container>
                     <TableReport
+                        userCls={'castle-o'}
                         title={'История захватов'}
                         cells={
                             [
