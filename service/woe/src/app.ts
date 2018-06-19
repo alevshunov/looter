@@ -65,9 +65,9 @@ const logger = new MyLogger();
 
     if (hasChanges) {
         await new PlayerRatingCalculator(connection, logger).calculate();
+        await connection.query(`update woe set parsed = 1 where parsed = 0`);
     }
 
-    await connection.query(`update woe set parsed = 1`);
     await connection.close();
 
     logger.log('Done');
