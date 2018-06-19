@@ -36,8 +36,7 @@ class WoEDetails extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        // fetch(`/rest/woe/info/${this.props.woeId}`)
-        fetch(`http://localhost:9999/rest/woe/info/${this.props.woeId}`)
+        fetch(`/rest/woe/info/${this.props.woeId}`)
             .then((response) => {
                 try {
                     return response.json();
