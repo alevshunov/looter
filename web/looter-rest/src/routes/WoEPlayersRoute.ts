@@ -78,7 +78,7 @@ class WoEPlayersRoute implements IRouteWithConnection {
                         inner join woe_player wp on pv.woe_player_id = wp.id
                         inner join woe_attribute a on a.id = pv.woe_attribute_id
                         
-                    where pv.woe_attribute_id in (1, 7, 8)
+                    -- where pv.woe_attribute_id in (1, 7, 8)
             
                     group by
                         wp.player_id    
@@ -94,7 +94,7 @@ class WoEPlayersRoute implements IRouteWithConnection {
             order by 
                 w_p_rate.rate desc
             
-            limit 200
+            limit 100
 
         `);
 

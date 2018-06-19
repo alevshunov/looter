@@ -152,7 +152,7 @@ class WoEPlayer extends React.Component<Props, State> {
                 <Container>
                     <TableReport
                         userCls={'woes'}
-                        title={'История боев'}
+                        title={'Последняя активность'}
                         cells={
                             [
                                 {

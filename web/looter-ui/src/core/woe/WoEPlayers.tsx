@@ -87,16 +87,16 @@ class WoEPlayers extends React.Component<Props, State> {
                                         <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
                                         <div className="perks">
                                             <i className={d.mainIcon} title={d.mainName}/>
+                                            {asDeltaArrow(d.mainRateDelta)}
                                             {' '}
                                             {d.mainName}
                                             {' #'}{d.mainRateIndex}
-                                            {asDeltaArrow(d.mainRateDelta)}
                                             <br/>
                                             <i className={d.auxIcon} title={d.auxName}/>
+                                            {asDeltaArrow(d.auxRateDelta)}
                                             {' '}
                                             {d.auxName}
                                             {' #'}{d.auxRateIndex}
-                                            {asDeltaArrow(d.auxRateDelta)}
                                         </div>
                                     </div>
                                 )

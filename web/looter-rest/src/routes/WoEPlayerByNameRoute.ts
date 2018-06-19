@@ -101,6 +101,7 @@ class WoEPlayerByNameRoute implements IRouteWithConnection {
             
         where wp_b.player_id = ?
         order by w.date desc
+        limit 10
     `, player.id);
 
         const rates = await connection.query(`

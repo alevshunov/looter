@@ -20,6 +20,7 @@ import WoEPlayersRoute from './routes/WoEPlayersRoute';
 import TimedRoute from './routes/tools/TimedRoute';
 import CachedRoute from './routes/tools/CachedRoute';
 import WoECastles from './routes/WoECastles';
+import BasedOnWoeCacheRoute from './routes/tools/BasedOnWoeCacheRoute';
 
 const app = express();
 const router = express.Router();
@@ -44,13 +45,13 @@ new RoutesRegister(logger, db, router)
             .add(new ShopsAllRoute())
             .add(new ShopsByOwnerRoute())
             .add(new ShopsWithRoute())
-            .add(new WoEGuildByIdRoute())
-            .add(new WoEGuildsRoute())
-            .add(new WoEHistoryRoute())
-            .add(new WoEInfoByIdRoute())
-            .add(new WoEPlayerByNameRoute())
-            .add(new WoEPlayersRoute())
-            .add(new WoECastles())
+            .add(new BasedOnWoeCacheRoute(new WoEGuildByIdRoute(), logger))
+            .add(new BasedOnWoeCacheRoute(new WoEGuildsRoute(), logger))
+            .add(new BasedOnWoeCacheRoute(new WoEHistoryRoute(), logger))
+            .add(new BasedOnWoeCacheRoute(new WoEInfoByIdRoute(), logger))
+            .add(new BasedOnWoeCacheRoute(new WoEPlayerByNameRoute(), logger))
+            .add(new BasedOnWoeCacheRoute(new WoEPlayersRoute(), logger))
+            .add(new BasedOnWoeCacheRoute(new WoECastles(), logger))
             .wrapWith(x => new CachedRoute(x))
             .wrapWith(x => new TimedRoute(x, logger))
             .all()
@@ -62,7 +63,7 @@ app.use(async (req, res, next) => {
     logger.log(req.headers["x-real-ip"], req.originalUrl || req.url || req.path || '');
 
     if (process.env.LOOTER_DEV === 'true') {
-        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+        res.setHeader('Access-Control-Allow-Origin', '*');
     }
 
     const connection = await new MyConnection(db, logger).open();

@@ -205,7 +205,7 @@ class WoEDetails extends React.Component<Props, State> {
                                 </Link> : ''
                         },
                         {
-                            title: 'Игрок',
+                            title: '',
                             field: 'playerName',
                             render: (name, d) =>
                                 <div>
@@ -229,13 +229,13 @@ class WoEDetails extends React.Component<Props, State> {
                                 </div>
                         },
                         {
-                            title: 'Значение',
+                            title: '',
                             field: 'value',
                             align: 'right',
                             render: v => asNumber(v)
                         },
                         {
-                            title: 'В среднем',
+                            title: 'Среднее',
                             field: 'avg',
                             align: 'right',
                             render: (value, d) => (
@@ -246,7 +246,7 @@ class WoEDetails extends React.Component<Props, State> {
                             )
                         },
                         {
-                            title: 'Рейтинг',
+                            title: 'Слава',
                             field: 'rate',
                             align: 'right',
                             render: (v, d) => (
