@@ -41,8 +41,14 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
                 a.id as attributeId,
                 p.id as playerId,
                 p.name as playerName,
-                p.rate,
-                p.rate_aux rateAux,
+                wp_rate.rate playerRate,
+                wp_rate.rate_delta playerRateDelta,
+                wp_rate.rate_index playerRateIndex,
+                wp_a_rate.rate rate,
+                wp_a_rate.rate_delta rateDelta,
+                wp_a_rate.rate_index rateIndex,
+                wp_rate.main_woe_attribute_id = a.id isMain,
+                wp_rate.aux_woe_attribute_id = a.id isAux,
                 wa1.id playerSpec1Id,
                 wa1.special_name playerSpec1Name,
                 wa1.fa_icon playerSpec1Icon,
@@ -63,8 +69,10 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
                 inner join woe_player wp on wp.woe_id = w.id
                 inner join woe_player_value pv on pv.woe_player_id = wp.id
                 inner join player p on p.id = wp.player_id
-                left join woe_attribute wa1 on wa1.id = p.rate_woe_attribute_id
-                left join woe_attribute wa2 on wa2.id = p.rate_aux_woe_attribute_id
+                inner join woe_player_rate wp_rate on wp_rate.player_id = p.id and wp_rate.woe_id = w.id
+                inner join woe_player_attribute_rate wp_a_rate on wp_a_rate.woe_player_rate_id = wp_rate.id and wp_a_rate.woe_player_value_id = pv.id
+                left join woe_attribute wa1 on wa1.id = wp_rate.main_woe_attribute_id
+                left join woe_attribute wa2 on wa2.id = wp_rate.aux_woe_attribute_id
                 inner join woe_attribute a on a.id = pv.woe_attribute_id
                 inner join guild g on g.id = wp.guild_id
                 left join (
@@ -79,7 +87,7 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
                 
             order by
                 a.sort_order, pv.value desc, pv.id
-        `, woeId, woeId, woeId);
+        `, woeId, woeId);
 
         const log = await connection.query(`
             select m.date, m.originalMessage as message

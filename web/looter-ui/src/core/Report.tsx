@@ -31,7 +31,7 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
             return;
         }
 
-        fetch('https://free-ro.kudesnik.cc/rest/report' + (this.props.preview ? '/preview' : ''))
+        fetch('/rest/report' + (this.props.preview ? '/preview' : ''))
             .then((response) => {
                 try {
                     return response.json();

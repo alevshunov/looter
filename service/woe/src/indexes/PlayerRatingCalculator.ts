@@ -5,6 +5,13 @@ class PlayerRatingCalculator {
     private _logger: MyLogger;
     private _players = {};
 
+    private GAMES_TO_RATE = 10;
+    private WOESE_RATE = 1.25;
+    private INIT_RATE = 1100;
+    private AUX_MULTI = 0.15;
+    private INACTIVE_DECREASE = 0.02;
+    private RATE_STEP = 400;
+
     constructor(connection: MyConnection, logger: MyLogger) {
         this._connection = connection;
         this._logger = logger;
@@ -18,7 +25,7 @@ class PlayerRatingCalculator {
         const woes = await this.getWoEs();
         woes.forEach(woe => {
             if (woe.name.startsWith('WoE:SE')) {
-                woe.rate = woe.rate * 1.25;
+                woe.rate = woe.rate * this.WOESE_RATE;
             }
         });
 
@@ -28,35 +35,87 @@ class PlayerRatingCalculator {
 
             const attributePlayers = {};
 
+            this._logger.log(attribute.name);
+
             for (let woeIndex=0; woeIndex<woes.length; woeIndex++) {
-                const woe = woes[woeIndex];
+                const woe = woes[woeIndex % woes.length];
+
+                this._logger.log('');
+                this._logger.log('---------------------------');
+                this._logger.log(woe.name);
 
                 const woePlayersSet = {};
                 const woePlayers = [];
 
                 const rate = data
                     .filter(x => x.woeId == woe.id && x.attributeId == attribute.id)
-                    .sort((a,b) => a.playerIndex < b.playerIndex ? -1 : a.playerIndex === b.playerIndex ? 0 : 1);
+                // rate.push({rate: 0});
 
                 for (let playerAIndex = 0; playerAIndex<rate.length; playerAIndex++) {
-                    const playerA = this.getPlayerWithRate(rate[playerAIndex]);
-                    this.recalculate(playerA, rate[playerAIndex], playerA, {rate: 0}, woe.rate);
+                    const playerA = { player: this.getPlayerWithRate(rate[playerAIndex]), rate: rate[playerAIndex] };
 
-                    if (!woePlayersSet[playerA.id]) {
-                        woePlayersSet[playerA.id] = playerA;
-                        woePlayers.push(playerA);
+                    if (!woePlayersSet[playerA.player.id]) {
+                        woePlayersSet[playerA.player.id] = playerA.player;
+                        woePlayers.push(playerA.player);
                     }
 
-                    attributePlayers[playerA.id] = playerA;
+                    attributePlayers[playerA.player.id] = playerA.player;
 
-                    for (let playerBIndex = playerAIndex+1; playerBIndex<rate.length; playerBIndex++) {
-                        const playerB = this.getPlayerWithRate(rate[playerBIndex]);
+                    playerA.player.rate2 = playerA.player.rate;
 
-                        this.recalculate(playerA, rate[playerAIndex], playerB, rate[playerBIndex], woe.rate);
+                    this._logger.log('');
+
+                    this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate);
+
+                    let playerB;
+                    for (let playerBIndex = 0; playerBIndex<playerAIndex; playerBIndex++) {
+                        const player = this.getPlayerWithRate(rate[playerBIndex]);
+
+                        if (player.games > this.GAMES_TO_RATE) {
+                            // this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate * attribute.rate);
+                        }
+
+                        if (!playerB || playerB.player.rate > player.rate && player.games > this.GAMES_TO_RATE) {
+                            playerB = { player, rate: rate[playerBIndex] };
+                        }
                     }
+
+                    let playerC;
+                    for (let playerCIndex = playerAIndex+1; playerCIndex<rate.length; playerCIndex++) {
+                        const player = this.getPlayerWithRate(rate[playerCIndex]);
+
+                        if (player.games > this.GAMES_TO_RATE) {
+                            this.recalculate(playerA.player, playerA.rate, player, rate[playerCIndex], woe.rate * attribute.rate);
+                        }
+
+                        if (!playerC || playerC.player.rate <= player.rate && player.games > this.GAMES_TO_RATE) {
+                            playerC = { player, rate: rate[playerCIndex] };
+                        }
+                    }
+
+                    if (playerB) {
+                        // this.recalculate(playerA.player, playerA.rate, playerB.player, playerB.rate, woe.rate * attribute.rate);
+                    }
+
+                    if (playerC) {
+                        // this.recalculate(playerA.player, playerA.rate, playerC.player, playerC.rate, woe.rate * attribute.rate);
+                    }
+
+                    this._logger.log(`${playerA.player.name} ${playerA.player.rate2}`);
                 }
 
-                woePlayers.forEach(p => { p.rate = p.rate2 + p.rate2 / 1000 * p.games; p.games++; p.h.push(p.rate); });
+                woePlayers.forEach(player => {
+                    player.h.push({woe, attribute, player, rate: player.rate2, delta: player.rate2 - player.rate, active: true});
+                    player.rate = player.rate2;
+                    player.games++;
+                });
+
+                let lastPlayerRate;
+                if (rate.length > 0) {
+                    lastPlayerRate = { player: this.getPlayerWithRate(rate[rate.length-1]), rate: rate[rate.length-1] };
+                } else {
+                    lastPlayerRate = { player: { rate: this.INIT_RATE }, rate: { rate: 0 } };
+                }
 
                 for (let id in attributePlayers) {
                     if (!attributePlayers.hasOwnProperty(id)) {
@@ -69,12 +128,13 @@ class PlayerRatingCalculator {
                         continue;
                     }
 
-                    player.rate -= (player.rate - 1000) / 100 * 2;
-                    player.h.push(player.rate);
+                    player.rate2 = player.rate;
+                    // player.rate2 = player.rate - (player.rate - this.INIT_RATE) * this.INACTIVE_DECREASE;
+                    this.recalculate(player, { rate: 0 }, lastPlayerRate.player, lastPlayerRate.rate, woe.rate * attribute.rate);
+
+                    player.h.push({woe, attribute, player, rate: player.rate2, delta: player.rate2 - player.rate, active: false});
+                    player.rate = player.rate2;
                 }
-
-
-                const arr = this.makeRating();
             }
 
             const arr = this.makeRating();
@@ -88,72 +148,116 @@ class PlayerRatingCalculator {
                 }
 
                 const player = this._players[id];
-                // player.rate += player.rate / 1000 * player.games;
-                player.rate = 1000 + (player.rate - 1000) * attribute.rate;
+
                 player.rates[attribute.id] = { attribute: attribute, rate: player.rate, h: player.h };
-                player.totalRate = Math.max(player.totalRate, player.rate);
-                player.rate = 1000;
-                player.rate2 = 1000;
+                player.rate = this.INIT_RATE;
+                player.rate2 = this.INIT_RATE;
                 player.games = 0;
-                player.h = [1000];
+                player.h = [];
             }
         }
 
-        const arr = this.makeRating(x => x.totalRate);
+        const arr = this.makeRating(x => x.totalRate + (x.totalRate2 - this.INIT_RATE) * this.AUX_MULTI);
 
-        for (let i=0; i<arr.length; i++) {
-            const p = arr[i];
+        let woesRate = [];
 
-            let rate = 0;
-            let rateId = 12;
-
-            let rateAux = 0;
-            let rateAuxId = 12;
-
-            for (let id in p.rates) {
-                if (!p.rates.hasOwnProperty(id)) {
+        for (let playerIndex=0; playerIndex<arr.length; playerIndex++) {
+            const res = arr[playerIndex];
+            for (let attrIndex=0; attrIndex<attributes.length; attrIndex++) {
+                const attribute = attributes[attrIndex];
+                const rates = res.rates[attribute.id];
+                if (!rates) {
                     continue;
                 }
 
-                const r = p.rates[id];
-                if (r.rate > rate) {
-                    rateAux = rate;
-                    rateAuxId = rateId;
+                const history = rates.h;
+                for (let hIndex=0; hIndex<history.length; hIndex++) {
+                    const entry = history[hIndex];
 
-                    rate = r.rate;
-                    rateId = r.attribute.id;
-                } else if (r.rate > rateAux) {
-                    rateAux = r.rate;
-                    rateAuxId = r.attribute.id;
+                    let woeRate = woesRate.find(x => x.woeId === entry.woe.id);
+                    if (!woeRate) {
+                        woeRate = {woeId: entry.woe.id, rates: []};
+                        woesRate.push(woeRate);
+                    }
+
+                    woeRate.rates.push({
+                        playerId: entry.player.id,
+                        attributeId: entry.attribute.id,
+                        rate: entry.rate,
+                        rateDelta: entry.delta,
+                        active: entry.active
+                    });
                 }
             }
 
-            if (rate === 1000) {
-                rateId = 12;
-            }
-
-            if (rateAux === 1000) {
-                rateAuxId = 12;
-            }
-
-            await this._connection.query(`
-                update player
-                set rate = ?, rate_woe_attribute_id = ?, rate_aux = ?, rate_aux_woe_attribute_id = ?
-                where id = ?
-            `, rate, rateId, rateAux, rateAuxId, p.id);
         }
+
+        woesRate = woesRate.sort((a,b) => a.woeId < b.woeId ? -1 : a.woeId == b.woeId ? 0 : 1);
+
+        woesRate.forEach(w => {
+            w.rates.forEach(r => {
+                r.rateIndex = w.rates.filter(rr => rr.attributeId === r.attributeId && rr.rate > r.rate).length + 1;
+            });
+        });
+
+        woesRate.forEach(w => {
+            w.players = [];
+
+            w.rates.forEach(r => {
+                if (w.players.find(p => p.id === r.playerId))
+                    return;
+
+                const playerRates = w.rates
+                    .filter(rr => rr.playerId === r.playerId)
+                    .sort((a, b) => a.rate < b.rate ? 1 : a.rate === b.rate ? 0 : -1);
+
+                const main = playerRates[0];
+                const aux = playerRates[1] || { attributeId: 12, rate: this.INIT_RATE, delta: 0, active: false };
+
+                const rate = main.rate + (aux.rate - this.INIT_RATE) * this.AUX_MULTI;
+                let rateDelta = rate - this.INIT_RATE;
+
+                const prevWoe = woesRate.find(ww => ww.woeId === w.woeId - 1);
+
+                if (prevWoe) {
+                    const player = prevWoe.players.find(pp => pp.id === r.playerId);
+
+                    if (player) {
+                        rateDelta = rate - player.rate;
+                    }
+                }
+
+                w.players.push({
+                    id: r.playerId,
+                    rate,
+                    rateDelta,
+                    active: main.active || aux.active,
+                    mainRate: main.rate,
+                    auxRate: aux.rate,
+                    mainAttributeId: main.attributeId,
+                    auxAttributeId: aux.attributeId
+                });
+            });
+
+            w.players.forEach(p => {
+                p.rateIndex = w.players.filter(pp => pp.rate > p.rate).length + 1;
+            });
+        });
+
+        // debugger;
+        await this.save(woesRate);
 
     }
 
     private dump(p) {
-        console.log(p.id, p.name);
+        this._logger.log(p.id, p.name);
         for (let id in p.rates) {
             if (!p.rates.hasOwnProperty(id)) {
                 continue;
             }
 
             const r = p.rates[id];
-            console.log(r.attribute.id, r.attribute.ui_name, r.rate);
+            this._logger.log(r.attribute.id, r.attribute.ui_name, r.rate);
         }
     }
 
@@ -174,32 +278,20 @@ class PlayerRatingCalculator {
     }
 
     private recalculate(playerA, rateA, playerB, rateB, rate) {
-        const delta = this.getNewPlayerARate(playerA, rateA, playerB, rateB);
+        const deltaA = this.getNewPlayerARate(playerA.rate, rateA.rate, playerA.getK(), playerB.rate, rateB.rate);
 
-        playerA.rate2 += delta * rate;
-        // playerB.rate2 -= delta * rate * 0.01;
+        let realDelta = deltaA * Math.min(1, rate);
 
-        if (delta > 0) {
-            playerA.wins++;
-            playerB.loses++;
-        }
+        playerA.rate2 = playerA.rate2 + realDelta;
+        playerA.rate2 = Math.round(playerA.rate2 * 10000) / 10000;
 
-        if (delta < 0) {
-            playerA.loses++;
-            playerB.wins++;
-        }
+        // this._logger.log(`${playerA.name} ${playerA.rate} ${rateA.rate} vs ${playerB.name} ${playerB.rate} ${rateB.rate} -> delta: ${deltaA}, with WoE: ${realDelta} = ${playerA.rate2}`)
     }
 
-    private getNewPlayerARate(playerA, rateA, playerB, rateB) {
-        const Ra = playerA.rate;
-        const Rb = playerB.rate;
-        const Ea = 1.0 / (1 + Math.pow(10, (Rb - Ra) / 400));
-
-        const K = playerA.getK();
-        // const Sa = rateA.rate > rateB.rate ? 1.0 : rateA.rate === rateB.rate ? 0.5 : 0.0;
-        const Sa = 0.5 + rateA.rate - (rateA.rate + rateB.rate) / 2;
-
-        const Ra2 = K * (Sa - Ea);
+    private getNewPlayerARate(ra, va, ka, rb, vb) {
+        const Ea = 1.0 / (1 + Math.pow(10, (rb - ra) / this.RATE_STEP));
+        const Sa = 0.5 + va - (va + vb) / 2;
+        const Ra2 = ka * (Sa - Ea);
 
         return Ra2;
     }
@@ -209,22 +301,20 @@ class PlayerRatingCalculator {
             this._players[rate.playerId] = {
                 id: rate.playerId,
                 name: rate.playerName,
-                totalRate: 1000,
-                rate: 1000,
-                rate2: 1000,
+                rate: this.INIT_RATE,
+                rate2: this.INIT_RATE,
                 rates: {},
                 games: 0,
-                wins: 0,
-                loses: 0,
-                pat: 0,
-                h: [1000],
+                h: [],
                 getK() {
-                    if (this.rate > 1300) {
-                        return 10;
-                    } else if (this.games > 15) {
-                        return 20;
+                    if (this.rate > 1600) {
+                        return 25;
+                    } else if (this.rate > 1400) {
+                        return 50;
+                    } else if (this.games > 5) {
+                        return 75;
                     } else {
-                        return 40;
+                        return 100;
                     }
                 }
             }
@@ -256,6 +346,44 @@ class PlayerRatingCalculator {
 
     private async loadAttributes() {
         return await this._connection.query(`select * from woe_attribute where rate != 0 order by sort_order`);
+    }
+
+    private async save(woesRate: any[]) {
+        await this._connection.query(`delete from woe_player_rate`);
+        await this._connection.query(`delete from woe_player_attribute_rate`);
+
+        for (let i = 0; i<woesRate.length; i++) {
+            const woe = woesRate[i];
+
+            for (let j=0; j<woe.players.length; j++) {
+                const player = woe.players[j];
+
+                const result = await this._connection.query(`
+                    insert into woe_player_rate(player_id, woe_id, rate, rate_delta, rate_index, active, main_woe_attribute_id, aux_woe_attribute_id)
+                    value(?,?,?,?,?,?,?,?)
+                `, player.id, woe.woeId, player.rate, player.rateDelta, player.rateIndex, player.active, player.mainAttributeId, player.auxAttributeId
+                );
+            }
+
+            for (let j=0; j<woe.rates.length; j++) {
+                const rate = woe.rates[j];
+                // if (!rate.active) {
+                //     continue;
+                // }
+
+                const result = await this._connection.query(`
+                insert into woe_player_attribute_rate(woe_player_rate_id, woe_player_value_id, rate, rate_delta, rate_index, player_id, woe_attribute_id)
+                value(
+                    (select id from woe_player_rate where player_id = ? and woe_id = ?),
+                    (select pv.id from woe_player_value pv inner join woe_player p on pv.woe_player_id = p.id where p.player_id = ? and p.woe_id = ? and pv.woe_attribute_id = ?),
+                    ?, ?, ?, ?, ?
+                )
+            `,
+                    rate.playerId, woe.woeId, rate.playerId, woe.woeId, rate.attributeId, rate.rate, rate.rateDelta, rate.rateIndex, rate.playerId, rate.attributeId
+                );
+
+            }
+        }
     }
 }
 

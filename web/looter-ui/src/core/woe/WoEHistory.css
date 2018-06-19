@@ -1,26 +1,43 @@
-.area-woe-hostory .report24-item-container {
+.area-woe-history .report24-item-container {
     width: 2%;
 }
 
-.area-woe-hostory .report24-item-container .report24-item {
-    margin: 2px 2px 0px 2px;
+@media (min-width: 900px) {
+    .area-woe-history .report24-item-container .report24-item {
+        margin: 2px 2px 0px 2px;
+    }
 }
 
-.area-woe-hostory .report24-item-container .report24-item-label,
-.area-woe-hostory .report24-item-container .report24-item-index{
+.area-woe-history .report24-item-container .report24-item-label,
+.area-woe-history .report24-item-container .report24-item-index{
     display: none;
 }
 
-.area-woe-hostory .table-report-cell.pk {
+.area-woe-history .table-report-cell.pk {
     padding-right: 5px;
 }
-.area-woe-hostory .table-report-cell.pd,
-.area-woe-hostory .table-report-cell.ps
+.area-woe-history .table-report-cell.pd,
+.area-woe-history .table-report-cell.ps
 {
     padding-left: 5px;
     padding-right: 5px;
 }
 
-.area-woe-hostory .table-report-cell.pdb {
+.area-woe-history .table-report-cell.pdb {
     padding-left: 5px;
+}
+
+@media (max-width: 899px) {
+    .area-woe-history .table-report-cell {
+        display: table-cell;
+    }
+
+    .area-woe-history .table-report-cell.index,
+    .area-woe-history .table-report-cell.pk,
+    .area-woe-history .table-report-cell.pdmg,
+    .area-woe-history .table-report-cell.ps,
+    .area-woe-history .table-report-cell.pdb
+    {
+        display: none !important;
+    }
 }

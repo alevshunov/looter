@@ -1,0 +1,19 @@
+.colored {
+    font-weight: bold;
+}
+
+.colored.level-a {
+    color: goldenrod;
+}
+
+.colored.level-b {
+    color: gray;
+}
+
+.colored.level-c {
+    color: gray;
+}
+
+.colored.level-d {
+    color: gray;
+}

@@ -10,7 +10,6 @@ import WoEAttributeSaverFactory from './WoEAttributeSaverFactory';
 import ForumStatisticWatcher from './ForumStatisticWatcher';
 import WoEExistChecker from './WoEExistChecker';
 import RateAndIndexRecalculator from './indexes/RateAndIndexRecalculator';
-import IconSaver from './IconSaver';
 import GuildSaverFactory from './GuildSaverFactory';
 import PlayerOnWoESaverFactory from './PlayerOnWoESaverFactory';
 import PlayerRatingCalculator from './indexes/PlayerRatingCalculator';
@@ -60,12 +59,13 @@ const logger = new MyLogger();
             new PlayerOnWoESaverFactory(connection)
         ).save();
 
+        await new RateAndIndexRecalculator(connection).recalculate();
         hasChanges = true;
     }
 
     if (hasChanges) {
-        await new RateAndIndexRecalculator(connection).recalculate();
         await new PlayerRatingCalculator(connection, logger).calculate();
+        await connection.query(`update woe set parsed = 1 where parsed = 0`);
     }
 
     await connection.close();

@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import asDate from '../components/asDate';
 import TextIcon from '../components/TextIcon';
 import GA from '../extra/GA';
+import ValueWithDelta from '../components/ValueWithDelta';
+import ValueWithArrow from '../components/ValueWithArrow';
 
 interface State {
     loading: boolean;
@@ -34,7 +36,8 @@ class WoEDetails extends React.Component<Props, State> {
         this.setState({loading: true});
 
         const me = this;
-        fetch(`https://free-ro.kudesnik.cc/rest/woe/info/${this.props.woeId}`)
+        // fetch(`/rest/woe/info/${this.props.woeId}`)
+        fetch(`http://localhost:9999/rest/woe/info/${this.props.woeId}`)
             .then((response) => {
                 try {
                     return response.json();
@@ -91,6 +94,7 @@ class WoEDetails extends React.Component<Props, State> {
                         </tbody>
                     </table>
                     <TableReport
+                        userCls={'common'}
                         cells={
                             [
                                 {
@@ -141,6 +145,7 @@ class WoEDetails extends React.Component<Props, State> {
 
                 <Container>
                     <TableReport
+                        userCls={'castle-o'}
                         title={'История захватов'}
                         cells={
                             [
@@ -200,56 +205,60 @@ class WoEDetails extends React.Component<Props, State> {
                                 </Link> : ''
                         },
                         {
-                            title: 'Игрок',
+                            title: '',
                             field: 'playerName',
                             render: (name, d) =>
                                 <div>
-                                    <Link to={`/woe/player/${encodeURI(name)}`}>{name}
-                                    <div className="rate">
-                                        Рейтинг: {Math.round(d.rate)}
-                                        <div className="perk">
-                                            Перки: <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
-                                            {' + '}
-                                            <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                    <Link to={`/woe/player/${encodeURI(name)}`}>
+                                        {name}
+                                        <div className="rate">
+                                            <div className="value">
+                                                <ValueWithArrow
+                                                    value={d.playerRate}
+                                                    delta={d.playerRateDelta}
+                                                    index={d.playerRateIndex}
+                                                />
+                                            </div>
+                                            <div className="perk">
+                                                <i className={d.playerSpec1Icon} title={d.playerSpec1Name}/>
+                                                {' + '}
+                                                <i className={d.playerSpec2Icon} title={d.playerSpec2Name}/>
+                                            </div>
                                         </div>
-                                    </div>
                                     </Link>
                                 </div>
                         },
                         {
-                            title: 'Значение',
+                            title: '',
                             field: 'value',
                             align: 'right',
                             render: v => asNumber(v)
                         },
                         {
-                            title: 'В среднем',
-                            field: 'delta-field',
+                            title: 'Среднее',
+                            field: 'avg',
                             align: 'right',
                             render: (value, d) => (
-                                <div>
-                                    <div className="value">
-                                        {asNumber(d.avgPlayerValueNew)}
-                                    </div>
-                                    <div className="delta">
-                                        {
-                                            d.avgPlayerValue < d.avgPlayerValueNew ?
-                                                <span className="up">
-                                                    {' + '}{
-                                                    asNumber(d.avgPlayerValueNew - d.avgPlayerValue
-                                                    )}
-                                                </span>
-                                                :
-                                                <span className="down">
-                                                    {' - '} {
-                                                    asNumber(d.avgPlayerValue - d.avgPlayerValueNew
-                                                    )}
-                                                </span>
-                                        }
-                                    </div>
-                                </div>
+                                <ValueWithDelta
+                                    value={d.avgPlayerValueNew}
+                                    delta={d.avgPlayerValueNew - d.avgPlayerValue}
+                                />
                             )
-                        }
+                        },
+                        {
+                            title: 'Слава',
+                            field: 'rate',
+                            align: 'right',
+                            render: (v, d) => (
+                                <ValueWithDelta
+                                    value={d.rate}
+                                    index={d.rateIndex}
+                                    // delta={d.isMain ? d.rateDelta : d.isAux ? d.rateDelta * 0.15 : 0}
+                                    delta={d.rateDelta}
+                                    userCls={d.isMain ? 'is-main' : d.isAux ? 'is-aux' : 'is-extra'}
+                                />
+                            )
+                        },
                     ]
                 }
                 data={attribute.players}

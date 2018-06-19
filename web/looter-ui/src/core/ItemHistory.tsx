@@ -39,7 +39,7 @@ class ItemHistory extends React.Component<Props, State> {
 
         const me = this;
 
-        fetch('https://free-ro.kudesnik.cc/rest/item/price/' + encodeURIComponent(this.props.itemName))
+        fetch('/rest/item/price/' + encodeURIComponent(this.props.itemName))
             .then((response) => {
                 try {
                     return response.json();

@@ -68,7 +68,8 @@ class AllItems extends React.Component<Props, State> {
 
         const originalTerm = me.props.term;
 
-        let url = 'https://free-ro.kudesnik.cc/rest/shops/active'
+        let url = '/rest/shops/active'
+        // let url = 'http://127.0.0.1:9999/rest/shops/active'
             + (parts.length > 0 ? '?' + parts.join('&') : '');
 
         fetch(url)

@@ -39,7 +39,7 @@ class WoEHistory extends React.Component<Props, State> {
         this.setState({ data: undefined });
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/history')
+        fetch('/rest/woe/history')
             .then((response) => {
                 try {
                     return response.json();
@@ -72,13 +72,13 @@ class WoEHistory extends React.Component<Props, State> {
         GA();
 
         return (
-            <Container userCls="area-woe-hostory">
+            <Container userCls="area-woe-history">
                 <ContainerText>
                     <Report24 data={this.state.state24} title={'График активности за последние 50 ГВ:'}/>
                 </ContainerText>
                 <div/>
                 <TableReport
-                    title={'История ГВ'}
+                    // title={'История ГВ'}
                     cells={
                         [
                             {

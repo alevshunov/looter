@@ -36,7 +36,7 @@ class WoEGuilds extends React.Component<Props, State> {
         this.setState({ data: undefined });
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/guilds')
+        fetch('/rest/woe/guilds')
             .then((response) => {
                 try {
                     return response.json();
@@ -58,7 +58,8 @@ class WoEGuilds extends React.Component<Props, State> {
         return (
             <Container userCls="area-woe-guilds">
                 <TableReport
-                    title={'ГВ гильдии'}
+
+                    // title={'ГВ гильдии'}
                     cells={
                         [
                             {

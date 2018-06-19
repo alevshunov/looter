@@ -10,3 +10,48 @@
 .area-woe-player .table-report-cell:last-child {
     padding-right: 40px;
 }
+
+.area-woe-player .rate-area .as-delta {
+    padding-right: 36px;
+    padding-left: 5px;
+}
+
+.area-woe-player .rate-area i {
+    padding-left: 5px;
+}
+
+.area-woe-player .rate-history .is-inactive {
+    opacity: 0.4;
+}
+
+.area-woe-player .rate-history .data.rate {
+    width: 80px;
+    padding-right: 50px;
+}
+
+.area-woe-player .rate-history .data.rate:last-child {
+    width: 60px;
+    padding-right:70px;
+}
+
+@media (max-width: 899px) {
+    .area-woe-player .table-report-cell {
+        display: table-cell;
+    }
+
+    .area-woe-player .common .table-report-cell.max,
+    .area-woe-player .common .table-report-cell.sum,
+    .area-woe-player .woes .table-report-cell.pk,
+    .area-woe-player .woes .table-report-cell.pd,
+    .area-woe-player .woes .table-report-cell.pdmg,
+    .area-woe-player .woes .table-report-cell.pdmgget,
+    .area-woe-player .woes .table-report-cell.ps,
+    .area-woe-player .woes .table-report-cell.pdb,
+    .area-woe-player .rate-history .table-report-cell.rate.main,
+    .area-woe-player .rate-history .table-report-cell.rate.aux,
+    .area-woe-player .table-report-cell.buffs,
+    .area-woe-player .table-report-cell.debuffs
+    {
+        display: none !important;
+    }
+}

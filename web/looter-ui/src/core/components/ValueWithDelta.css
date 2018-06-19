@@ -1,0 +1,32 @@
+.as-delta {
+    display: inline-block;
+}
+
+.as-delta > .value {
+    display: inline;
+}
+
+.as-delta > .delta {
+    font-size: 9px;
+    display: inline;
+    margin-left: 5px;
+    position: absolute;
+    margin-top: -2px;
+}
+
+.as-delta > .index {
+    font-size: 9px;
+    display: inline-block;
+    margin-left: 5px;
+    position: absolute;
+    margin-top: 7px;
+    /*min-width: 25px;*/
+}
+
+.as-delta > .delta.up {
+    color: #3da75a;
+}
+
+.as-delta > .delta.down {
+    color: #ff7160;
+}

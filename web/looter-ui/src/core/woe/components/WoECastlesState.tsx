@@ -35,7 +35,7 @@ class WoECastlesState extends React.Component<Props, State> {
         this.setState({ data: undefined });
 
         const me = this;
-        fetch('https://free-ro.kudesnik.cc/rest/woe/castles')
+        fetch('/rest/woe/castles')
             .then((response) => {
                 try {
                     return response.json();
@@ -53,7 +53,7 @@ class WoECastlesState extends React.Component<Props, State> {
         return (
             <TableReport
                 userCls={'area-castles'}
-                title={'Состояние замков'}
+                // title={'Состояние замков'}
                 cells={
                     [
                         {
