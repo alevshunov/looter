@@ -147,8 +147,12 @@ class ItemDeals extends React.Component<Props, State> {
                                 {name: 'Покупка', data: this.asObj(this.state.data.boughtPrice)}
                             ]
                         }
-
-                        suffix={' z'}
+                        discrete={false}
+                        thousands=","
+                        suffix=" z"
+                        library={{
+                            spanGaps: true
+                        }}
                     />
                 </Container>
 
