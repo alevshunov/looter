@@ -22,3 +22,26 @@
     width: 20px;
     text-align: center;
 }
+
+@media (max-width: 899px) {
+    .area-woe-guild .table-report-cell {
+        display: table-cell;
+    }
+
+    .area-woe-guild .common .table-report-cell.max,
+    .area-woe-guild .common .table-report-cell.sum,
+    .area-woe-guild .players .table-report-cell.index,
+    .area-woe-guild .players .table-report-cell.kills,
+    .area-woe-guild .players .table-report-cell.death,
+    .area-woe-guild .players .table-report-cell.buffs,
+    .area-woe-guild .players .table-report-cell.debuffs,
+    .area-woe-guild .woes .table-report-cell.index,
+    .area-woe-guild .woes .table-report-cell.kills,
+    .area-woe-guild .woes .table-report-cell.death,
+    .area-woe-guild .woes .table-report-cell.buffs,
+    .area-woe-guild .woes .table-report-cell.debuffs,
+    .area-woe-guild .woes .table-report-cell.wings
+    {
+        display: none !important;
+    }
+}

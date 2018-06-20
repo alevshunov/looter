@@ -97,6 +97,7 @@
 
     .area-woe-details .rate .table-report-cell.value {
         text-align: right !important;
+        padding-right: 15px !important;
     }
 
     .area-woe-details .rate .table-report-cell.position_index,

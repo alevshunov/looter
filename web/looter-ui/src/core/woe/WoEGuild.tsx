@@ -79,6 +79,7 @@ class WoEGuild extends React.Component<Props, State> {
                     </table>
 
                     <TableReport
+                        userCls={'common'}
                         cells={
                             [
                                 {
