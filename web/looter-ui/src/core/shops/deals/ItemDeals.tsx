@@ -9,8 +9,8 @@ import { NavLink } from 'react-router-dom';
 import './ItemDeals.css';
 import DealsNavigation from './DealsNavigation';
 import TimeCachedStore from '../../extra/TimeCachedStore';
+import * as numeral from 'numeral';
 const LineChart = require('react-chartkick').LineChart;
-// const ReactChartkick = require('react-chartkick');
 
 interface State {
     data: any;
@@ -151,7 +151,51 @@ class ItemDeals extends React.Component<Props, State> {
                         thousands=","
                         suffix=" z"
                         library={{
-                            spanGaps: true
+                            spanGaps: true,
+                            legendCallback:  function() {
+                                console.log('legendCallback');
+                                return '<b>HelloWoeld</b>';
+                            },
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        callback: function(value: any) {
+                                            try {
+                                                return asDate(value, 'DD MMMM');
+                                            } catch (e) {
+                                                return value;
+                                            }
+                                        }
+                                    }
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        callback: function(value: any) {
+                                            try {
+                                                return numeral(value).format('0,0') + ' z';
+                                            } catch (e) {
+                                                return '';
+                                            }
+                                        }
+                                    }
+                                }]
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    title: function(args: any) {
+                                        return asDate(args[0].xLabel, 'DD MMMM YYYY');
+                                    },
+                                    label: function(tooltipItem: any, data2: any) {
+                                        var label = data2.datasets[tooltipItem.datasetIndex].label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += numeral(tooltipItem.yLabel).format('0,0') + ' z';
+                                        return label;
+                                    }
+                                }
+                            }
                         }}
                     />
                 </Container>
