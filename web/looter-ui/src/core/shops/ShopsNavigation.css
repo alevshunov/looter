@@ -1,0 +1,18 @@
+.nav-top.shops-navigation .nav-item .nav-icon {
+    font-size: 20px;
+}
+
+.nav-top.shops-navigation .nav-item .nav-title {
+    padding-top: 6px;
+    font-size: 12px;
+}
+
+.nav-top.shops-navigation .active .nav-item .nav-icon {
+    font-size: 24px;
+}
+
+.nav-top.shops-navigation .active .nav-item .nav-title {
+    padding-top: 6px;
+    font-size: 16px;
+}
+

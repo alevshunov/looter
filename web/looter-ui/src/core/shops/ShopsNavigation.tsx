@@ -1,60 +1,51 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import './MyNavigation.css';
 import * as H from 'history';
+import './ShopsNavigation.css';
 
-class MyNavigation extends React.Component {
+class ShopsNavigation extends React.Component {
 
     constructor(props: any, context: any) {
         super(props, context);
     }
 
     isActive(match: any, location: H.Location, url: string) {
-        if (!match && url === '/shops/' && location.pathname.startsWith('/shop/')) {
+        if (!match && url === '/shops/deals' && /^\/item\/.+?\/deals\/.+/.test(location.pathname)) {
             return true;
         }
 
-        if (!match && url === '/shops/' && location.pathname.startsWith('/items/')) {
+        if (!match && url === '/items/' && /^\/shops\/with\/.+/.test(location.pathname)) {
             return true;
         }
 
-        if (!match && url === '/shops/' && location.pathname.startsWith('/item/')) {
+        if (!match && url === '/shops/' && /^\/shop\/.+/.test(location.pathname)) {
             return true;
         }
 
-        if (!match && url === '/report/' && location.pathname === '/') {
-            return true;
-        }
-
-        return match;
+        return (location.pathname === url || location.pathname + '/' === url);
     }
 
     render() {
         const items = [
             {
-                icon: <i className="fas fa-clipboard"/>,
-                title: 'Выпавшие карты',
-                url: '/cards/'
+                icon: <i className="fas fa-shopping-cart"/>,
+                title: 'Активные магазины',
+                url: `/shops/`
             },
             {
-                icon: <i className="fas fa-shopping-basket"/>,
-                title: 'Торговля',
-                url: '/shops/'
+                icon: <i className="fas fa-boxes"/>,
+                title: 'Доступные товары',
+                url: `/items/`
             },
             {
-                icon: <i className="fab fa-fort-awesome"/>,
-                title: 'WoE',
-                url: '/woe/'
-            },
-            {
-                icon: <i className="fas fa-info"/>,
-                title: 'Статистика',
-                url: '/report/'
+                icon: <i className="fas fa-handshake"/>,
+                title: 'Сделки',
+                url: `/shops/deals`
             }
         ];
 
         return (
-            <div className="nav-top main-navigation">
+            <div className="nav-top shops-navigation">
                 {items.map(a => (
                     <NavLink
                         className={'nav-link'}
@@ -77,4 +68,4 @@ class MyNavigation extends React.Component {
     }
 }
 
-export default MyNavigation;
+export default ShopsNavigation;

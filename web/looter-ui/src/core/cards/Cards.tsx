@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import RedirectableSearch from './components/RedirectableSearch';
+import RedirectableSearch from '../components/RedirectableSearch';
 import { NavLink } from 'react-router-dom';
-import MyNavigation from './components/MyNavigation';
+import MyNavigation from '../components/MyNavigation';
 import InfoOutline from '@material-ui/icons/InfoOutline';
-import Container from './components/Container';
-import TableReport from './components/TableReport';
-import GA from './extra/GA';
-import TimeCachedStore from './extra/TimeCachedStore';
+import Container from '../components/Container';
+import TableReport from '../components/TableReport';
+import GA from '../extra/GA';
+import TimeCachedStore from '../extra/TimeCachedStore';
 
 interface State {
     loading: boolean;
@@ -79,7 +79,7 @@ class Cards extends React.Component<Props, State> {
 
         return (
             <div className="limiter area-cards">
-                <MyNavigation active="cards"/>
+                <MyNavigation/>
                 <Container>
                     <RedirectableSearch base="/cards/" term={this.props.term}/>
                 </Container>

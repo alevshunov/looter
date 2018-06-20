@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Cards from './core/Cards';
-import Shops from './core/Shops';
-import AllItems from './core/AllItems';
-import ShopItems from './core/ShopItems';
-import ShopWithItem from './core/ShopsWithItem';
-import Report from './core/Report';
-import OwnerHistory from './core/OwnerHistory';
-import ItemHistory from './core/ItemHistory';
+import Cards from './core/cards/Cards';
+import Shops from './core/shops/Shops';
+import AllItems from './core/shops/AllItems';
+import ShopItems from './core/shops/ShopItems';
+import ShopWithItem from './core/shops/ShopsWithItem';
+import Report from './core/report/Report';
+import OwnerHistory from './core/shops/OwnerHistory';
 import WoEHistory from './core/woe/WoEHistory';
 import WoEDetails from './core/woe/WoEDetails';
 import WoEPlayers from './core/woe/WoEPlayers';
@@ -16,6 +15,9 @@ import WoEGuilds from './core/woe/WoEGuilds';
 import WoEGuild from './core/woe/WoEGuild';
 import WoECastles from './core/woe/WoECastles';
 import WoELayout from './core/woe/WoELayout';
+import Deals from './core/shops/deals/Deals';
+import ItemDeals from './core/shops/deals/ItemDeals';
+import ShopsLayout from './core/shops/ShopsLayout';
 
 class App extends React.Component {
 
@@ -103,42 +105,68 @@ class App extends React.Component {
 
                     <Route
                         exact={true}
+                        path="/shops/deals/:term"
+                        render={(props) =>
+                            <ShopsLayout>
+                                <Deals term={decodeURIComponent(props.match.params.term)}/>
+                            </ShopsLayout>
+                        }
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/shops/deals"
+                        render={(props) => <ShopsLayout><Deals term={''} /></ShopsLayout>}
+                    />
+
+                    <Route
+                        exact={true}
                         path="/shop/:shopId"
-                        render={(props) => <ShopItems shopId={props.match.params.shopId}/>}
+                        render={(props) => <ShopsLayout><ShopItems shopId={props.match.params.shopId}/></ShopsLayout>}
                     />
 
                     <Route
                         exact={true}
                         path="/shops"
-                        render={(props) => <Shops term=""/>}
+                        render={(props) => <ShopsLayout><Shops term=""/></ShopsLayout>}
                     />
 
                     <Route
                         exact={true}
                         path="/shops/with/:name"
-                        render={(props) => <ShopWithItem itemName={props.match.params.name}/>}
+                        render={(props) =>
+                            <ShopsLayout>
+                                <ShopWithItem itemName={props.match.params.name}/>
+                            </ShopsLayout>
+                        }
                     />
 
                     <Route
                         exact={true}
                         path="/shops/by/:owner"
-                        render={(props) => <OwnerHistory owner={props.match.params.owner}/>}
+                        render={(props) => <ShopsLayout><OwnerHistory owner={props.match.params.owner}/></ShopsLayout>}
                     />
 
                     <Route
                         exact={true}
                         path="/shops/:term"
-                        render={(props) => <Shops term={decodeURIComponent(props.match.params.term)}/>}
+                        render={(props) =>
+                            <ShopsLayout>
+                                <Shops term={decodeURIComponent(props.match.params.term)}/>
+                            </ShopsLayout>
+                        }
                     />
 
                     <Route
                         exact={true}
                         path="/items/by/:order/:direction/:term"
                         render={(props) =>
+                            <ShopsLayout>
                             <AllItems
                                 term={decodeURIComponent(props.match.params.term)}
                                 order={{ field: props.match.params.order, direction: props.match.params.direction }}
                             />
+                            </ShopsLayout>
                         }
                     />
 
@@ -146,20 +174,25 @@ class App extends React.Component {
                         exact={true}
                         path="/items/by/:order/:direction"
                         render={(props) =>
+                            <ShopsLayout>
                             <AllItems
                                 term=""
                                 order={{ field: props.match.params.order, direction: props.match.params.direction }}
-                            />}
+                            />
+                            </ShopsLayout>
+                        }
                     />
 
                     <Route
                         exact={true}
                         path="/items/:term"
                         render={(props) =>
-                            <AllItems
-                                term={decodeURIComponent(props.match.params.term)}
-                                order={{ field: 'default', direction: 'asc' }}
-                            />
+                            <ShopsLayout>
+                                <AllItems
+                                    term={decodeURIComponent(props.match.params.term)}
+                                    order={{ field: 'default', direction: 'asc' }}
+                                />
+                            </ShopsLayout>
                         }
                     />
 
@@ -167,16 +200,65 @@ class App extends React.Component {
                         exact={true}
                         path="/items"
                         render={(props) =>
-                            <AllItems
-                                term=""
-                                order={{ field: 'default', direction: 'asc' }}
-                            />}
+                            <ShopsLayout>
+                                <AllItems
+                                    term=""
+                                    order={{ field: 'default', direction: 'asc' }}
+                                />
+                            </ShopsLayout>
+                        }
                     />
 
                     <Route
                         exact={true}
-                        path="/item/history/:itemName"
-                        render={(props) => <ItemHistory itemName={decodeURIComponent(props.match.params.itemName)}/>}
+                        path="/item/:itemName/deals/sold"
+                        render={(props) =>
+                            <ShopsLayout>
+                                <ItemDeals
+                                    itemName={decodeURIComponent(props.match.params.itemName)}
+                                    area={'sold'}
+                                />
+                            </ShopsLayout>
+                        }
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/item/:itemName/deals/bought"
+                        render={(props) =>
+                            <ShopsLayout>
+                                <ItemDeals
+                                    itemName={decodeURIComponent(props.match.params.itemName)}
+                                    area={'bought'}
+                                />
+                            </ShopsLayout>
+                        }
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/item/:itemName/deals/sold/price"
+                        render={(props) =>
+                            <ShopsLayout>
+                                <ItemDeals
+                                    itemName={decodeURIComponent(props.match.params.itemName)}
+                                    area={'sold-price'}
+                                />
+                            </ShopsLayout>
+                        }
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/item/:itemName/deals/bought/price"
+                        render={(props) =>
+                            <ShopsLayout>
+                                <ItemDeals
+                                    itemName={decodeURIComponent(props.match.params.itemName)}
+                                    area={'bought-price'}
+                                />
+                            </ShopsLayout>
+                        }
                     />
 
                     <Route

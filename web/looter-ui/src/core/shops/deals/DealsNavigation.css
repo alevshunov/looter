@@ -1,0 +1,22 @@
+.deal-navigation {
+    margin-top: 40px;
+}
+
+.nav-top.deal-navigation .nav-item .nav-icon {
+    font-size: 20px;
+}
+
+.nav-top.deal-navigation .nav-item .nav-title {
+    padding-top: 6px;
+    font-size: 12px;
+}
+
+.nav-top.deal-navigation .active .nav-item .nav-icon {
+    font-size: 24px;
+}
+
+.nav-top.deal-navigation .active .nav-item .nav-title {
+    padding-top: 6px;
+    font-size: 16px;
+}
+

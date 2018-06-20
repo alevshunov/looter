@@ -1,0 +1,8 @@
+.area-shop-with-item .info-item.shop-item-name {
+    text-align: center;
+}
+
+.area-shop-with-item .name {
+    max-width: 140px;
+    white-space: nowrap;
+}

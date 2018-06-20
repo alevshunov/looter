@@ -1,18 +1,18 @@
 import * as React from 'react';
-import MyNavigation from './components/MyNavigation';
-import Report24 from './components/Report24';
-import TableReport from './components/TableReport';
-import Container from './components/Container';
-import asPrice from './components/asPrice';
-import asNumber from './components/asNumber';
+import MyNavigation from '../components/MyNavigation';
+import Report24 from '../components/Report24';
+import TableReport from '../components/TableReport';
+import Container from '../components/Container';
+import asPrice from '../components/asPrice';
+import asNumber from '../components/asNumber';
 import { NavLink } from 'react-router-dom';
 import * as moment from 'moment';
 import { ReportEntry } from 'my-models/Report';
 import './Report.css';
 import 'moment/locale/ru';
-import ContainerText from './components/ContainerText';
-import GA from './extra/GA';
-import TimeCachedStore from './extra/TimeCachedStore';
+import ContainerText from '../components/ContainerText';
+import GA from '../extra/GA';
+import TimeCachedStore from '../extra/TimeCachedStore';
 
 class Report extends React.Component<{preview: boolean}, { loading: boolean, report?: ReportEntry}> {
     constructor(props: {preview: boolean}, context: any) {
@@ -52,7 +52,7 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
         if (!this.state.report) {
             return (
                 <div className="limiter">
-                    <MyNavigation active="report"/>
+                    <MyNavigation/>
                     <Container>
                         <ContainerText>Загрузка...</ContainerText>
                     </Container>
@@ -66,7 +66,7 @@ class Report extends React.Component<{preview: boolean}, { loading: boolean, rep
 
         return (
             <div className="limiter">
-                <MyNavigation active="report"/>
+                <MyNavigation/>
 
                 <Container>
                     <ContainerText>

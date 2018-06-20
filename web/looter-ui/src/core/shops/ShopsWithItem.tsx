@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import asPrice from './components/asPrice';
-import MyNavigation from './components/MyNavigation';
-import Container from './components/Container';
-import TableReport from './components/TableReport';
-import GA from './extra/GA';
-import asShopCount from './components/asShopCount';
+import { Link, NavLink } from 'react-router-dom';
+import asPrice from '../components/asPrice';
+import Container from '../components/Container';
+import TableReport from '../components/TableReport';
+import GA from '../extra/GA';
+import asShopCount from '../components/asShopCount';
 import './ShopsWithItem.css';
 
 interface State {
@@ -59,17 +58,13 @@ class ShopWithItem extends React.Component<Props, State> {
         GA();
 
         return (
-            <div className="limiter area-shop-with-item">
-                <MyNavigation active="shops"/>
+            <div className="area-shop-with-item">
                 <Container>
                     <table className="table-report info">
                         <tbody>
                             <tr>
                                 <td className="info-item table-report-cell shop-item-name">
                                     {this.props.itemName}
-                                    {/*<NavLink to={'/item/history/' + decodeURI(this.props.itemName)}>*/}
-                                        {/*История цен*/}
-                                    {/*</NavLink>*/}
                                 </td>
                             </tr>
                             <tr>
@@ -77,6 +72,13 @@ class ShopWithItem extends React.Component<Props, State> {
                                     <a href={'http://rodb.kudesnik.cc/item/?term=' + this.props.itemName}>
                                         Подробнее
                                     </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="table-report-cell center">
+                                    <NavLink to={'/item/' + decodeURI(this.props.itemName) + '/deals/sold'}>
+                                        История цен
+                                    </NavLink>
                                 </td>
                             </tr>
                         </tbody>

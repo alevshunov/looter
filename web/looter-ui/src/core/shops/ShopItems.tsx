@@ -2,14 +2,13 @@ import * as React from 'react';
 import './ShopItems.css';
 import * as moment from 'moment';
 import { NavLink } from 'react-router-dom';
-import asPrice from './components/asPrice';
-import MyNavigation from './components/MyNavigation';
+import asPrice from '../components/asPrice';
 import InfoOutline from '@material-ui/icons/InfoOutline';
-import asShopCount from './components/asShopCount';
-import TableReport from './components/TableReport';
-import Container from './components/Container';
-import GA from './extra/GA';
-import asDate from './components/asDate';
+import asShopCount from '../components/asShopCount';
+import TableReport from '../components/TableReport';
+import Container from '../components/Container';
+import GA from '../extra/GA';
+import asDate from '../components/asDate';
 
 interface State {
     loading: boolean;
@@ -65,8 +64,7 @@ class ShopItems extends React.Component<Props, State> {
         }
 
         return (
-            <div className="limiter area-shop">
-                <MyNavigation active="shops"/>
+            <div className="area-shop">
                 <Container>
                     <table className="table-report info">
                         <tbody>

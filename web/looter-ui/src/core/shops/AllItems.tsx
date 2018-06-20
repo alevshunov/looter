@@ -1,16 +1,14 @@
 import * as React from 'react';
-import RedirectableSearch from './components/RedirectableSearch';
+import RedirectableSearch from '../components/RedirectableSearch';
 import { Link, NavLink } from 'react-router-dom';
-import asPrice from './components/asPrice';
-import MyNavigation from './components/MyNavigation';
+import asPrice from '../components/asPrice';
 import InfoOutline from '@material-ui/icons/InfoOutline';
-import Container from './components/Container';
-import TableReport from './components/TableReport';
-import asNumber from './components/asNumber';
+import Container from '../components/Container';
+import TableReport from '../components/TableReport';
+import asNumber from '../components/asNumber';
 import './AllItems.css';
-import GA from './extra/GA';
-import TimeCachedStore from './extra/TimeCachedStore';
-// import TimeCachedStore from './extra/TimeCachedStore';
+import GA from '../extra/GA';
+import TimeCachedStore from '../extra/TimeCachedStore';
 
 interface State {
     data?: Array<{
@@ -112,8 +110,7 @@ class AllItems extends React.Component<Props, State> {
         GA();
 
         return (
-            <div className="limiter area-allitems">
-                <MyNavigation active="items"/>
+            <div className="area-allitems">
                 <Container>
                     <RedirectableSearch base={this.urlForSearch()} term={this.props.term}/>
                 </Container>

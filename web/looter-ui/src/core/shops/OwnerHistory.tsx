@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import MyNavigation from './components/MyNavigation';
-import Container from './components/Container';
-import TableReport from './components/TableReport';
-import GA from './extra/GA';
-import TimeCachedStore from './extra/TimeCachedStore';
+import Container from '../components/Container';
+import TableReport from '../components/TableReport';
+import GA from '../extra/GA';
+import TimeCachedStore from '../extra/TimeCachedStore';
 import * as moment from 'moment';
 
 interface State {
@@ -65,9 +64,7 @@ class OwnerHistory extends React.Component<Props, State> {
         GA();
 
         return (
-            <div className="limiter area-shops">
-
-                <MyNavigation active="shops"/>
+            <div className="area-shops">
                 <Container>
                     <table className="table-report info">
                         <tbody>

@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import RedirectableSearch from './components/RedirectableSearch';
-import MyNavigation from './components/MyNavigation';
-import Container from './components/Container';
-import TableReport from './components/TableReport';
+import RedirectableSearch from '../components/RedirectableSearch';
+import Container from '../components/Container';
+import TableReport from '../components/TableReport';
 import './Shops.css';
-import GA from './extra/GA';
-import TimeCachedStore from './extra/TimeCachedStore';
+import GA from '../extra/GA';
+import TimeCachedStore from '../extra/TimeCachedStore';
 
 interface State {
     loading: boolean;
@@ -66,8 +65,7 @@ class Shops extends React.Component<Props, State> {
         GA();
 
         return (
-            <div className="limiter area-shops">
-                <MyNavigation active="shops"/>
+            <div className="area-shops">
                 <Container>
                     <RedirectableSearch base="/shops/" term={this.props.term}/>
                 </Container>

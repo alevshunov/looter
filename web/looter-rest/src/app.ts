@@ -21,6 +21,8 @@ import TimedRoute from './routes/tools/TimedRoute';
 import CachedRoute from './routes/tools/CachedRoute';
 import WoECastles from './routes/WoECastles';
 import BasedOnWoeCacheRoute from './routes/tools/BasedOnWoeCacheRoute';
+import DealsRoute from './routes/DealsRoute';
+import DealsByItemRoute from './routes/DealsByItemRoute';
 
 const app = express();
 const router = express.Router();
@@ -45,6 +47,8 @@ new RoutesRegister(logger, db, router)
             .add(new ShopsAllRoute())
             .add(new ShopsByOwnerRoute())
             .add(new ShopsWithRoute())
+            .add(new DealsRoute())
+            .add(new DealsByItemRoute())
             .add(new BasedOnWoeCacheRoute(new WoEGuildByIdRoute(), logger))
             .add(new BasedOnWoeCacheRoute(new WoEGuildsRoute(), logger))
             .add(new BasedOnWoeCacheRoute(new WoEHistoryRoute(), logger))
