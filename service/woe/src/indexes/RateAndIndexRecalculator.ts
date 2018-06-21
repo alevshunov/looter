@@ -119,6 +119,12 @@ class RateAndIndexRecalculator {
 
         for (let i = 0; i < names.length; i++) {
             const parts = /\- Замок \[.+\] захвачен гильдией \[(.+)\]\! Империум разбила? .+\./.exec(names[i].message);
+            const guildWithName = await this._connection.query(`select * from guild where name = ?`, parts[1]);
+
+            if (guildWithName.length > 0) {
+                continue;
+            }
+
             await this._connection.query(`
                 update guild 
                 set name = ? 
