@@ -86,6 +86,23 @@
     width: 65px;
 }
 
+.area-woe-details .castle-owners .castle-icon,
+.area-woe-details .castle-o .castle-icon {
+    font-size: 24px;
+    width: 24px;
+    padding-right: 5px;
+}
+
+.area-woe-details .castle-owners .castle,
+.area-woe-details .castle-o .castle {
+    width: 300px;
+}
+
+.area-woe-details .castle-owners .castle .location,
+.area-woe-details .castle-o .castle .location {
+    font-size: 11px;
+}
+
 @media (max-width: 899px) {
     .area-woe-details .common .table-report-cell {
         display: table-cell;

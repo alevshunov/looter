@@ -114,11 +114,12 @@ class WoEDetails extends React.Component<Props, State> {
 
                 <Container>
                     <TableReport
+                        userCls={'castle-owners'}
                         title={'Владения замками'}
                         cells={
                             [
                                 {
-                                    title: 'Гильдия',
+                                    title: '',
                                     field: 'owner',
                                     render: (v, d) =>
                                         <TextIcon
@@ -131,11 +132,20 @@ class WoEDetails extends React.Component<Props, State> {
                                         </TextIcon>
                                 },
                                 {
-                                    title: 'Замок',
-                                    field: 'castle',
-                                    render: (v, d) => <span>{d.castleName} / {d.castleLocation}</span>
+                                    title: '',
+                                    field: 'castle-icon',
+                                    render: () => <i className="fab fa-fort-awesome"/>
                                 },
-
+                                {
+                                    title: '',
+                                    field: 'castle',
+                                    render: (v, d) => (
+                                        <div>
+                                            <div className={'name'}>{d.castleName}</div>
+                                            <div className={'location'}>{d.castleLocation}</div>
+                                        </div>
+                                    )
+                                }
                             ]
                         }
                         data={this.state.data.castleOwnership}
@@ -149,12 +159,12 @@ class WoEDetails extends React.Component<Props, State> {
                         cells={
                             [
                                 {
-                                    title: 'Время',
+                                    title: '',
                                     field: 'date',
                                     render: (v) => asDate(v, 'HH:mm:ss')
                                 },
                                 {
-                                    title: 'Игрок',
+                                    title: '',
                                     field: 'owner',
                                     render: (v, d) =>
                                         <TextIcon
@@ -167,11 +177,20 @@ class WoEDetails extends React.Component<Props, State> {
                                         </TextIcon>
                                 },
                                 {
-                                    title: 'Замок',
-                                    field: 'castle',
-                                    render: (v, d) => <span>{d.castleName} / {d.castleLocation}</span>
+                                    title: '',
+                                    field: 'castle-icon',
+                                    render: () => <i className="fab fa-fort-awesome"/>
                                 },
-
+                                {
+                                    title: '',
+                                    field: 'castle',
+                                    render: (v, d) => (
+                                        <div>
+                                            <div className={'name'}>{d.castleName}</div>
+                                            <div className={'location'}>{d.castleLocation}</div>
+                                        </div>
+                                    )
+                                }
                             ]
                         }
                         data={this.state.data.castlesLog}
