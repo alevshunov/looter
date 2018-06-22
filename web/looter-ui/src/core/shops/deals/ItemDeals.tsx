@@ -9,8 +9,7 @@ import { NavLink } from 'react-router-dom';
 import './ItemDeals.css';
 import DealsNavigation from './DealsNavigation';
 import TimeCachedStore from '../../extra/TimeCachedStore';
-const LineChart = require('react-chartkick').LineChart;
-// const ReactChartkick = require('react-chartkick');
+import { LineChart } from 'react-chartkick';
 
 interface State {
     data: any;
@@ -21,17 +20,9 @@ interface Props {
     area: string;
 }
 
-// declare global {
-//     interface Window {
-//         document: any;
-//     }
-// }
-
 class ItemDeals extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-
-        // ReactChartkick.configure({language: 'ru'});
 
         this.state = {
             data: undefined
