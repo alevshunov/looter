@@ -9,7 +9,8 @@ import { NavLink } from 'react-router-dom';
 import './ItemDeals.css';
 import DealsNavigation from './DealsNavigation';
 import TimeCachedStore from '../../extra/TimeCachedStore';
-import { LineChart } from 'react-chartkick';
+// import { LineChart } from 'react-chartkick';
+import HistoryGraph from './components/HistoryGraph';
 
 interface State {
     data: any;
@@ -131,20 +132,9 @@ class ItemDeals extends React.Component<Props, State> {
                         </tr>
                         </tbody>
                     </table>
-                    <LineChart
-                        data={
-                            [
-                                {name: 'Продажа', data: this.asObj(this.state.data.soldPrice)},
-                                {name: 'Покупка', data: this.asObj(this.state.data.boughtPrice)}
-                            ]
-                        }
-                        discrete={false}
-                        thousands=","
-                        suffix=" z"
-                        library={{
-                            spanGaps: true
-                        }}
-                    />
+
+                    <HistoryGraph data={this.state.data} />
+
                 </Container>
 
                 <DealsNavigation itemName={this.props.itemName}/>

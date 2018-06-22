@@ -1,6 +1,7 @@
 import * as moment from 'moment';
+import { Moment } from 'moment';
 
-export default function(date: Date, format: string = 'DD MMMM YYYY, HH:mm') {
+export default function(date: Date | Moment, format: string = 'DD MMMM YYYY, HH:mm') {
     if (!date) {
         return '-';
     }
