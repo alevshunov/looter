@@ -28,7 +28,7 @@ const logger = new MyLogger();
 
     await connection.open();
 
-    const threads = await new ForumStatisticWatcher().load();
+    const threads = await new ForumStatisticWatcher(logger).load();
 
     let hasChanges = false;
 
