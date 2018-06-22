@@ -11,8 +11,8 @@ class HistoryGraph extends React.Component<{ data: any }> {
     render() {
         const { data } = this.props;
 
-        const start = moment(data.soldPrice[data.soldPrice.length - 1].date);
-        const end = moment();
+        const start = moment({ year: 2018, month: 1, day: 20 });
+        const end = moment().startOf('day');
 
         const dates: Moment[] = [];
         let cur = start;
@@ -35,7 +35,7 @@ class HistoryGraph extends React.Component<{ data: any }> {
         let dayBuyMinPrice = boughtPerDate.map(v => ifSetThen(v, o => o.minPrice));
         let dayBuyMaxPrice = boughtPerDate.map(v => ifSetThen(v, o => o.maxPrice));
 
-        let maxPrice = 0;
+        let maxPrice = 1000;
         dayBuyPrice.forEach(x => maxPrice = Math.max(x, maxPrice));
         daySellPrice.forEach(x => maxPrice = Math.max(x, maxPrice));
 
