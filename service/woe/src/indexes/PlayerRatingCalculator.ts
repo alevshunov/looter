@@ -364,7 +364,7 @@ class PlayerRatingCalculator {
 
                 const result = await this._connection.query(`
                     insert into woe_player_rate(player_id, woe_id, rate, rate_delta, rate_index, rate_index_delta, active, main_woe_attribute_id, aux_woe_attribute_id)
-                    value(?,?,?,?,?,?,?,?)
+                    value(?,?,?,?,?,?,?,?,?)
                 `, player.id, woe.woeId, player.rate, player.rateDelta, player.rateIndex, player.rateIndexDelta, player.active, player.mainAttributeId, player.auxAttributeId
                 );
             }
