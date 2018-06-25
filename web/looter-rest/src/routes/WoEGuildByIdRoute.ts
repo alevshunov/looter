@@ -72,6 +72,7 @@ class WoEGuildByIdRoute implements IRouteWithConnection {
                 w_p_rate.rate playerRate,
                 w_p_rate.rate_delta playerRateDelta,
                 w_p_rate.rate_index playerRateIndex,
+                w_p_rate.rate_index_delta playerRateIndexDelta,
                 
                 main_a.id mainId,
                 main_a.special_name mainName,

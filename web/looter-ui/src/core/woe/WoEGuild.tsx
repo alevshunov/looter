@@ -131,6 +131,7 @@ class WoEGuild extends React.Component<Props, State> {
                                                         value={d.playerRate}
                                                         delta={d.playerRateDelta}
                                                         index={d.playerRateIndex}
+                                                        indexDelta={d.playerRateIndexDelta}
                                                     />
                                                 </div>
                                             </Link>
