@@ -1,6 +1,26 @@
 .area-woe-players .table-report-cell.guild {
     width: 24px;
     padding-right: 0px;
+    padding-left: 0px;
+}
+
+.area-woe-players .table-report-cell.index {
+    white-space: nowrap;
+    min-width: 30px;
+}
+
+.area-woe-players .table-report-cell.playerRateIndexDelta {
+    min-width: 30px;
+    padding-left: 5px;
+    /*padding-right: 0px;*/
+}
+
+.area-woe-players .table-report-cell.playerRateIndexDelta .up {
+    color: #3da75a;
+}
+
+.area-woe-players .table-report-cell.playerRateIndexDelta .down {
+    color: #ff7160;
 }
 
 .area-woe-players .table-report-cell.name {
@@ -45,6 +65,7 @@
     }
 
     .area-woe-players .table-report-cell.index,
+    .area-woe-players .table-report-cell.playerRateIndexDelta,
     .area-woe-players .table-report-cell.woes,
     .area-woe-players .table-report-cell.kills,
     .area-woe-players .table-report-cell.buffs,

@@ -44,6 +44,7 @@ class WoEInfoByIdRoute implements IRouteWithConnection {
                 wp_rate.rate playerRate,
                 wp_rate.rate_delta playerRateDelta,
                 wp_rate.rate_index playerRateIndex,
+                wp_rate.rate_index_delta playerRateIndexDelta,
                 wp_a_rate.rate rate,
                 wp_a_rate.rate_delta rateDelta,
                 wp_a_rate.rate_index rateIndex,

@@ -67,7 +67,35 @@ class WoEPlayers extends React.Component<Props, State> {
                         [
                             {
                                 title: '',
-                                field: 'index'
+                                field: 'index',
+                                render: (x, d) => (
+                                    <span>
+                                        #{d.playerRateIndex}
+                                    </span>
+                                )
+                            },
+                            {
+                                title: '',
+                                field: 'playerRateIndexDelta',
+                                align: 'right',
+                                render: (x, d) => (
+                                    <span>
+                                        {
+                                            d.playerRateIndexDelta !== 0 &&
+                                            <span className={'rate ' + (d.playerRateIndexDelta > 0 ? 'up' : 'down')}>
+                                                {' '}
+                                                {d.playerRateIndexDelta > 0 ? '+' : '-'}
+                                                {asNumber(Math.abs(d.playerRateIndexDelta))}
+                                                {' '}
+                                                <i
+                                                    className={d.playerRateIndexDelta > 0
+                                                        ? 'fas fa-long-arrow-alt-up'
+                                                        : 'fas fa-long-arrow-alt-down'}
+                                                />
+                                            </span>
+                                        }
+                                    </span>
+                                )
                             },
                             {
                                 title: '',
