@@ -63,7 +63,7 @@ const logger = new MyLogger();
         hasChanges = true;
     }
 
-    if (hasChanges) {
+    if (hasChanges || process.env.LOOTER_RATE_RECALCULATE === 'true') {
         await new PlayerRatingCalculator(connection, logger).calculate();
         await connection.query(`update woe set parsed = 1 where parsed = 0`);
     }

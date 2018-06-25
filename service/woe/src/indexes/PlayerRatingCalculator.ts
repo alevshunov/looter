@@ -48,7 +48,7 @@ class PlayerRatingCalculator {
                 const woePlayers = [];
 
                 const rate = data
-                    .filter(x => x.woeId == woe.id && x.attributeId == attribute.id)
+                    .filter(x => x.woeId == woe.id && x.attributeId == attribute.id);
                 // rate.push({rate: 0});
 
                 for (let playerAIndex = 0; playerAIndex<rate.length; playerAIndex++) {
@@ -216,6 +216,7 @@ class PlayerRatingCalculator {
 
                 const rate = main.rate + (aux.rate - this.INIT_RATE) * this.AUX_MULTI;
                 let rateDelta = rate - this.INIT_RATE;
+                let rateIndexPrev = 0;
 
                 const prevWoe = woesRate.find(ww => ww.woeId === w.woeId - 1);
 
@@ -224,6 +225,7 @@ class PlayerRatingCalculator {
 
                     if (player) {
                         rateDelta = rate - player.rate;
+                        rateIndexPrev = player.rateIndex;
                     }
                 }
 
@@ -231,6 +233,7 @@ class PlayerRatingCalculator {
                     id: r.playerId,
                     rate,
                     rateDelta,
+                    rateIndexPrev: rateIndexPrev, // delta calculation is below
                     active: main.active || aux.active,
                     mainRate: main.rate,
                     auxRate: aux.rate,
@@ -241,6 +244,7 @@ class PlayerRatingCalculator {
 
             w.players.forEach(p => {
                 p.rateIndex = w.players.filter(pp => pp.rate > p.rate).length + 1;
+                p.rateIndexDelta = p.rateIndexPrev === 0 ? 0 : p.rateIndexPrev - p.rateIndex;
             });
         });
 
@@ -359,9 +363,9 @@ class PlayerRatingCalculator {
                 const player = woe.players[j];
 
                 const result = await this._connection.query(`
-                    insert into woe_player_rate(player_id, woe_id, rate, rate_delta, rate_index, active, main_woe_attribute_id, aux_woe_attribute_id)
+                    insert into woe_player_rate(player_id, woe_id, rate, rate_delta, rate_index, rate_index_delta, active, main_woe_attribute_id, aux_woe_attribute_id)
                     value(?,?,?,?,?,?,?,?)
-                `, player.id, woe.woeId, player.rate, player.rateDelta, player.rateIndex, player.active, player.mainAttributeId, player.auxAttributeId
+                `, player.id, woe.woeId, player.rate, player.rateDelta, player.rateIndex, player.rateIndexDelta, player.active, player.mainAttributeId, player.auxAttributeId
                 );
             }
 
