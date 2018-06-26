@@ -9,6 +9,7 @@ import TableReport from '../../components/TableReport';
 import { NavLink } from 'react-router-dom';
 import { InfoOutline } from '@material-ui/icons';
 import asDate from '../../components/asDate';
+import './Deals.css';
 
 interface State {
     data?: any;
@@ -77,10 +78,11 @@ class Deals extends React.Component<Props, State> {
                 </Container>
                 <Container>
                     <TableReport
+                        userCls={'deals'}
                         cells={
                             [
                                 {
-                                    title: 'Название',
+                                    title: 'Товар',
                                     field: 'name',
                                     render: (name, d) => (
                                         <span>
@@ -112,13 +114,13 @@ class Deals extends React.Component<Props, State> {
                                     )
                                 },
                                 {
-                                    title: 'Количество',
+                                    title: '',
                                     field: 'count',
                                     align: 'right',
                                     render: (count) => asNumber(count, 'шт')
                                 },
                                 {
-                                    title: 'Цена',
+                                    title: '',
                                     field: 'price',
                                     align: 'right',
                                     render: (price, d) => (

@@ -1,0 +1,16 @@
+.area-deals .deals .name {
+    white-space: nowrap;
+}
+
+.area-deals .deals .date {
+    white-space: nowrap;
+}
+
+.area-deals .deals .count {
+    width: 80px;
+    padding-right: 0px;
+}
+
+.area-deals .deals .price {
+    width: 110px;
+}
