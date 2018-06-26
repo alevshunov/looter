@@ -35,11 +35,11 @@ class DealsRoute implements IRouteWithConnection {
             where 
                 shop.type like ?
                 and (deal.name like ? or i.ids like ? or shop.owner like ? or shop.owner like ?)
-                
+                ${req.query.term ? '' : 'and deal.date_to > (select date_add(max(date_to), interval -1 day) from deal)'}
 
             order by deal.date_to desc
-                       
-            limit 100
+            
+            ${req.query.term ? 'limit 100' : ''}
         `,
             termDetails.direction, termDetails.term, termDetails.term, termDetails.term, termDetails.term
 
