@@ -393,6 +393,8 @@ class PlayerRatingCalculator {
     }
 
     private async save(woesRate: any[]) {
+        this._logger.silence(true);
+
         await this._connection.query(`delete from woe_player_rate`);
         await this._connection.query(`delete from woe_player_attribute_rate`);
 
@@ -428,6 +430,8 @@ class PlayerRatingCalculator {
 
             }
         }
+
+        this._logger.silence(false);
     }
 }
 
