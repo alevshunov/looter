@@ -40,8 +40,8 @@ class PlayerRatingCalculator {
             for (let woeIndex=0; woeIndex<woes.length; woeIndex++) {
                 const woe = woes[woeIndex % woes.length];
 
-                this._logger.log('');
-                this._logger.log('---------------------------');
+                // this._logger.log('');
+                // this._logger.log('---------------------------');
                 this._logger.log(woe.name);
 
                 const woePlayersSet = {};
@@ -63,7 +63,7 @@ class PlayerRatingCalculator {
 
                     playerA.player.rate2 = playerA.player.rate;
 
-                    this._logger.log('');
+                    // this._logger.log('');
 
                     this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate);
 
@@ -101,7 +101,7 @@ class PlayerRatingCalculator {
                         // this.recalculate(playerA.player, playerA.rate, playerC.player, playerC.rate, woe.rate * attribute.rate);
                     }
 
-                    this._logger.log(`${playerA.player.name} ${playerA.player.rate2}`);
+                    // this._logger.log(`${playerA.player.name} ${playerA.player.rate2}`);
                 }
 
                 woePlayers.forEach(player => {
@@ -157,7 +157,9 @@ class PlayerRatingCalculator {
             }
         }
 
-        const arr = this.makeRating(x => x.totalRate + (x.totalRate2 - this.INIT_RATE) * this.AUX_MULTI);
+        // const arr_dev = this.makeRating(x => x.totalRate(), true);
+        const arr = this.makeRating(x => x.totalRate());
+        // debugger;
 
         let woesRate = [];
 
@@ -250,7 +252,6 @@ class PlayerRatingCalculator {
 
         // debugger;
         await this.save(woesRate);
-
     }
 
     private dump(p) {
@@ -265,7 +266,7 @@ class PlayerRatingCalculator {
         }
     }
 
-    private makeRating(by = (x) => x.rate) {
+    private makeRating(by = (x) => x.rate, wrap: boolean = false) {
         let arr = [];
 
         for (let id in this._players) {
@@ -274,20 +275,35 @@ class PlayerRatingCalculator {
             }
 
             const player = this._players[id];
-            arr.push(player);
+            if (wrap) {
+                arr.push({p: player, r: by(player), n: player.name});
+            } else {
+                arr.push(player);
+            }
         }
 
-        arr = arr.sort((a,b) => by(a) < by(b) ? 1 : by(a) === by(b) ? 0 : -1);
+        if (wrap) {
+            arr = arr.sort((a, b) => a.r < b.r ? 1 : a.r === b.r ? 0 : -1);
+        } else {
+            arr = arr.sort((a,b) => by(a) < by(b) ? 1 : by(a) === by(b) ? 0 : -1);
+        }
+
         return arr;
     }
 
     private recalculate(playerA, rateA, playerB, rateB, rate) {
-        const deltaA = this.getNewPlayerARate(playerA.rate, rateA.rate, playerA.getK(), playerB.rate, rateB.rate);
+        let playerKRate = playerA.getK();
+        if (playerA.rate <= this.INIT_RATE && rateA.rate < rateB.rate) {
+            playerKRate = 0;
+        }
+
+        const deltaA = this.getNewPlayerARate(playerA.rate, rateA.rate, playerKRate, playerB.rate, rateB.rate);
 
         let realDelta = deltaA * Math.min(1, rate);
 
         playerA.rate2 = playerA.rate2 + realDelta;
         playerA.rate2 = Math.round(playerA.rate2 * 10000) / 10000;
+        playerA.rate2 = Math.max(playerA.rate2, this.INIT_RATE);
 
         // this._logger.log(`${playerA.name} ${playerA.rate} ${rateA.rate} vs ${playerB.name} ${playerB.rate} ${rateB.rate} -> delta: ${deltaA}, with WoE: ${realDelta} = ${playerA.rate2}`)
     }
@@ -301,6 +317,8 @@ class PlayerRatingCalculator {
     }
 
     private getPlayerWithRate(rate) {
+        const initRate = this.INIT_RATE;
+        const auxMult = this.AUX_MULTI;
         if (!this._players[rate.playerId]) {
             this._players[rate.playerId] = {
                 id: rate.playerId,
@@ -320,6 +338,28 @@ class PlayerRatingCalculator {
                     } else {
                         return 100;
                     }
+                },
+                totalRate() {
+                    let r1 = initRate;
+                    let r2 = initRate;
+                    for (const k in this.rates) {
+                        if (!this.rates.hasOwnProperty(k)) {
+                            continue;
+                        }
+
+                        const rx = this.rates[k];
+
+                        const r = rx.rate;
+
+                        if (r1 < r) {
+                            r2 = r1;
+                            r1 = r;
+                        } else if (r2 < r) {
+                            r2 = r;
+                        }
+                    }
+
+                    return r1 + (r2 - initRate) * auxMult;
                 }
             }
         }
