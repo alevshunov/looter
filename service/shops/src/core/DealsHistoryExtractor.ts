@@ -8,12 +8,18 @@ class DealsHistoryExtractor {
     }
 
     async extract() {
+        await this._connection.query(`
+            insert into shop_items_2
+            select * from shop_items
+            where id > (select ifnull(max(id), 0) from shop_items_2)
+        `);
+
         await this._connection.query(`truncate table shop_items_aggr`);
 
         await this._connection.query(`
             insert into shop_items_aggr(shop_id, fetch_index, name, price, date, count)
             select shop_id, fetch_index, name, price, max(date) date, sum(count) count
-            from shop_items si
+            from shop_items_2 si
             group by shop_id, fetch_index, name, price`);
 
         await this._connection.query(`truncate table deal`);
