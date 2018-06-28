@@ -401,6 +401,8 @@ class PlayerRatingCalculator {
         for (let i = 0; i<woesRate.length; i++) {
             const woe = woesRate[i];
 
+            this._logger.logForce(`Saving woe #${woe.woeId}...`);
+
             for (let j=0; j<woe.players.length; j++) {
                 const player = woe.players[j];
 
