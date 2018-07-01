@@ -1,4 +1,4 @@
-import {MyLogger} from '../../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 import {ShopItem} from '../../../model/ShopItem';
 
 class ShopItemsFetchValidator {

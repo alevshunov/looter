@@ -5,7 +5,7 @@ import {ShopItemStorage} from '../../db/ShopItemStorage';
 import {ShopItemsLooterProvider} from './ShopItemsLooterProvider';
 import {FreeRoSayHub} from '../hub/FreeRoSayHub';
 import FreeRoIrcPmHandler from '../hub/FreeRoIrcPmHandler';
-import {MyLogger} from '../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 import {ShopItemsLoaderProvider} from './itemsLoader/ShopItemsLoaderProvider';
 
 class ShopLooterProvider {

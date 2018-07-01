@@ -2,7 +2,7 @@ import ShopFetchValidator from './ShopFetchValidator';
 import {ShopItemsLoadResult} from '../itemsLoader/ShopItemsLoadResult';
 import {IShopItemStorage} from '../../../db/ShopItemStorage';
 import {Shop} from '../../../model/Shop';
-import {MyLogger} from '../../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 
 interface IShopFetchValidatorProvider {
     createFor(shop: Shop, fetchResult: ShopItemsLoadResult): ShopFetchValidator;

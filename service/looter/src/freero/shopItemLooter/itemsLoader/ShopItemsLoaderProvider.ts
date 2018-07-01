@@ -2,7 +2,7 @@ import {ISayHub} from '../../hub/FreeRoSayHub';
 import {IEventProvider} from '../../../core/IEventProvider';
 import {FreeRoEventArgs} from '../../hub/FreeRoEventArgs';
 import {Shop} from '../../../model/Shop';
-import {MyLogger} from '../../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 import {ShopItemsLoader} from './ShopItemsLoader';
 
 interface IShopItemsLoaderProvider {

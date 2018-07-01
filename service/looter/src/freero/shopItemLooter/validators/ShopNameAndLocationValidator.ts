@@ -1,6 +1,6 @@
 import {ShopItemsLoadResult} from '../itemsLoader/ShopItemsLoadResult';
 import {Shop} from '../../../model/Shop';
-import {MyLogger} from '../../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 
 class ShopNameAndLocationValidator {
     private _fetchResult: ShopItemsLoadResult;

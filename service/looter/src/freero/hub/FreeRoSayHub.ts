@@ -1,5 +1,5 @@
 import {IIrcConnection} from './base/IIrcConnection';
-import {MyLogger} from '../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 
 interface ISayHub {
     say(to: string, message: string) : void

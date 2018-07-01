@@ -4,7 +4,7 @@ import {IShopItemsLoaderProvider} from './itemsLoader/ShopItemsLoaderProvider';
 import {IShopStorage} from '../../db/ShopStorage';
 import {IShopItemStorage} from '../../db/ShopItemStorage';
 import {Shop} from '../../model/Shop';
-import {MyLogger} from '../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 
 interface IShopItemsLooterProvider {
     createFor(shop: Shop): void;

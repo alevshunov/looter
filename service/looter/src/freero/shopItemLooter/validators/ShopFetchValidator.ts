@@ -2,7 +2,7 @@ import ShopNameAndLocationValidator from './ShopNameAndLocationValidator';
 import ShopItemsFetchValidator from './ShopItemsFetchValidator';
 import {Shop} from '../../../model/Shop';
 import {IShopItemStorage} from '../../../db/ShopItemStorage';
-import {MyLogger} from '../../../../../../local_modules/my-core';
+import {MyLogger} from 'my-core';
 import {ShopItemsLoadResult} from '../itemsLoader/ShopItemsLoadResult';
 
 class ShopFetchValidator {
