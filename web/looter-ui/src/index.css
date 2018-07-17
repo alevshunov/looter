@@ -116,3 +116,9 @@ blockquote p {
 .price-render {
   white-space: nowrap;
 }
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

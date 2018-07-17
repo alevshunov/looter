@@ -77,8 +77,8 @@ class Shops extends React.Component<Props, State> {
                                     title: 'Название магазина',
                                     field: 'name',
                                     render: (name, d) => (
-                                        <span>
-                                            <div>
+                                        <div>
+                                            <div className="truncate">
                                                 {d.type === 'sell' ? 'S> ' : 'B> '}
                                                 {d.name}
                                             </div>
@@ -93,7 +93,7 @@ class Shops extends React.Component<Props, State> {
                                                 )
                                                 }
                                             </div>
-                                        </span>
+                                        </div>
                                     )
                                 },
                                 {

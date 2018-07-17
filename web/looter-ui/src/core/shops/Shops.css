@@ -1,11 +1,23 @@
-.area-shops .table-report-cell.name, .area-shops .table-report-cell.name .items {
+.area-shops .table-report-cell.name.data .items {
     padding-top: 12px;
     margin-left: 20px;
 }
 
-.area-shops .table-report-cell.name, .area-shops .table-report-cell.owner {
-    white-space: nowrap;
+.area-shops .table-report-cell.name {
     overflow: hidden;
-    max-width: 220px;
+}
+
+.area-shops .table-report-cell.name .truncate {
+    width: 250px;
+}
+
+.area-shops .table-report-cell.owner.data {
+    max-width: 150px;
+    padding-bottom: 55px;
+}
+
+.area-shops .table-report-cell.location.data {
+    max-width: 150px;
+    padding-bottom: 55px;
 }
 
