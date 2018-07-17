@@ -1,5 +1,6 @@
 .area-shops .table-report-cell.name, .area-shops .table-report-cell.name .items {
     padding-top: 12px;
+    margin-left: 20px;
 }
 
 .area-shops .table-report-cell.name, .area-shops .table-report-cell.owner {
