@@ -124,7 +124,18 @@ class AllItems extends React.Component<Props, State> {
                                     field: 'name',
                                     render: (name, d) => (
                                         <span>
-                                            {d.type === 'sell' ? 'S>' : 'B>'} {d.name}
+                                            {d.type === 'sell' ? 'S>' : 'B>'}
+                                            {d.ids &&
+                                            <img
+                                                className={'icon'}
+                                                src={
+                                                    'https://img.free-ro.com/item/small/'
+                                                    + (d.ids.split(',')[0])
+                                                    + '.png'
+                                                }
+                                            />
+                                            }
+                                            <span>{d.name}</span>
                                             {' '}
                                             {
                                                 d.ids &&

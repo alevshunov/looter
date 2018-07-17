@@ -78,8 +78,21 @@ class Shops extends React.Component<Props, State> {
                                     field: 'name',
                                     render: (name, d) => (
                                         <span>
-                                            {d.type === 'sell' ? 'S> ' : 'B> '}
-                                            {d.name}
+                                            <div>
+                                                {d.type === 'sell' ? 'S> ' : 'B> '}
+                                                {d.name}
+                                            </div>
+                                            <div className="items">
+                                                {d.items &&
+                                                d.items.split(',').map(
+                                                    (id: any) =>
+                                                        <img
+                                                            key={id}
+                                                            src={'https://img.free-ro.com/item/small/' + id + '.png'}
+                                                        />
+                                                )
+                                                }
+                                            </div>
                                         </span>
                                     )
                                 },

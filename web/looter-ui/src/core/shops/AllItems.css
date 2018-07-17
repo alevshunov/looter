@@ -8,3 +8,13 @@
     white-space: nowrap;
     /*overflow: hidden;*/
 }
+
+.area-allitems .name .icon {
+    position: absolute;
+    margin-top: -3px;
+    margin-left: 5px;
+}
+
+.area-allitems .name .icon + * {
+    padding-left: 35px;
+}

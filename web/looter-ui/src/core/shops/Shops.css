@@ -1,5 +1,10 @@
+.area-shops .table-report-cell.name, .area-shops .table-report-cell.name .items {
+    padding-top: 12px;
+}
+
 .area-shops .table-report-cell.name, .area-shops .table-report-cell.owner {
     white-space: nowrap;
     overflow: hidden;
     max-width: 220px;
 }
+

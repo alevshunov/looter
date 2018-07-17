@@ -88,6 +88,16 @@ class Deals extends React.Component<Props, State> {
                                         <span>
                                             {d.type === 'sell' ? 'S>' : 'B>'}
                                             {' '}
+                                            {d.ids &&
+                                            <img
+                                                className={'icon'}
+                                                src={
+                                                    'https://img.free-ro.com/item/small/'
+                                                    + (d.ids.split(',')[0])
+                                                    + '.png'
+                                                }
+                                            />
+                                            }
                                             <NavLink to={`/item/${encodeURIComponent(d.itemName)}/deals/sold`}>
                                                 {d.itemName}
                                             </NavLink>

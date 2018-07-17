@@ -12,7 +12,7 @@ class RateAndIndexRecalculator {
     async recalculate() {
         await this.extractPlayerGamesPlayedCount();
         await this.extractGuildGamesPlayedCount();
-        await this.extractWoeRate();
+        // await this.extractWoeRate();
         await this.extractedWoeLog();
         await this.extractGuildNamesFromEmperiumDefeats();
         await this.extractEmperiumDefeats();

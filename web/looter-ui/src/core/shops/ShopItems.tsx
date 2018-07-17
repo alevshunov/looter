@@ -124,6 +124,7 @@ class ShopItems extends React.Component<Props, State> {
                     <Container>
                         <TableReport
                             title="Доступный товар"
+                            userCls="items"
                             cells={[
                                 {
                                     title: '',
@@ -134,7 +135,17 @@ class ShopItems extends React.Component<Props, State> {
                                     field: 'name',
                                     render: (name, o) => (
                                         <span>
-                                            <span>{shopType === 'sell' ? 'S> ' : 'B> '}</span>
+                                            {/*<span>{shopType === 'sell' ? 'S> ' : 'B> '}</span>*/}
+                                            {o.ids &&
+                                            <img
+                                                className={'icon'}
+                                                src={
+                                                    'https://img.free-ro.com/item/small/'
+                                                    + (o.ids.split(',')[0])
+                                                    + '.png'
+                                                }
+                                            />
+                                            }
                                             <NavLink to={'/shops/with/' + o.name}>{o.name}</NavLink>
                                             {o.ids &&
                                                 <span className="item_db-ids">id: {o.ids}

@@ -1,5 +1,6 @@
 .area-deals .deals .name {
     white-space: nowrap;
+    max-width: 240px;
 }
 
 .area-deals .deals .date {
@@ -13,4 +14,14 @@
 
 .area-deals .deals .price {
     width: 110px;
+}
+
+.area-deals .deals .name .icon {
+    position: absolute;
+    margin-top: -3px;
+    margin-left: 5px;
+}
+
+.area-deals .deals .name .icon + * {
+    padding-left: 35px;
 }

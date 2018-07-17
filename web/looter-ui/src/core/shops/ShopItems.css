@@ -18,3 +18,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.area-shop .items .name .icon {
+    position: absolute;
+    margin-top: -3px;
+    margin-left: 0px;
+}
+
+.area-shop .items .name .icon + * {
+    padding-left: 30px;
+}

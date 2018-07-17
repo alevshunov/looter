@@ -9,7 +9,10 @@ import './ShopsWithItem.css';
 
 interface State {
     loading: boolean;
-    data?: Array<any>;
+    data?: {
+        item?: any,
+        shops: Array<any>
+    };
 }
 
 interface Props {
@@ -54,8 +57,14 @@ class ShopWithItem extends React.Component<Props, State> {
     }
 
     render() {
+        if (!this.state.data) {
+            return null;
+        }
+
         document.title = this.props.itemName ? 'FreeRO - Shops - ' + this.props.itemName : 'FreeRO - Shops';
         GA();
+
+        const data = this.state.data;
 
         return (
             <div className="area-shop-with-item">
@@ -65,6 +74,13 @@ class ShopWithItem extends React.Component<Props, State> {
                             <tr>
                                 <td className="info-item table-report-cell shop-item-name">
                                     {this.props.itemName}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="info-item table-report-cell">
+                                    {data.item
+                                    && <img src={'https://img.free-ro.com/item/big/' + data.item.id + '.png'} />
+                                    }
                                 </td>
                             </tr>
                             <tr>
@@ -117,7 +133,7 @@ class ShopWithItem extends React.Component<Props, State> {
                             ]
                         }
                         emptyMessage="Отсутствуют магазины с этим предметом"
-                        data={this.state.data}
+                        data={data.shops}
                     />
                 </Container>
             </div>
