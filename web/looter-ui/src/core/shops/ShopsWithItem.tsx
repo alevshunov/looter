@@ -78,8 +78,14 @@ class ShopWithItem extends React.Component<Props, State> {
                             </tr>
                             <tr>
                                 <td className="info-item table-report-cell">
-                                    {data.item
+                                    {data.item && !(data.item.id >= 4001 && data.item.id <= 4455)
                                     && <img src={'https://img.free-ro.com/item/big/' + data.item.id + '.png'} />
+                                    }
+                                    {data.item && (data.item.id >= 4001 && data.item.id <= 4455)
+                                    &&
+                                    <div className="crop">
+                                        <img src={'/img/cards/large/' + data.item.id + '.png'} />
+                                    </div>
                                     }
                                 </td>
                             </tr>

@@ -6,3 +6,16 @@
     max-width: 140px;
     white-space: nowrap;
 }
+
+.area-shop-with-item .crop {
+    width: 291px;
+    height: 393px;
+    overflow: hidden;
+    margin: auto;
+}
+
+.area-shop-with-item .crop img {
+    width: 300px;
+    height: 400px;
+    margin: -2px 0px 0px -4px;
+}

@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import { MyConnection, MyLogger } from 'my-core';
 
 class Checker {
