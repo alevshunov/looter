@@ -4,6 +4,10 @@
     padding-left: 0px;
 }
 
+.area-woe-players .data-row.inactive {
+    opacity: 0.25;
+}
+
 .area-woe-players .table-report-cell.index {
     white-space: nowrap;
     min-width: 30px;

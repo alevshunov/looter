@@ -68,15 +68,12 @@ app.use(async (req, res, next) => {
 
     if (process.env.LOOTER_DEV === 'true') {
         res.setHeader('Access-Control-Allow-Origin', '*');
+    } else {
+        const connection = await new MyConnection(db, logger).open();
+        await connection.query(`insert into logs(date, type, ip, url) values(?, ?, ?, ?);`,
+            new Date(), 'rest', req.headers["x-real-ip"] || '', req.originalUrl || req.url || req.path || '');
+        connection.close();
     }
-
-    const connection = await new MyConnection(db, logger).open();
-
-    await connection.query(`insert into logs(date, type, ip, url) values(?, ?, ?, ?);`,
-        new Date(), 'rest', req.headers["x-real-ip"] || '', req.originalUrl || req.url || req.path || '');
-
-    connection.close();
-
     next();
 });
 
