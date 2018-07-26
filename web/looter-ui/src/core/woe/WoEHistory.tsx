@@ -88,7 +88,7 @@ class WoEHistory extends React.Component<Props, State> {
                                 render: (name, d) => (<Link to={`/woe/${d.id}`}>{name}</Link>)
                             },
                             {
-                                title: 'Убийст',
+                                title: 'Убийств',
                                 field: 'pk',
                                 align: 'right',
                                 render: x => asNumber(x)
