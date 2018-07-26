@@ -84,7 +84,7 @@ class WoEPlayers extends React.Component<Props, State> {
                                     field: 'index',
                                     render: (x, d) => (
                                         <span>
-                                            #{d.playerRateIndex}
+                                            {d.playerRateIndex}
                                         </span>
                                     )
                                 },
