@@ -35,6 +35,12 @@ titleMapper = function(url) {
     });
 
     mappers.push({
+        exp: /^\/woe\/players\/(.+)$/,
+        fn: (parts) =>
+            Promise.resolve('FreeRO - WoE - Игроки - ' + decodeURIComponent(parts[1]))
+    });
+
+    mappers.push({
         exp: /^\/woe\/guilds\/$/,
         fn: () =>
             Promise.resolve('FreeRO - WoE - Гильдии')

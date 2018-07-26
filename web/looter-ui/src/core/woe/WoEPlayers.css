@@ -5,7 +5,7 @@
 }
 
 .area-woe-players .data-row.inactive {
-    opacity: 0.25;
+    opacity: 0.5;
 }
 
 .area-woe-players .table-report-cell.index {

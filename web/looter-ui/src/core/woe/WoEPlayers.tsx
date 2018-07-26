@@ -8,6 +8,7 @@ import TimeCachedStore from '../extra/TimeCachedStore';
 import GA from '../extra/GA';
 import ValueWithDelta from '../components/ValueWithDelta';
 import asDeltaArrow from '../components/asDeltaArrow';
+import RedirectableSearch from '../components/RedirectableSearch';
 
 interface State {
     data?: any;
@@ -15,7 +16,7 @@ interface State {
 }
 
 interface Props {
-    // shopId: number;
+    term: string;
 }
 
 class WoEPlayers extends React.Component<Props, State> {
@@ -29,9 +30,15 @@ class WoEPlayers extends React.Component<Props, State> {
         this.doLoad();
     }
 
-    doLoad() {
+    componentWillReceiveProps(props: Props) {
+        setTimeout(this.doLoad.bind(this), 1);
+    }
 
-        const cacheData = TimeCachedStore.instance().get('/woe/players');
+    doLoad() {
+        const key = '/woe/players/' + this.props.term;
+        const term = this.props.term;
+
+        const cacheData = TimeCachedStore.instance().get(key);
         if (cacheData) {
             this.setState(cacheData);
             return;
@@ -40,7 +47,7 @@ class WoEPlayers extends React.Component<Props, State> {
         this.setState({ data: undefined });
 
         const me = this;
-        fetch('/rest/woe/players')
+        fetch('/rest/woe/players/?term=' + encodeURIComponent(term))
             .then((response) => {
                 try {
                     return response.json();
@@ -49,8 +56,10 @@ class WoEPlayers extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                TimeCachedStore.instance().set('/woe/players', { data });
-                me.setState({ data });
+                if (this.props.term === term) {
+                    TimeCachedStore.instance().set(key, {data});
+                    me.setState({data});
+                }
             });
     }
 
@@ -60,115 +69,122 @@ class WoEPlayers extends React.Component<Props, State> {
         GA();
 
         return (
-            <Container userCls="area-woe-players">
-                <TableReport
-                    // title={'Рейтинг ГВ игроков'}
-                    rowExtraClass={(x) => x.active ? 'active' : 'inactive'}
-                    cells={
-                        [
-                            {
-                                title: '',
-                                field: 'index',
-                                render: (x, d) => (
-                                    <span>
-                                        #{d.playerRateIndex}
-                                    </span>
-                                )
-                            },
-                            {
-                                title: '',
-                                field: 'playerRateIndexDelta',
-                                align: 'right',
-                                render: (x, d) => (
-                                    <span>
-                                        {
-                                            d.playerRateIndexDelta !== 0 &&
-                                            <span className={'rate ' + (d.playerRateIndexDelta > 0 ? 'up' : 'down')}>
-                                                {' '}
-                                                {d.playerRateIndexDelta > 0 ? '+' : '-'}
-                                                {asNumber(Math.abs(d.playerRateIndexDelta))}
-                                                {' '}
-                                                <i
-                                                    className={d.playerRateIndexDelta > 0
-                                                        ? 'fas fa-long-arrow-alt-up'
-                                                        : 'fas fa-long-arrow-alt-down'}
-                                                />
-                                            </span>
-                                        }
-                                    </span>
-                                )
-                            },
-                            {
-                                title: '',
-                                field: 'guild',
-                                render: (name, d) =>
-                                    (
-                                        <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
-                                            <img src={d.guildIconUrl} title={d.guildName} />
-                                        </Link>
+            <div className="area-woe-players">
+                <Container>
+                    <RedirectableSearch base="/woe/players/" term={this.props.term}/>
+                </Container>
+                <Container>
+                    <TableReport
+                        // title={'Рейтинг ГВ игроков'}
+                        rowExtraClass={(x) => x.active || this.props.term.length > 0 ? 'active' : 'inactive'}
+                        cells={
+                            [
+                                {
+                                    title: '',
+                                    field: 'index',
+                                    render: (x, d) => (
+                                        <span>
+                                            #{d.playerRateIndex}
+                                        </span>
                                     )
-                            },
-                            {
-                                title: 'Игрок',
-                                field: 'name',
-                                render: (name, d) => (
-                                    <div>
-                                        <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
-                                        <div className="perks">
-                                            <i className={d.mainIcon} title={d.mainName}/>
-                                            {asDeltaArrow(d.mainRateDelta)}
-                                            {' '}
-                                            {d.mainName}
-                                            {' #'}{d.mainRateIndex}
-                                            <br/>
-                                            <i className={d.auxIcon} title={d.auxName}/>
-                                            {asDeltaArrow(d.auxRateDelta)}
-                                            {' '}
-                                            {d.auxName}
-                                            {' #'}{d.auxRateIndex}
+                                },
+                                {
+                                    title: '',
+                                    field: 'playerRateIndexDelta',
+                                    align: 'right',
+                                    render: (x, d) => (
+                                        <span>
+                                            {
+                                                d.playerRateIndexDelta !== 0 &&
+                                                <span
+                                                    className={'rate ' + (d.playerRateIndexDelta > 0 ? 'up' : 'down')}
+                                                >
+                                                    {' '}
+                                                    {d.playerRateIndexDelta > 0 ? '+' : '-'}
+                                                    {asNumber(Math.abs(d.playerRateIndexDelta))}
+                                                    {' '}
+                                                    <i
+                                                        className={d.playerRateIndexDelta > 0
+                                                            ? 'fas fa-long-arrow-alt-up'
+                                                            : 'fas fa-long-arrow-alt-down'}
+                                                    />
+                                                </span>
+                                            }
+                                        </span>
+                                    )
+                                },
+                                {
+                                    title: '',
+                                    field: 'guild',
+                                    render: (name, d) =>
+                                        (
+                                            <Link to={`/woe/guild/${d.guildId}/${encodeURIComponent(d.guildName)}`}>
+                                                <img src={d.guildIconUrl} title={d.guildName} />
+                                            </Link>
+                                        )
+                                },
+                                {
+                                    title: 'Игрок',
+                                    field: 'name',
+                                    render: (name, d) => (
+                                        <div>
+                                            <Link to={`/woe/player/${encodeURI(name)}`}>{name}</Link>
+                                            <div className="perks">
+                                                <i className={d.mainIcon} title={d.mainName}/>
+                                                {asDeltaArrow(d.mainRateDelta)}
+                                                {' '}
+                                                {d.mainName}
+                                                {' #'}{d.mainRateIndex}
+                                                <br/>
+                                                <i className={d.auxIcon} title={d.auxName}/>
+                                                {asDeltaArrow(d.auxRateDelta)}
+                                                {' '}
+                                                {d.auxName}
+                                                {' #'}{d.auxRateIndex}
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            },
-                            {
-                                title: 'Боев',
-                                field: 'woes',
-                                align: 'right',
-                                render: x => asNumber(x)
-                            },
-                            {
-                                title: 'Убийств',
-                                field: 'kills',
-                                align: 'right',
-                                render: x => asNumber(x)
-                            },
-                            {
-                                title: 'Бафы',
-                                field: 'buffs',
-                                align: 'right',
-                                render: x => asNumber(x)
-                            },
-                            {
-                                title: 'Дебафы',
-                                field: 'debuffs',
-                                align: 'right',
-                                render: x => asNumber(x)
-                            },
-                            {
-                                title: 'Рейтинг',
-                                align: 'right',
-                                field: 'rate',
-                                render: (v, d) => (
-                                    <ValueWithDelta value={d.playerRate} delta={d.playerRateDelta}/>
-                                )
-                            }
-                        ]
-                    }
-                    data={this.state.data}
-                    emptyMessage="Данные отсутствуют"
-                />
+                                    )
+                                },
+                                {
+                                    title: 'Боев',
+                                    field: 'woes',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Убийств',
+                                    field: 'kills',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Бафы',
+                                    field: 'buffs',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Дебафы',
+                                    field: 'debuffs',
+                                    align: 'right',
+                                    render: x => asNumber(x)
+                                },
+                                {
+                                    title: 'Рейтинг',
+                                    align: 'right',
+                                    field: 'rate',
+                                    render: (v, d) => (
+                                        <ValueWithDelta value={d.playerRate} delta={d.playerRateDelta}/>
+                                    )
+                                }
+                            ]
+                        }
+                        data={this.state.data}
+                        emptyMessage="Данные отсутствуют"
+                    />
 
-            </Container>
+                </Container>
+            </div>
         );
     }
 }

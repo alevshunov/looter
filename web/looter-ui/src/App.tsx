@@ -46,7 +46,17 @@ class App extends React.Component {
                     <Route
                         exact={true}
                         path="/woe/players"
-                        render={(props) => <WoELayout><WoEPlayers /></WoELayout>}
+                        render={(props) => <WoELayout><WoEPlayers term=""/></WoELayout>}
+                    />
+
+                    <Route
+                        exact={true}
+                        path="/woe/players/:term"
+                        render={(props) =>
+                            <WoELayout>
+                                <WoEPlayers term={decodeURIComponent(props.match.params.term)}/>
+                            </WoELayout>
+                        }
                     />
 
                     <Route

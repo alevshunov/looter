@@ -1,11 +1,13 @@
 import IRouteWithConnection from './tools/IRouteWithConnection';
 import {Request} from 'express';
 import {MyConnection} from 'my-core';
+import {adoptTermToLike} from '../tools/Common';
 
 class WoEPlayersRoute implements IRouteWithConnection {
     public path = '/woe/players';
 
     public async execute(connection: MyConnection, request: Request): Promise<any> {
+        const term = adoptTermToLike(request.query.term);
 
         const players = await connection.query(`
             select     
@@ -91,13 +93,14 @@ class WoEPlayersRoute implements IRouteWithConnection {
 
             where 
                 woe.id = (select max(id) from woe)
+                and (p.name like ? or g.name like ?)
                 
             order by 
                 w_p_rate.rate desc
             
             limit 100
 
-        `);
+        `, term, term);
 
         return players;
     }

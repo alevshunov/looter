@@ -84,7 +84,7 @@ class TableReport extends React.Component<Props, {}> {
                                             title={cell.tooltip}
                                         >
                                             {
-                                                cell.field === 'index' ?
+                                                cell.field === 'index' && !cell.render ?
                                                     index + 1 :
                                                     (cell.render || ((x) => x))(item[cell.field], item)
                                             }
