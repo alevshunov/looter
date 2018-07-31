@@ -23,7 +23,7 @@ class DealsHistoryExtractor {
             group by si.shop_id, si.fetch_index, si.name, si.price
         `);
 
-        await this._connection.query(`truncate table deal`);
+        // await this._connection.query(`truncate table deal`);
 
         await this._connection.query(`
             insert into deal(shop_id, date_from, date_to, name, price, count_before, count_after, sold_count)
@@ -54,7 +54,7 @@ class DealsHistoryExtractor {
             
             where s.fetch_count > si1.fetch_index
             and (si2.count is null or si1.count > si2.count)
-            
+            and si1.date > (select max(date_from) from deal)
             order by si1.date desc        
         `);
     }
