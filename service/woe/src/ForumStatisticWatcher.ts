@@ -13,7 +13,7 @@ class ForumStatisticWatcher {
 
     async load() {
 
-        const date = process.env.LOOTER_START_DATE || moment().startOf('month').format('YYYY-MM-DD');
+        const date = process.env.LOOTER_START_DATE || moment().startOf('month').add({ days: -0 }).format('YYYY-MM-DD');
         const body = `keywords=%D0%9B%D0%B8%D0%B4%D0%B5%D1%80%D1%8B+%D0%BF%D0%BE+%D1%84%D1%80%D0%B0%D0%B3%D0%B0%D0%BC&users=X&date=${date}`;
 
         this._logger.log(`Fetching search by ${body}`);
