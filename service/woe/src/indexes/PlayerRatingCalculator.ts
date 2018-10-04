@@ -1,11 +1,20 @@
 import {MyConnection, MyLogger} from "my-core";
 
+function dd(v: string | number, l: number = 0, prefix: string = '', postfix: string = ' ') {
+    let x = v.toString();
+    while (x.length < l) {
+        x = prefix + x + postfix;
+    }
+
+    return x;
+}
+
 class PlayerRatingCalculator {
     private _connection: MyConnection;
     private _logger: MyLogger;
     private _players = {};
 
-    private GAMES_TO_RATE = 10;
+    private GAMES_TO_RATE = 0;
     private WOESE_RATE = 1.25;
     private INIT_RATE = 1100;
     private AUX_MULTI = 0.15;
@@ -65,13 +74,13 @@ class PlayerRatingCalculator {
 
                     // this._logger.log('');
 
-                    this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate);
+                    // this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate);
 
                     let playerB;
                     for (let playerBIndex = 0; playerBIndex<playerAIndex; playerBIndex++) {
                         const player = this.getPlayerWithRate(rate[playerBIndex]);
 
-                        if (player.games > this.GAMES_TO_RATE) {
+                        if (player.games >= this.GAMES_TO_RATE) {
                             // this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate * attribute.rate);
                         }
 
@@ -80,28 +89,32 @@ class PlayerRatingCalculator {
                         }
                     }
 
+                    if (playerB) {
+                        this.recalculate(playerA.player, playerA.rate, playerB.player, playerB.rate, woe.rate * attribute.rate);
+                    }
+
+
                     let playerC;
                     for (let playerCIndex = playerAIndex+1; playerCIndex<rate.length; playerCIndex++) {
                         const player = this.getPlayerWithRate(rate[playerCIndex]);
 
-                        if (player.games > this.GAMES_TO_RATE) {
+                        if (player.games >= this.GAMES_TO_RATE) {
                             this.recalculate(playerA.player, playerA.rate, player, rate[playerCIndex], woe.rate * attribute.rate);
                         }
 
-                        if (!playerC || playerC.player.rate <= player.rate && player.games > this.GAMES_TO_RATE) {
-                            playerC = { player, rate: rate[playerCIndex] };
-                        }
-                    }
-
-                    if (playerB) {
-                        // this.recalculate(playerA.player, playerA.rate, playerB.player, playerB.rate, woe.rate * attribute.rate);
+                        // if (!playerC || playerC.player.rate <= player.rate && player.games > this.GAMES_TO_RATE) {
+                        //     playerC = { player, rate: rate[playerCIndex] };
+                        // }
                     }
 
                     if (playerC) {
-                        // this.recalculate(playerA.player, playerA.rate, playerC.player, playerC.rate, woe.rate * attribute.rate);
+                        this.recalculate(playerA.player, playerA.rate, playerC.player, playerC.rate, woe.rate * attribute.rate);
                     }
 
-                    // this._logger.log(`${playerA.player.name} ${playerA.player.rate2}`);
+                    playerA.player.rate2 = Math.max(playerA.player.rate2, this.INIT_RATE);
+
+                    this._logger.log(`\t\t${playerA.player.name} ==> ${playerA.player.rate2}`);
+                    this._logger.log();
                 }
 
                 woePlayers.forEach(player => {
@@ -110,12 +123,12 @@ class PlayerRatingCalculator {
                     player.games++;
                 });
 
-                let lastPlayerRate;
-                if (rate.length > 0) {
-                    lastPlayerRate = { player: this.getPlayerWithRate(rate[rate.length-1]), rate: rate[rate.length-1] };
-                } else {
-                    lastPlayerRate = { player: { rate: this.INIT_RATE }, rate: { rate: 0 } };
-                }
+                // let lastPlayerRate;
+                // if (rate.length > 0) {
+                //     lastPlayerRate = { player: this.getPlayerWithRate(rate[rate.length-1]), rate: rate[rate.length-1] };
+                // } else {
+                //     lastPlayerRate = { player: { rate: this.INIT_RATE }, rate: { rate: 0 } };
+                // }
 
                 for (let id in attributePlayers) {
                     if (!attributePlayers.hasOwnProperty(id)) {
@@ -128,9 +141,22 @@ class PlayerRatingCalculator {
                         continue;
                     }
 
+                    console.log('Player NA:');
+
                     player.rate2 = player.rate;
-                    // player.rate2 = player.rate - (player.rate - this.INIT_RATE) * this.INACTIVE_DECREASE;
-                    this.recalculate(player, { rate: 0 }, lastPlayerRate.player, lastPlayerRate.rate, woe.rate * attribute.rate);
+
+                    let playerB;
+                    for (let playerIndex = 0; playerIndex<rate.length; playerIndex++) {
+                        const player = this.getPlayerWithRate(rate[playerIndex]);
+
+                        if (!playerB || playerB.player.rate > player.rate) {
+                            playerB = { player, rate: rate[playerIndex] };
+                        }
+                    }
+
+                    if (playerB) {
+                        this.recalculate(player, {rate: 0}, playerB.player, playerB.rate, woe.rate * attribute.rate);
+                    }
 
                     player.h.push({woe, attribute, player, rate: player.rate2, delta: player.rate2 - player.rate, active: false});
                     player.rate = player.rate2;
@@ -159,7 +185,6 @@ class PlayerRatingCalculator {
 
         // const arr_dev = this.makeRating(x => x.totalRate(), true);
         const arr = this.makeRating(x => x.totalRate());
-        // debugger;
 
         let woesRate = [];
 
@@ -183,6 +208,7 @@ class PlayerRatingCalculator {
                     }
 
                     woeRate.rates.push({
+                        _player: entry.player,
                         playerId: entry.player.id,
                         attributeId: entry.attribute.id,
                         rate: entry.rate,
@@ -250,8 +276,9 @@ class PlayerRatingCalculator {
             });
         });
 
-        // debugger;
-        await this.save(woesRate);
+        if (process.env.LOOTER_RATE_READONLY !== "true") {
+            await this.save(woesRate);
+        }
     }
 
     private dump(p) {
@@ -293,19 +320,22 @@ class PlayerRatingCalculator {
 
     private recalculate(playerA, rateA, playerB, rateB, rate) {
         let playerKRate = playerA.getK();
-        if (playerA.rate <= this.INIT_RATE && rateA.rate < rateB.rate) {
-            playerKRate = 0;
-        }
+        // if (playerA.rate <= this.INIT_RATE && rateA.rate < rateB.rate) {
+        //     playerKRate = 0;
+        // }
+
+        rateA.rate = Math.round(rateA.rate * 1000) / 1000;
+        rateB.rate = Math.round(rateB.rate * 1000) / 1000;
 
         const deltaA = this.getNewPlayerARate(playerA.rate, rateA.rate, playerKRate, playerB.rate, rateB.rate);
 
-        let realDelta = deltaA * Math.min(1, rate);
+        let realDelta = Math.round(deltaA * Math.min(1, rate) * 10000) / 10000;
 
         playerA.rate2 = playerA.rate2 + realDelta;
         playerA.rate2 = Math.round(playerA.rate2 * 10000) / 10000;
-        playerA.rate2 = Math.max(playerA.rate2, this.INIT_RATE);
+        // playerA.rate2 = Math.max(playerA.rate2, this.INIT_RATE);
 
-        // this._logger.log(`${playerA.name} ${playerA.rate} ${rateA.rate} vs ${playerB.name} ${playerB.rate} ${rateB.rate} -> delta: ${deltaA}, with WoE: ${realDelta} = ${playerA.rate2}`)
+        this._logger.log(`${dd(playerA.name, 15)}\tR: ${playerA.rate}\tV: ${dd(rateA.rate, 5)}\t\tvs\t\t${dd(playerB.name, 15)}\tR: ${playerB.rate}\tV: ${dd(rateB.rate, 5)}\t==>\t${dd(deltaA, 7)} ~ WoE: ${dd(realDelta,7)} => ${playerA.rate2}`)
     }
 
     private getNewPlayerARate(ra, va, ka, rb, vb) {
@@ -313,7 +343,7 @@ class PlayerRatingCalculator {
         const Sa = 0.5 + va - (va + vb) / 2;
         const Ra2 = ka * (Sa - Ea);
 
-        return Ra2;
+        return Math.round(Ra2 * 10000) / 10000;
     }
 
     private getPlayerWithRate(rate) {
@@ -333,7 +363,7 @@ class PlayerRatingCalculator {
                         return 25;
                     } else if (this.rate > 1400) {
                         return 50;
-                    } else if (this.games > 5) {
+                    } else if (this.games > 2) {
                         return 75;
                     } else {
                         return 100;
