@@ -144,7 +144,7 @@ class WoEGuildByIdRoute implements IRouteWithConnection {
                     where wp.guild_id = ?
                 )
 				and (
-                t.lastWoeId > (
+                t.lastWoeId >= (
                     select woe_id 
 						from
 						(
