@@ -14,7 +14,7 @@ class PlayerRatingCalculator {
     private _logger: MyLogger;
     private _players = {};
 
-    private GAMES_TO_RATE = 0;
+    private GAMES_TO_RATE = 1;
     private WOESE_RATE = 1.25;
     private INIT_RATE = 1100;
     private AUX_MULTI = 0.15;
@@ -72,9 +72,7 @@ class PlayerRatingCalculator {
 
                     playerA.player.rate2 = playerA.player.rate;
 
-                    // this._logger.log('');
-
-                    // this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate);
+                    this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate ,' <-- BONUS');
 
                     let playerB;
                     for (let playerBIndex = 0; playerBIndex<playerAIndex; playerBIndex++) {
@@ -84,7 +82,7 @@ class PlayerRatingCalculator {
                             // this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate * attribute.rate);
                         }
 
-                        if (!playerB || playerB.player.rate > player.rate && player.games > this.GAMES_TO_RATE) {
+                        if ((!playerB || playerB.player.rate > player.rate) && player.games > this.GAMES_TO_RATE) {
                             playerB = { player, rate: rate[playerBIndex] };
                         }
                     }
@@ -98,11 +96,11 @@ class PlayerRatingCalculator {
                     for (let playerCIndex = playerAIndex+1; playerCIndex<rate.length; playerCIndex++) {
                         const player = this.getPlayerWithRate(rate[playerCIndex]);
 
-                        if (player.games >= this.GAMES_TO_RATE) {
+                        // if (player.games >= this.GAMES_TO_RATE) {
                             this.recalculate(playerA.player, playerA.rate, player, rate[playerCIndex], woe.rate * attribute.rate);
-                        }
+                        // }
 
-                        // if (!playerC || playerC.player.rate <= player.rate && player.games > this.GAMES_TO_RATE) {
+                        // if (!playerC || (playerC.player.rate <= player.rate && player.games > this.GAMES_TO_RATE)) {
                         //     playerC = { player, rate: rate[playerCIndex] };
                         // }
                     }
@@ -149,7 +147,7 @@ class PlayerRatingCalculator {
                     for (let playerIndex = 0; playerIndex<rate.length; playerIndex++) {
                         const player = this.getPlayerWithRate(rate[playerIndex]);
 
-                        if (!playerB || playerB.player.rate > player.rate) {
+                        if ((!playerB || playerB.player.rate > player.rate) && player.games > this.GAMES_TO_RATE) {
                             playerB = { player, rate: rate[playerIndex] };
                         }
                     }
@@ -318,7 +316,7 @@ class PlayerRatingCalculator {
         return arr;
     }
 
-    private recalculate(playerA, rateA, playerB, rateB, rate) {
+    private recalculate(playerA, rateA, playerB, rateB, rate, extra = '') {
         let playerKRate = playerA.getK();
         // if (playerA.rate <= this.INIT_RATE && rateA.rate < rateB.rate) {
         //     playerKRate = 0;
@@ -335,7 +333,7 @@ class PlayerRatingCalculator {
         playerA.rate2 = Math.round(playerA.rate2 * 10000) / 10000;
         // playerA.rate2 = Math.max(playerA.rate2, this.INIT_RATE);
 
-        this._logger.log(`${dd(playerA.name, 15)}\tR: ${playerA.rate}\tV: ${dd(rateA.rate, 5)}\t\tvs\t\t${dd(playerB.name, 15)}\tR: ${playerB.rate}\tV: ${dd(rateB.rate, 5)}\t==>\t${dd(deltaA, 7)} ~ WoE: ${dd(realDelta,7)} => ${playerA.rate2}`)
+        this._logger.log(`${dd(playerA.name, 15)}\tR: ${playerA.rate}\tV: ${dd(rateA.rate, 5)}\t\tvs\t\t${dd(playerB.name, 15)}\tR: ${playerB.rate}\tV: ${dd(rateB.rate, 5)}\t==>\t${dd(deltaA, 7)} ~ WoE: ${dd(realDelta,7)} => ${dd(playerA.rate2, 9)} ${extra}`)
     }
 
     private getNewPlayerARate(ra, va, ka, rb, vb) {
