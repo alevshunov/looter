@@ -48,7 +48,7 @@ class WoEHistory extends React.Component<Props, State> {
                 }
             })
             .then((data) => {
-                const past = 50;
+                const past = Math.min(50, data.length);
                 const state24 = [];
                 let maxActivity = 1;
                 for (let i = 0; i < past; i++) {
