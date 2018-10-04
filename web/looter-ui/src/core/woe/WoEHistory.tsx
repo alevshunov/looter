@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
-import Report24 from '../components/Report24';
-import ContainerText from '../components/ContainerText';
 import TimeCachedStore from '../extra/TimeCachedStore';
 import GA from '../extra/GA';
 
@@ -73,10 +71,6 @@ class WoEHistory extends React.Component<Props, State> {
 
         return (
             <Container userCls="area-woe-history">
-                <ContainerText>
-                    <Report24 data={this.state.state24} title={'График активности за последние 50 ГВ:'}/>
-                </ContainerText>
-                <div/>
                 <TableReport
                     // title={'История ГВ'}
                     cells={
