@@ -77,12 +77,13 @@ class PlayerRatingCalculator {
 
                     playerA.player.rate2 = playerA.player.rate;
 
-                    this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate ,' <-- BONUS');
 
                     for (let playerBIndex = 0; playerBIndex<playerAIndex; playerBIndex++) {
                         const player = this.getPlayerWithRate(rate[playerBIndex]);
                         // this.recalculate(playerA.player, playerA.rate, player, rate[playerBIndex], woe.rate * attribute.rate);
                     }
+
+                    // this.recalculate(playerA.player, playerA.rate, playerA.player, {rate: 0}, woe.rate * attribute.rate ,' <-- BONUS');
 
                     for (let playerCIndex = playerAIndex+1; playerCIndex<rate.length; playerCIndex++) {
                         const player = this.getPlayerWithRate(rate[playerCIndex]);
