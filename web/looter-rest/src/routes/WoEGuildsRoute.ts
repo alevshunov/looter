@@ -7,7 +7,7 @@ class WoEGuildsRoute implements IRouteWithConnection {
 
     public async execute(connection: MyConnection, request: Request): Promise<any> {
         const data = await connection.query(`
-            select r.*, (r.kills - r.death) / woes rate
+            select r.*, (r.kills / r.death)  rate
             from
             (
                 select 
@@ -31,7 +31,7 @@ class WoEGuildsRoute implements IRouteWithConnection {
                 where name is not null and guild_id > 1
                 group by guild_id
             ) r
-            order by rate desc    
+            order by woes desc, rate desc    
         `);
 
         return data;
