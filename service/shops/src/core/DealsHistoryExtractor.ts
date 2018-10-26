@@ -15,6 +15,12 @@ class DealsHistoryExtractor {
         `);
 
         await this._connection.query(`
+            insert into shops_2
+            select * from shops
+            where id > (select ifnull(max(id), 0) from shops_2)
+        `);
+
+        await this._connection.query(`
             insert into shop_items_aggr(shop_id, fetch_index, name, price, date, count)
             select si.shop_id, si.fetch_index, si.name, si.price, max(si.date) date, sum(si.count) count
             from shop_items_2 si
@@ -50,7 +56,7 @@ class DealsHistoryExtractor {
                     from shop_items_aggr
                     group by shop_id
                 ) s on s.id = si1.shop_id
-                inner join shops rs on rs.id = s.id
+                inner join shops_2 rs on rs.id = s.id
             
             where s.fetch_count > si1.fetch_index
             and (si2.count is null or si1.count > si2.count)
