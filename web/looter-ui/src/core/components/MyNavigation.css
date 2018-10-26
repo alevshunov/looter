@@ -1,6 +1,7 @@
 .nav-top {
     text-align: center;
     padding-bottom: 20px;
+    background-color: white;
 }
 
 .nav-item {
@@ -40,10 +41,25 @@
     display: inline-block;
 }
 
+@media (min-width: 900px) {
+    .nav-top {
+        padding-top: 20px;
+        padding-bottom: 0px;
+        opacity: 0.9;
+        width: 800px;
+        margin: 20px auto 20px auto;
+        border-radius: 10px;
+    }
+}
+
 @media (max-width: 899px) {
     .nav-top {
+        max-width: 795px;
+        border-radius: 10px;
+        margin: 20px auto;
         padding-bottom: 0px;
         padding-top: 10px;
+        opacity: 0.9;
     }
 
     .nav-item {
