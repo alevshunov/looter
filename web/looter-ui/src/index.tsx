@@ -29,12 +29,8 @@ function setBgImg() {
         return;
     }
 
-    if (!(new Date().getHours() >= 18 || new Date().getHours() <= 5)) {
-        area.setAttribute('style', 'background-image: none;');
-    } else {
-        let item = items[Math.floor(Math.random() * items.length)];
-        area.setAttribute('style', 'background-image: url(/img/' + item + '); animation: pulse 60s infinite;');
-    }
+    let item = items[Math.floor(Math.random() * items.length)];
+    area.setAttribute('style', 'background-image: url(/img/' + item + '); animation: pulse 60s infinite;');
 }
 
 if (area) {
