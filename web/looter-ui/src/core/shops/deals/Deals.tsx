@@ -90,7 +90,7 @@ class Deals extends React.Component<Props, State> {
                                             {' '}
                                             {d.ids &&
                                             <img
-                                                className={'icon'}
+                                                className={'icon shadow'}
                                                 src={
                                                     'https://img.free-ro.com/item/small/'
                                                     + (d.ids.split(',')[0])

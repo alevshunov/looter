@@ -148,3 +148,7 @@ blockquote p {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.shadow {
+  filter: drop-shadow(-2px 4px 2px #999);
+}

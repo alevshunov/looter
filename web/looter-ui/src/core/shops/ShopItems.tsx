@@ -138,7 +138,7 @@ class ShopItems extends React.Component<Props, State> {
                                             {/*<span>{shopType === 'sell' ? 'S> ' : 'B> '}</span>*/}
                                             {o.ids &&
                                             <img
-                                                className={'icon'}
+                                                className={'icon shadow'}
                                                 src={
                                                     'https://img.free-ro.com/item/small/'
                                                     + (o.ids.split(',')[0])
