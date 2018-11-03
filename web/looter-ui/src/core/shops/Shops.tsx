@@ -88,7 +88,7 @@ class Shops extends React.Component<Props, State> {
                                                     (id: any) =>
                                                         <img
                                                             key={id}
-                                                            className="shadow"
+                                                            className="shadow icon"
                                                             src={'https://img.free-ro.com/item/small/' + id + '.png'}
                                                         />
                                                 )
