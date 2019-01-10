@@ -14,7 +14,8 @@
     "jsdom": "^11.11.0",
     "moment": "^2.22.1",
     "node-fetch": "^2.1.2",
-    "ts-node": "^6.0.5"
+    "ts-node": "^6.0.5",
+    "typescript": "^3.2.2"
   },
   "devDependencies": {
     "@types/jsdom": "^11.0.4",
