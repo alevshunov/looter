@@ -61,7 +61,7 @@ class DealsHistoryExtractor {
             where s.fetch_count > si1.fetch_index
             and (si2.count is null or si1.count > si2.count)
             and si1.date > (select ifnull(max(date_from), MAKEDATE(2000, 1)) from deal)
-            order by si1.date desc        
+            order by si1.date asc        
         `);
     }
 }
