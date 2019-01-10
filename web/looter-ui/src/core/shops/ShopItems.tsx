@@ -3,7 +3,6 @@ import './ShopItems.css';
 import * as moment from 'moment';
 import { NavLink } from 'react-router-dom';
 import asPrice from '../components/asPrice';
-import InfoOutline from '@material-ui/icons/InfoOutline';
 import asShopCount from '../components/asShopCount';
 import TableReport from '../components/TableReport';
 import Container from '../components/Container';
@@ -150,7 +149,7 @@ class ShopItems extends React.Component<Props, State> {
                                             {o.ids &&
                                                 <span className="item_db-ids">id: {o.ids}
                                                     <a href={'http://rodb.kudesnik.cc/item/?term=' + o.name}>
-                                                        <InfoOutline style={{height: '11px'}}/>
+                                                        {/*<InfoOutline style={{height: '11px'}}/>*/}
                                                     </a>
                                                 </span>
                                             }
@@ -198,7 +197,7 @@ class ShopItems extends React.Component<Props, State> {
                                         {o.ids &&
                                             <span className="item_db-ids">id: {o.ids}
                                             <a href={'http://rodb.kudesnik.cc/item/?term=' + o.name}>
-                                                    <InfoOutline style={{height: '11px'}}/>
+                                                    {/*<InfoOutline style={{height: '11px'}}/>*/}
                                                 </a>
                                             </span>
                                         }

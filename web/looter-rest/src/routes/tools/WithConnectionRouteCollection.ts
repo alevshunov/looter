@@ -1,15 +1,15 @@
 import WithConnectionRoute from './WithConnectionRoute';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 import IRouteWithConnection from './IRouteWithConnection';
 import IRoute from './IRoute';
 
 class WithConnectionRouteCollection {
     private _items : IRoute[] = [];
-    private _logger: MyLogger;
+    private _logger: ILogger;
     private _db: {};
 
 
-    constructor(logger: MyLogger, db: {}) {
+    constructor(logger: ILogger, db: {}) {
         this._logger = logger;
         this._db = db;
     }

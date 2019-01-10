@@ -2,6 +2,7 @@ import {ShopItemsLooter} from './ShopItemsLooter';
 import {Shop, ShopType} from '../../model/Shop';
 import {ShopItemsLoadResult} from './itemsLoader/ShopItemsLoadResult';
 import {ShopItem} from '../../model/ShopItem';
+import {EmptyLogger} from "my-core/MyLogger";
 
 describe('ShopItemsLooter', () => {
     it('should handle not found as deactivate all his shops without invalid mark', async () => {
@@ -9,7 +10,7 @@ describe('ShopItemsLooter', () => {
 
         const shop: Shop = new Shop('User X', 'Best price ever', 'prt_in <1,2>', date, ShopType.Sell);
 
-        const logger = { log: jest.fn(), error: jest.fn()};
+        const logger = new EmptyLogger();
 
         const shopStorage = {
             deactivateOtherShops: jest.fn(),
@@ -40,7 +41,20 @@ describe('ShopItemsLooter', () => {
             })
         };
 
-        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
+        const shopChangedDetectorProvider = {
+            createFor: jest.fn().mockReturnValue({
+                isChanged: jest.fn().mockReturnValue(true)
+            })
+        };
+
+        const looter = new ShopItemsLooter(
+            shop,
+            shopStorage,
+            shopItemStorage,
+            shopItemsLoaderProvider,
+            shopFetchValidatorProvider,
+            shopChangedDetectorProvider,
+            logger);
 
         await looter.run();
 
@@ -60,7 +74,7 @@ describe('ShopItemsLooter', () => {
         const shop: Shop = new Shop('User X', 'Best price ever', 'prt_in <1,2>', date, ShopType.Sell);
         shop.retryCount = 2;
 
-        const logger = { log: jest.fn(), error: jest.fn()};
+        const logger = new EmptyLogger();
 
         const shopStorage = {
             deactivateOtherShops: jest.fn(),
@@ -91,7 +105,13 @@ describe('ShopItemsLooter', () => {
             })
         };
 
-        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
+        const shopChangedDetectorProvider = {
+            createFor: jest.fn().mockReturnValue({
+                isChanged: jest.fn().mockReturnValue(true)
+            })
+        };
+
+        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, shopChangedDetectorProvider, logger);
 
         await looter.run();
 
@@ -112,7 +132,7 @@ describe('ShopItemsLooter', () => {
         const shop: Shop = new Shop('User X', 'Best price ever', 'prt_in <1,2>', date, ShopType.Sell);
         shop.retryCount = 6;
 
-        const logger = { log: jest.fn(), error: jest.fn()};
+        const logger = new EmptyLogger();
 
         const shopStorage = {
             deactivateOtherShops: jest.fn(),
@@ -151,7 +171,13 @@ describe('ShopItemsLooter', () => {
             })
         };
 
-        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
+        const shopChangedDetectorProvider = {
+            createFor: jest.fn().mockReturnValue({
+                isChanged: jest.fn().mockReturnValue(true)
+            })
+        };
+
+        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, shopChangedDetectorProvider, logger);
 
         await looter.run();
 
@@ -161,7 +187,7 @@ describe('ShopItemsLooter', () => {
 
         expect(shopFetchValidatorProvider.createFor.mock.calls.length).toEqual(1);
         expect(shopFetchValidatorProvider.createFor.mock.calls[0][0]).toBe(shop);
-        expect(shopFetchValidatorProvider.createFor.mock.calls[0][1]).toBe(loadResult);
+        expect(shopFetchValidatorProvider.createFor.mock.calls[0][2]).toBe(loadResult);
 
         expect(isValidFn.mock.calls.length).toEqual(1);
 
@@ -186,7 +212,7 @@ describe('ShopItemsLooter', () => {
         shop.fetchCount = 4;
         shop.retryCount = 6;
 
-        const logger = { log: jest.fn(), error: jest.fn()};
+        const logger = new EmptyLogger();
 
         const shopStorage = {
             deactivateOtherShops: jest.fn(),
@@ -224,7 +250,13 @@ describe('ShopItemsLooter', () => {
             })
         };
 
-        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, logger);
+        const shopChangedDetectorProvider = {
+            createFor: jest.fn().mockReturnValue({
+                isChanged: jest.fn().mockReturnValue(true)
+            })
+        };
+
+        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, shopChangedDetectorProvider, logger);
 
         await looter.run();
 
@@ -233,7 +265,7 @@ describe('ShopItemsLooter', () => {
 
         expect(shopFetchValidatorProvider.createFor.mock.calls.length).toEqual(1);
         expect(shopFetchValidatorProvider.createFor.mock.calls[0][0]).toBe(shop);
-        expect(shopFetchValidatorProvider.createFor.mock.calls[0][1]).toBe(loadResult);
+        expect(shopFetchValidatorProvider.createFor.mock.calls[0][2]).toBe(loadResult);
 
         expect(isValidFn.mock.calls.length).toEqual(1);
 
@@ -244,6 +276,80 @@ describe('ShopItemsLooter', () => {
         expect(shopItemStorage.add.mock.calls.length).toEqual(1);
         expect(shopItemStorage.add.mock.calls[0][0]).toBe(shop);
         expect(shopItemStorage.add.mock.calls[0][1]).toBe(loadResult.items);
+
+        expect(shopStorage.updateRetryCount.mock.calls.length).toEqual(1);
+        expect(shopStorage.updateRetryCount.mock.calls[0][0]).toBe(shop);
+        expect(shopStorage.updateRetryCount.mock.calls[0][1]).toBe(0);
+    });
+
+    it('should call validate for found items and process with valid result but not save for not changed', async () => {
+        const date = new Date();
+
+        const shop: Shop = new Shop('User X', 'Best price ever', 'prt_in <1,2>', date, ShopType.Sell);
+        shop.fetchCount = 4;
+        shop.retryCount = 6;
+
+        const logger = new EmptyLogger();
+
+        const shopStorage = {
+            deactivateOtherShops: jest.fn(),
+            add: jest.fn(),
+            updateFetchIndex: jest.fn(),
+            getNextShop: jest.fn(),
+            deactivateShops: jest.fn(),
+            updateRetryCount: jest.fn(),
+            markAsNonValid: jest.fn()
+        };
+
+        const shopItemStorage = {
+            add: jest.fn(),
+            get: jest.fn()
+        };
+
+        const loadResult = new ShopItemsLoadResult('Shop Name Z', 'prontera <19,99>',
+            [
+                new ShopItem('Item A', 100000, 20, 5, date)
+            ], date, false, false);
+
+        const shopItemsLoaderProvider = {
+            createFor: jest.fn().mockReturnValue({
+                getItems: jest.fn().mockReturnValue(
+                    loadResult
+                )
+            })
+        };
+
+        const isValidFn = jest.fn().mockReturnValue(true);
+
+        const shopFetchValidatorProvider = {
+            createFor: jest.fn().mockReturnValue({
+                isValid: isValidFn
+            })
+        };
+
+        const shopChangedDetectorProvider = {
+            createFor: jest.fn().mockReturnValue({
+                isChanged: jest.fn().mockReturnValue(false)
+            })
+        };
+
+        const looter = new ShopItemsLooter(shop, shopStorage, shopItemStorage, shopItemsLoaderProvider, shopFetchValidatorProvider, shopChangedDetectorProvider, logger);
+
+        await looter.run();
+
+        expect(shopStorage.deactivateOtherShops.mock.calls.length).toEqual(1);
+        expect(shopStorage.deactivateOtherShops.mock.calls[0][0]).toBe(shop);
+
+        expect(shopFetchValidatorProvider.createFor.mock.calls.length).toEqual(1);
+        expect(shopFetchValidatorProvider.createFor.mock.calls[0][0]).toBe(shop);
+        expect(shopFetchValidatorProvider.createFor.mock.calls[0][2]).toBe(loadResult);
+
+        expect(isValidFn.mock.calls.length).toEqual(1);
+
+        expect(shopStorage.updateFetchIndex.mock.calls.length).toEqual(0);
+        expect(shop.fetchCount).toEqual(4);
+
+        expect(shopItemStorage.add.mock.calls.length).toEqual(0);
 
         expect(shopStorage.updateRetryCount.mock.calls.length).toEqual(1);
         expect(shopStorage.updateRetryCount.mock.calls[0][0]).toBe(shop);

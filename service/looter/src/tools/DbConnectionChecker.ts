@@ -1,9 +1,9 @@
 import * as mysql from "mysql";
 import {ConnectionConfig} from "mysql";
-import {MyLogger} from "my-core";
+import {ILogger} from "my-core";
 
 export class DbConnectionChecker {
-    static tryConnect(dbConnection: ConnectionConfig, logger: MyLogger) {
+    static tryConnect(dbConnection: ConnectionConfig, logger: ILogger) {
         const con = mysql.createConnection(dbConnection);
         con.connect((e) => {
             if (e) {

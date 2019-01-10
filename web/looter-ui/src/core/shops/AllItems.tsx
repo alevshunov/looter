@@ -2,7 +2,6 @@ import * as React from 'react';
 import RedirectableSearch from '../components/RedirectableSearch';
 import { Link, NavLink } from 'react-router-dom';
 import asPrice from '../components/asPrice';
-import InfoOutline from '@material-ui/icons/InfoOutline';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import asNumber from '../components/asNumber';
@@ -141,7 +140,7 @@ class AllItems extends React.Component<Props, State> {
                                                 d.ids &&
                                                 <span className="item_db-ids">id: {d.ids}
                                                     <a href={'http://rodb.kudesnik.cc/item/?term=' + d.name}>
-                                                        <InfoOutline style={{height: '11px'}}/>
+                                                        {/*<InfoOutline style={{height: '11px'}}/>*/}
                                                     </a>
                                                 </span>
                                             }

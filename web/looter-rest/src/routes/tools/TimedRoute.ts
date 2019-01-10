@@ -1,13 +1,13 @@
 import IRoute from './IRoute';
 import {Request, Response} from 'express';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 
 class TimedRoute implements IRoute {
     public path: string;
-    private _logger: MyLogger;
+    private _logger: ILogger;
     private _baseRoute: IRoute;
 
-    constructor(baseRoute: IRoute, logger: MyLogger) {
+    constructor(baseRoute: IRoute, logger: ILogger) {
         this._logger = logger;
         this.path = baseRoute.path;
         this._baseRoute = baseRoute;

@@ -1,8 +1,9 @@
-import { MyConnection, MyLogger } from 'my-core';
+import { MyConnection, ILogger } from 'my-core';
+import {MyLogger} from 'my-core/MyLogger';
 
 class Checker {
     private _connection: MyConnection;
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
     constructor() {
         const dbConnection = {
@@ -13,7 +14,7 @@ class Checker {
         };
 
         this._logger = new MyLogger();
-        this._connection = new MyConnection(dbConnection, {log: () => {}, error:()=>{}});
+        this._connection = new MyConnection(dbConnection, new MyLogger());
     }
 
     async check() {

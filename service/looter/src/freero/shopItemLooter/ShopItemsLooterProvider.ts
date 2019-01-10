@@ -4,7 +4,8 @@ import {IShopItemsLoaderProvider} from './itemsLoader/ShopItemsLoaderProvider';
 import {IShopStorage} from '../../db/ShopStorage';
 import {IShopItemStorage} from '../../db/ShopItemStorage';
 import {Shop} from '../../model/Shop';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
+import {IShopChangedDetectorProvider} from "./changesDetector/IShopChangedDetectorProvider";
 
 interface IShopItemsLooterProvider {
     createFor(shop: Shop): void;
@@ -15,17 +16,20 @@ class ShopItemsLooterProvider implements IShopItemsLooterProvider {
     private _shopItemStorage: IShopItemStorage;
     private _shopItemsLoaderProvider: IShopItemsLoaderProvider;
     private _shopFetchValidatorProvider: IShopFetchValidatorProvider;
-    private _logger: MyLogger;
+    private _shopChangedDetectorProvider: IShopChangedDetectorProvider;
+    private _logger: ILogger;
 
     constructor(shopStorage: IShopStorage,
                 shopItemStorage: IShopItemStorage,
                 shopItemsLoaderProvider: IShopItemsLoaderProvider,
                 shopFetchValidatorProvider: IShopFetchValidatorProvider,
-                logger: MyLogger) {
+                shopChangedDetectorProvider: IShopChangedDetectorProvider,
+                logger: ILogger) {
         this._shopStorage = shopStorage;
         this._shopItemStorage = shopItemStorage;
         this._shopItemsLoaderProvider = shopItemsLoaderProvider;
         this._shopFetchValidatorProvider = shopFetchValidatorProvider;
+        this._shopChangedDetectorProvider = shopChangedDetectorProvider;
         this._logger = logger;
     }
 
@@ -35,6 +39,7 @@ class ShopItemsLooterProvider implements IShopItemsLooterProvider {
             this._shopItemStorage,
             this._shopItemsLoaderProvider,
             this._shopFetchValidatorProvider,
+            this._shopChangedDetectorProvider,
             this._logger);
     }
 }

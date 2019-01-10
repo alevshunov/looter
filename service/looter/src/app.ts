@@ -58,6 +58,10 @@ let cardLooter = new CardLooter(freeroMainChat);
 let shopSellLooter = new ShopSellLooter(freeroMainChat);
 let shopBuyLooter = new ShopBuyLooter(freeroMainChat);
 
+errorsHub.onEvent().subscribe(async (sender, message) => {
+    console.log(sender, message);
+});
+
 messageLooter.onEvent().subscribe(async (sender, message) => {
     await messageStorage.add(message);
 });

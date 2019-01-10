@@ -1,6 +1,6 @@
 import IRoute from './IRoute';
 import {Request, Response} from 'express';
-import TimeCachedStore from '../../../../looter-ui/src/core/extra/TimeCachedStore';
+import TimeCachedStore from './TimeCachedStore';
 
 class CachedRoute implements IRoute {
     public path: string;

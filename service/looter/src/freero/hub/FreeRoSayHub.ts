@@ -1,5 +1,5 @@
 import {IIrcConnection} from './base/IIrcConnection';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 
 interface ISayHub {
     say(to: string, message: string) : void
@@ -7,9 +7,9 @@ interface ISayHub {
 
 class FreeRoSayHub implements ISayHub {
     private _irc: IIrcConnection;
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
-    constructor(irc: IIrcConnection, logger: MyLogger) {
+    constructor(irc: IIrcConnection, logger: ILogger) {
         this._irc = irc;
         this._logger = logger;
     }

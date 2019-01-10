@@ -1,11 +1,11 @@
 import {Client as IrcClient} from "irc";
 import {IIrcConnection} from "./base/IIrcConnection";
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 import FreeRoIrcMessageHandlerBase from './base/FreeRoIrcMessageHandlerBase';
 import {FreeRoEventArgs} from './FreeRoEventArgs';
 
 class FreeRoIrcErrorsHandler extends FreeRoIrcMessageHandlerBase {
-    constructor(irc: IrcClient | IIrcConnection, logger: MyLogger) {
+    constructor(irc: IrcClient | IIrcConnection, logger: ILogger) {
         super(irc, FreeRoIrcMessageHandlerBase.EVENT_ERROR, logger);
     }
 

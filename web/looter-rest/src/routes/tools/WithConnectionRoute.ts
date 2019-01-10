@@ -1,16 +1,16 @@
 import IRouteWithConnection from './IRouteWithConnection';
 import {Request} from 'express';
-import {MyConnection, MyLogger} from 'my-core';
+import {MyConnection, ILogger} from 'my-core';
 import IRoute from './IRoute';
 
 
 class WithConnectionRoute implements IRoute {
     public path = '';
     private _baseRoute: IRouteWithConnection;
-    private _logger: MyLogger;
+    private _logger: ILogger;
     private _db: {};
 
-    constructor(baseRoute: IRouteWithConnection, logger: MyLogger, db: {}) {
+    constructor(baseRoute: IRouteWithConnection, logger: ILogger, db: {}) {
         this._baseRoute = baseRoute;
         this._logger = logger;
         this._db = db;

@@ -1,4 +1,4 @@
-import {MyConnection, MyLogger} from "my-core";
+import {MyConnection, ILogger} from "my-core";
 
 function dd(v: string | number, l: number = 0, prefix: string = '', postfix: string = ' ') {
     let x = v.toString();
@@ -11,7 +11,7 @@ function dd(v: string | number, l: number = 0, prefix: string = '', postfix: str
 
 class PlayerRatingCalculator {
     private _connection: MyConnection;
-    private _logger: MyLogger;
+    private _logger: ILogger;
     private _players = {};
 
     private GAMES_TO_RATE = 1;
@@ -22,7 +22,7 @@ class PlayerRatingCalculator {
     private INACTIVE_DECREASE = 0.02;
     private RATE_STEP = 200;
 
-    constructor(connection: MyConnection, logger: MyLogger) {
+    constructor(connection: MyConnection, logger: ILogger) {
         this._connection = connection;
         this._logger = logger;
     }

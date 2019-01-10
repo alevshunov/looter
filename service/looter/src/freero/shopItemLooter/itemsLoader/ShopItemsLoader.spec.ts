@@ -3,9 +3,10 @@ import {Shop, ShopType} from '../../../model/Shop';
 import {SimpleEvent} from '../../../core/SimpleEvent';
 import {FreeRoEventArgs} from '../../hub/FreeRoEventArgs';
 import {ShopItem} from '../../../model/ShopItem';
+import {EmptyLogger} from "my-core/MyLogger";
 
 describe('ShopItemLoader', () => {
-    const emptyLogger = { log: jest.fn(), error: jest.fn() };
+    const emptyLogger = new EmptyLogger();
 
     it('should ask @shop for sell', async () => {
         const simpleEvent = new SimpleEvent<FreeRoEventArgs>();
@@ -19,7 +20,6 @@ describe('ShopItemLoader', () => {
         const loader = new ShopItemsLoader(shop, simpleEvent, sayHandler, emptyLogger, 100);
         await loader.getItems();
 
-        expect(emptyLogger.log.mock.calls.length).toBeGreaterThan(0);
         expect(sayHandler.say.mock.calls.length).toEqual(1);
         expect(sayHandler.say.mock.calls[0][0]).toEqual('FreeRO');
         expect(sayHandler.say.mock.calls[0][1]).toEqual('@shop User B');

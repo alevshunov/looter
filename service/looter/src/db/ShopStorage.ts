@@ -1,6 +1,6 @@
 import {ConnectionConfig} from "mysql";
 import {Shop} from "../model/Shop";
-import {MyConnection, MyLogger} from "my-core";
+import {MyConnection, ILogger} from "my-core";
 
 export interface IShopStorage {
     add(shop: Shop): Promise<void>;
@@ -20,9 +20,9 @@ export interface IShopStorage {
 
 export class ShopStorage implements IShopStorage, IShopStorage {
     private _dbConnection: ConnectionConfig;
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
-    constructor(dbConnection: ConnectionConfig, logger: MyLogger) {
+    constructor(dbConnection: ConnectionConfig, logger: ILogger) {
         this._dbConnection = dbConnection;
         this._logger = logger;
     }

@@ -3,7 +3,6 @@ import * as moment from 'moment';
 import RedirectableSearch from '../components/RedirectableSearch';
 import { NavLink } from 'react-router-dom';
 import MyNavigation from '../components/MyNavigation';
-import InfoOutline from '@material-ui/icons/InfoOutline';
 import Container from '../components/Container';
 import TableReport from '../components/TableReport';
 import GA from '../extra/GA';
@@ -97,7 +96,7 @@ class Cards extends React.Component<Props, State> {
                                             {d.ids &&
                                                 <span className="item_db-ids">id: {d.ids}
                                                     <a href={'http://rodb.kudesnik.cc/item/?term=' + d.card}>
-                                                        <InfoOutline style={{height: '11px'}}/>
+                                                        {/*<InfoOutline style={{height: '11px'}}/>*/}
                                                     </a>
                                                 </span>
                                             }

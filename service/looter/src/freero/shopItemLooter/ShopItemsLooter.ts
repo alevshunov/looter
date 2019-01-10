@@ -1,9 +1,10 @@
 import {IShopItemStorage} from "../../db/ShopItemStorage";
-import {MyLogger} from "my-core";
+import {ILogger} from "my-core";
 import {Shop} from '../../model/Shop';
 import {IShopStorage} from '../../db/ShopStorage';
 import {IShopItemsLoaderProvider} from './itemsLoader/ShopItemsLoaderProvider';
 import {IShopFetchValidatorProvider} from './validators/ShopFetchValidatorProvider';
+import {IShopChangedDetectorProvider} from "./changesDetector/IShopChangedDetectorProvider";
 
 export class ShopItemsLooter {
     private _shop: Shop;
@@ -11,7 +12,8 @@ export class ShopItemsLooter {
     private _shopItemStorage: IShopItemStorage;
     private _shopItemsLoaderProvider: IShopItemsLoaderProvider;
     private _shopFetchValidatorProvider: IShopFetchValidatorProvider;
-    private _logger: MyLogger;
+    private _shopChangedDetectorProvider: IShopChangedDetectorProvider;
+    private _logger: ILogger;
 
 
     constructor(
@@ -20,13 +22,15 @@ export class ShopItemsLooter {
         shopItemStorage: IShopItemStorage,
         shopItemsLoaderProvider: IShopItemsLoaderProvider,
         shopFetchValidatorProvider: IShopFetchValidatorProvider,
-        logger: MyLogger) {
+        shopChangedDetectorProvider: IShopChangedDetectorProvider,
+        logger: ILogger) {
 
         this._shop = shop;
         this._shopStorage = shopStorage;
         this._shopItemStorage = shopItemStorage;
         this._shopItemsLoaderProvider = shopItemsLoaderProvider;
         this._shopFetchValidatorProvider = shopFetchValidatorProvider;
+        this._shopChangedDetectorProvider = shopChangedDetectorProvider;
         this._logger = logger;
     }
 
@@ -60,7 +64,9 @@ export class ShopItemsLooter {
                 return;
             }
 
-            const isValid = await this._shopFetchValidatorProvider.createFor(shop, fetchResult).isValid();
+            const lastFetch = await this._shopItemStorage.get(this._shop.id, this._shop.fetchCount);
+
+            const isValid = await this._shopFetchValidatorProvider.createFor(shop, lastFetch, fetchResult).isValid();
             this._logger.log('Is valid = ', isValid);
 
             if (!isValid) {
@@ -73,12 +79,19 @@ export class ShopItemsLooter {
                 return;
             }
 
-            shop.fetchCount++;
+            const isChanged = await this._shopChangedDetectorProvider.createFor(lastFetch, fetchResult.items).isChanged();
 
-            this._logger.log('UPDATE SHOP FETCH INDEX');
-            await this._shopStorage.updateFetchIndex(shop);
-            await this._shopItemStorage.add(shop, fetchResult.items);
-            await this._shopStorage.updateRetryCount(shop, 0);
+            if (isChanged) {
+                shop.fetchCount++;
+
+                this._logger.log('SHOP CHANGED');
+                await this._shopStorage.updateFetchIndex(shop);
+                await this._shopItemStorage.add(shop, fetchResult.items);
+                await this._shopStorage.updateRetryCount(shop, 0);
+            } else {
+                this._logger.log('SHOP NOT CHANGED');
+                await this._shopStorage.updateRetryCount(shop, 0);
+            }
 
         } catch(e) {
             this._logger.log('EXCEPTION', e);

@@ -1,6 +1,7 @@
 import {FreeRoEventArgs} from './FreeRoEventArgs';
 import {handlers} from 'irc';
 import FreeRoIrcMessageHandler from './FreeRoIrcMessageHandler';
+import {EmptyLogger} from 'my-core/MyLogger';
 
 describe('FreeRoIrcHub', () => {
 
@@ -32,7 +33,7 @@ describe('FreeRoIrcHub', () => {
         const from = 'FreeRo';
         const msg = 'Hello world';
 
-        const hub = new FreeRoIrcMessageHandler(fakeIrc, { log: () => {}, error: () => {} });
+        const hub = new FreeRoIrcMessageHandler(fakeIrc, new EmptyLogger());
         hub.onEvent().subscribe(mockCallback);
 
         fakeIrc.doPmMessage(from, msg);
@@ -46,7 +47,7 @@ describe('FreeRoIrcHub', () => {
         const from = 'FreeRo';
         const msg = 'Hello world';
 
-        const hub = new FreeRoIrcMessageHandler(fakeIrc, { log: () => {}, error: () => {} });
+        const hub = new FreeRoIrcMessageHandler(fakeIrc, new EmptyLogger());
         hub.onEvent().subscribe(mockCallback);
 
         fakeIrc.doMessage(from, msg);

@@ -1,4 +1,4 @@
-import { MyConnection, MyLogger } from 'my-core';
+import { MyConnection } from 'my-core';
 import ForumRawStatisticLoader from './ForumRawStatisticLoader';
 import RawStatisticParser from './RawStatisticParser';
 import StatisticSaver from './StatisticSaver';
@@ -13,6 +13,7 @@ import RateAndIndexRecalculator from './indexes/RateAndIndexRecalculator';
 import GuildSaverFactory from './GuildSaverFactory';
 import PlayerOnWoESaverFactory from './PlayerOnWoESaverFactory';
 import PlayerRatingCalculator from './indexes/PlayerRatingCalculator';
+import {MyLogger} from 'my-core/MyLogger';
 
 const dbConnection = {
     host: process.env.LOOTER_DB_HOST,

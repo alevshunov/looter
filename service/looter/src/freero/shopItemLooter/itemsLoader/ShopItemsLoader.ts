@@ -1,7 +1,7 @@
 import {ShopItem} from "../../../model/ShopItem";
 import {Shop, ShopType} from "../../../model/Shop";
 import {ShopItemsLoadResult} from "./ShopItemsLoadResult";
-import {MyLogger} from "my-core";
+import {ILogger} from "my-core";
 import {FreeRoEventArgs} from '../../hub/FreeRoEventArgs';
 import {ISayHub} from '../../hub/FreeRoSayHub';
 import {IEventProvider} from '../../../core/IEventProvider';
@@ -36,9 +36,9 @@ export class ShopItemsLoader {
     private _isNotFound: boolean = false;
     private _isBusy: boolean = false;
 
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
-    constructor(shop: Shop, pmHub: IEventProvider<FreeRoEventArgs>, sayHub: ISayHub, logger: MyLogger, waitTime?: number) {
+    constructor(shop: Shop, pmHub: IEventProvider<FreeRoEventArgs>, sayHub: ISayHub, logger: ILogger, waitTime?: number) {
         this._shop = shop;
         this._pmHub = pmHub;
         this._sayHub = sayHub;

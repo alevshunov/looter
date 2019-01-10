@@ -3,7 +3,7 @@ import {Client as IrcClient} from "irc";
 import {FreeRoEventArgs} from "../FreeRoEventArgs";
 import {IEventProvider} from "../../../core/IEventProvider";
 import {IIrcConnection} from "./IIrcConnection";
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 
 class FreeRoIrcMessageHandlerBase implements IEventProvider<FreeRoEventArgs> {
     static EVENT_DIRECT_MESSAGE : string = 'pm';
@@ -13,10 +13,10 @@ class FreeRoIrcMessageHandlerBase implements IEventProvider<FreeRoEventArgs> {
     protected _irc: IrcClient | IIrcConnection;
 
     protected _onEvent = new EventDispatcher<FreeRoIrcMessageHandlerBase, FreeRoEventArgs>();
-    protected _logger: MyLogger;
+    protected _logger: ILogger;
     protected _handler: string;
 
-    constructor(irc: IrcClient | IIrcConnection, handler: string, logger: MyLogger) {
+    constructor(irc: IrcClient | IIrcConnection, handler: string, logger: ILogger) {
         this._irc = irc;
         this._logger = logger;
         this._handler = handler;

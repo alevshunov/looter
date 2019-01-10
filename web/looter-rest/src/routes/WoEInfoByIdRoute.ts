@@ -1,7 +1,6 @@
 import IRouteWithConnection from './tools/IRouteWithConnection';
 import {Request} from 'express';
 import {MyConnection} from 'my-core';
-import TimeCachedStore from '../../../looter-ui/src/core/extra/TimeCachedStore';
 
 class WoEInfoByIdRoute implements IRouteWithConnection {
     public path = '/woe/info/:id';

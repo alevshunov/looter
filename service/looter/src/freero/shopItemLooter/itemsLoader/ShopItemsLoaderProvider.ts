@@ -2,7 +2,7 @@ import {ISayHub} from '../../hub/FreeRoSayHub';
 import {IEventProvider} from '../../../core/IEventProvider';
 import {FreeRoEventArgs} from '../../hub/FreeRoEventArgs';
 import {Shop} from '../../../model/Shop';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 import {ShopItemsLoader} from './ShopItemsLoader';
 
 interface IShopItemsLoaderProvider {
@@ -12,9 +12,9 @@ interface IShopItemsLoaderProvider {
 class ShopItemsLoaderProvider implements IShopItemsLoaderProvider {
     private _pmHub: IEventProvider<FreeRoEventArgs>;
     private _sayHub: ISayHub;
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
-    constructor(pmHub: IEventProvider<FreeRoEventArgs>, sayHub: ISayHub, logger: MyLogger) {
+    constructor(pmHub: IEventProvider<FreeRoEventArgs>, sayHub: ISayHub, logger: ILogger) {
         this._pmHub = pmHub;
         this._sayHub = sayHub;
         this._logger = logger;

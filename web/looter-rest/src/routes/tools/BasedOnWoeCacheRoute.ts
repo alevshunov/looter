@@ -1,12 +1,12 @@
 import FlaggedCashedRoute from './FlaggedCashedRoute';
-import {MyConnection, MyLogger} from 'my-core/index';
+import {MyConnection, ILogger} from 'my-core/index';
 import IRouteWithConnection from './IRouteWithConnection';
 
 class BasedOnWoeCacheRoute extends FlaggedCashedRoute{
     private lastWoEId: number = 0;
 
 
-    constructor(baseRoute: IRouteWithConnection, logger: MyLogger) {
+    constructor(baseRoute: IRouteWithConnection, logger: ILogger) {
         super(baseRoute, logger);
     }
 

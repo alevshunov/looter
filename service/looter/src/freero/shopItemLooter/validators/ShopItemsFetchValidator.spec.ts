@@ -1,8 +1,9 @@
 import ShopItemsFetchValidator from './ShopItemsFetchValidator';
 import {ShopItem} from '../../../model/ShopItem';
+import {EmptyLogger} from "my-core/MyLogger";
 
 describe('ShopItemsFetchValidator', () => {
-    const emptyLogger = { log: () => {}, error: () => {} };
+    const emptyLogger = new EmptyLogger();
 
     it('should be true for empty', () => {
         const prev: ShopItem[] = [];

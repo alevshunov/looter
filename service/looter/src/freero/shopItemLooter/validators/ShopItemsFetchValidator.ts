@@ -1,12 +1,12 @@
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 import {ShopItem} from '../../../model/ShopItem';
 
 class ShopItemsFetchValidator {
     private _prev: ShopItem[];
     private _curr: ShopItem[];
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
-    constructor(prev: ShopItem[], curr: ShopItem[], logger: MyLogger) {
+    constructor(prev: ShopItem[], curr: ShopItem[], logger: ILogger) {
         this._prev = prev;
         this._curr = curr;
         this._logger = logger;

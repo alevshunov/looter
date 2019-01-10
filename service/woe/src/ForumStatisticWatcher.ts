@@ -2,12 +2,12 @@ import fetch from "node-fetch";
 
 import {JSDOM} from 'jsdom';
 import moment = require('moment');
-import {MyLogger} from "my-core";
+import {ILogger} from "my-core";
 
 class ForumStatisticWatcher {
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
-    constructor(logger: MyLogger) {
+    constructor(logger: ILogger) {
         this._logger = logger;
     }
 

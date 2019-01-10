@@ -1,26 +1,26 @@
 import ShopNameAndLocationValidator from './ShopNameAndLocationValidator';
 import ShopItemsFetchValidator from './ShopItemsFetchValidator';
 import {Shop} from '../../../model/Shop';
-import {IShopItemStorage} from '../../../db/ShopItemStorage';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 import {ShopItemsLoadResult} from '../itemsLoader/ShopItemsLoadResult';
+import {ShopItem} from "../../../model/ShopItem";
 
 class ShopFetchValidator {
-    private _shopItemStorage: IShopItemStorage;
-    private _logger: MyLogger;
+    private _logger: ILogger;
     private _shop: Shop;
     private _fetchResult: ShopItemsLoadResult;
+    private _lastFetch: ShopItem[];
 
 
-    constructor(shop: Shop, fetchResult: ShopItemsLoadResult, shopItemStorage: IShopItemStorage, logger: MyLogger) {
+    constructor(shop: Shop, lastFetch: ShopItem[], fetchResult: ShopItemsLoadResult, logger: ILogger) {
         this._shop = shop;
+        this._lastFetch = lastFetch;
         this._fetchResult = fetchResult;
-        this._shopItemStorage = shopItemStorage;
         this._logger = logger;
     }
 
     public async isValid() : Promise<boolean> {
-        const lastFetch = await this._shopItemStorage.get(this._shop.id, this._shop.fetchCount);
+        const lastFetch = this._lastFetch;
         const currentFetch = this._fetchResult.items;
 
         const nameLocationValidator = new ShopNameAndLocationValidator(this._shop, this._fetchResult, this._logger);

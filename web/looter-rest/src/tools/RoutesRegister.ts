@@ -1,13 +1,13 @@
 import {Router} from 'express';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 import IRoute from '../routes/tools/IRoute';
 
 class RoutesRegister {
-    private _logger: MyLogger;
+    private _logger: ILogger;
     private _db: any;
     private _router: Router;
 
-    constructor(logger: MyLogger, db: any, router: Router) {
+    constructor(logger: ILogger, db: any, router: Router) {
         this._logger = logger;
         this._db = db;
         this._router = router;

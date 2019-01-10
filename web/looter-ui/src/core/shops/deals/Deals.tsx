@@ -7,7 +7,6 @@ import Container from '../../components/Container';
 import RedirectableSearch from '../../components/RedirectableSearch';
 import TableReport from '../../components/TableReport';
 import { NavLink } from 'react-router-dom';
-import { InfoOutline } from '@material-ui/icons';
 import asDate from '../../components/asDate';
 import './Deals.css';
 
@@ -106,7 +105,7 @@ class Deals extends React.Component<Props, State> {
                                                 d.ids &&
                                                 <span className="item_db-ids">id: {d.ids}
                                                     <a href={'http://rodb.kudesnik.cc/item/?term=' + d.itemName}>
-                                                        <InfoOutline style={{height: '11px'}}/>
+                                                        {/*<InfoOutline style={{height: '11px'}}/>*/}
                                                     </a>
                                                 </span>
                                             }

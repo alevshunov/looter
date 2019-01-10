@@ -1,15 +1,15 @@
 import IRouteWithConnection from './IRouteWithConnection';
 import {Request} from 'express';
-import {MyConnection, MyLogger} from 'my-core';
+import {MyConnection, ILogger} from 'my-core';
 
 
 abstract class FlaggedCashedRoute implements IRouteWithConnection {
     public path: string;
     private _baseRoute: IRouteWithConnection;
     private _data: any;
-    protected logger: MyLogger;
+    protected logger: ILogger;
 
-    protected constructor(baseRoute: IRouteWithConnection, logger: MyLogger) {
+    protected constructor(baseRoute: IRouteWithConnection, logger: ILogger) {
         this._baseRoute = baseRoute;
         this.path = baseRoute.path;
         this.logger = logger;

@@ -1,4 +1,4 @@
-import {MyConnection, MyLogger} from "my-core";
+import {MyConnection, ILogger} from "my-core";
 import {AttributeGroup, Statistic} from './Types';
 import PlayerSaverFactory from './PlayerSaverFactory';
 import WoEAttributeLoaderFactory from './WoEAttributeLoaderFactory';
@@ -11,7 +11,7 @@ class StatisticSaver {
     private _woeId: number;
     private _statistic: Statistic;
 
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
     private _playerSaverFactory: PlayerSaverFactory;
     private _woeAttributeLoaderFactory: WoEAttributeLoaderFactory;
@@ -22,7 +22,7 @@ class StatisticSaver {
 
     constructor(woeId: number,
                 statistic: Statistic,
-                logger: MyLogger,
+                logger: ILogger,
                 playerSaverFactory: PlayerSaverFactory,
                 woeAttributeLoaderFactory: WoEAttributeLoaderFactory,
                 playerAttributeSaverFactory: PlayerAttributeSaverFactory,

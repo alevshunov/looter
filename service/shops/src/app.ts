@@ -1,5 +1,6 @@
 import DealsHistoryExtractor from './core/DealsHistoryExtractor';
-import {MyConnection, MyLogger} from 'my-core/index';
+import {MyConnection} from 'my-core';
+import {MyLogger} from 'my-core/MyLogger';
 
 
 const dbConnection = {

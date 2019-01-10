@@ -1,14 +1,14 @@
 import {ShopItemsLoadResult} from '../itemsLoader/ShopItemsLoadResult';
 import {Shop} from '../../../model/Shop';
-import {MyLogger} from 'my-core';
+import {ILogger} from 'my-core';
 
 class ShopNameAndLocationValidator {
     private _fetchResult: ShopItemsLoadResult;
     private _shop: Shop;
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
 
-    constructor(shop: Shop, fetchResult: ShopItemsLoadResult, logger: MyLogger) {
+    constructor(shop: Shop, fetchResult: ShopItemsLoadResult, logger: ILogger) {
         this._fetchResult = fetchResult;
         this._shop = shop;
         this._logger = logger;

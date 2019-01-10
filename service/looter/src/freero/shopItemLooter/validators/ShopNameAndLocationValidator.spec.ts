@@ -1,9 +1,10 @@
 import ShopNameAndLocationValidator from './ShopNameAndLocationValidator';
 import {Shop, ShopType} from '../../../model/Shop';
 import {ShopItemsLoadResult} from '../itemsLoader/ShopItemsLoadResult';
+import {EmptyLogger} from "my-core/MyLogger";
 
 describe('ShopNameAndLocationValidator', () => {
-    const emptyLogger = { log: () => {}, error: () => {} };
+    const emptyLogger = new EmptyLogger();
 
     it('should be true for the same location and name', () => {
         const shop: Shop = new Shop('User A', 'Best shop ever', 'prontera <101,213>', new Date(), ShopType.Sell);

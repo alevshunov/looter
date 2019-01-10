@@ -1,12 +1,12 @@
 import {ConnectionConfig} from "mysql";
 import {Message} from "../model/Message";
-import {MyConnection, MyLogger} from "my-core";
+import {MyConnection, ILogger} from "my-core";
 
 export class MessageStorage {
     private _dbConnection: ConnectionConfig;
-    private _logger: MyLogger;
+    private _logger: ILogger;
 
-    constructor(dbConnection: ConnectionConfig, logger: MyLogger) {
+    constructor(dbConnection: ConnectionConfig, logger: ILogger) {
         this._dbConnection = dbConnection;
         this._logger = logger;
     }

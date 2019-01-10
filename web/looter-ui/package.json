@@ -8,8 +8,6 @@
     }
   },
   "dependencies": {
-    "@material-ui/core": "^1.0.0",
-    "@material-ui/icons": "^1.0.0",
     "@types/chart.js": "^2.7.23",
     "@types/numeral": "0.0.22",
     "@types/react-router-dom": "^4.2.6",

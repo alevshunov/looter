@@ -1,6 +1,7 @@
 import * as moment from 'moment';
-import { MyConnection, MyLogger } from 'my-core';
+import { MyConnection } from 'my-core';
 import { ReportEntry } from 'my-models/Report';
+import {MyLogger} from 'my-core/MyLogger';
 
 class ReportGenerator {
     async generate() {
