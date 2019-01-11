@@ -118,7 +118,7 @@ class Deals extends React.Component<Props, State> {
                                     align: 'right',
                                     render: (v, d) => (
                                         <span>
-                                        {asDate(d.dateTo, 'HH:mm')}
+                                        {asDate(d.dateTo)}
                                     </span>
                                     )
                                 },
