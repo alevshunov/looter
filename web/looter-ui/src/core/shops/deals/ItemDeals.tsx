@@ -163,7 +163,7 @@ class ItemDeals extends React.Component<Props, State> {
                             align: 'right',
                             render: (v, d) => (
                                 <span>
-                                    {asDate(d.dateFrom)} - {asDate(d.dateTo, 'HH:mm')}
+                                    {asDate(d.dateTo, 'HH:mm')}
                                 </span>
                             )
                         },

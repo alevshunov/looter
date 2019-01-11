@@ -222,7 +222,7 @@ class ShopItems extends React.Component<Props, State> {
                                 align: 'right',
                                 render: (v, d) => (
                                     <span>
-                                        {asDate(d.intervalStart)} - {asDate(d.intervalEnd, 'HH:mm')}
+                                        {asDate(d.intervalEnd, 'HH:mm')}
                                     </span>
                                 )
                             }
