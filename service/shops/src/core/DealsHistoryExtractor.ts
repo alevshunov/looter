@@ -35,7 +35,7 @@ class DealsHistoryExtractor {
             insert into deal(shop_id, date_from, date_to, name, price, count_before, count_after, sold_count)
             select 
                 si1.shop_id, 
-                si1.date, 
+                date_add(ifnull(si2.date, date_add(si1.date, interval 4 hour)), interval -4 hour), 
                 ifnull(si2.date, date_add(si1.date, interval 4 hour)),
                 si1.name, 
                 si1.price, 
