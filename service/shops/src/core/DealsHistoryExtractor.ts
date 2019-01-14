@@ -33,35 +33,23 @@ class DealsHistoryExtractor {
 
         await this._connection.query(`
             insert into deal(shop_id, date_from, date_to, name, price, count_before, count_after, sold_count)
-            select 
-                si1.shop_id, 
-                date_add(ifnull(si2.date, date_add(si1.date, interval 4 hour)), interval -4 hour), 
-                ifnull(si2.date, date_add(si1.date, interval 4 hour)),
-                si1.name, 
-                si1.price, 
-                si1.count, 
-                ifnull(si2.count, 0) count2, 
-                si1.count - ifnull(si2.count, 0) delta 
-            
-            from 
-                shop_items_aggr si1 
-                left join shop_items_aggr si2 
-                    on 
-                        si1.shop_id = si2.shop_id and 
-                        si1.fetch_index + 1 = si2.fetch_index and 
-                        si1.name = si2.name and
-                        si1.price = si2.price                
-                inner join (
-                    select shop_id id, max(fetch_index) fetch_count
-                    from shop_items_aggr
-                    group by shop_id
-                ) s on s.id = si1.shop_id
-                inner join shops_2 rs on rs.id = s.id
-            
-            where s.fetch_count > si1.fetch_index
-            and (si2.count is null or si1.count > si2.count)
-            and si1.date > (select ifnull(max(date_from), MAKEDATE(2000, 1)) from deal)
-            order by si1.date asc        
+            select si1.shop_id,
+                   date_add(fd.date, interval -4 hour) f,
+                   fd.date t,
+                   si1.name,
+                   si1.price,
+                   si1.count,
+                   ifnull(si2.count, 0) count2,
+                   si1.count - ifnull(si2.count, 0) delta
+            from
+                   shop_items_aggr si1
+                   left join shop_items_aggr si2 on si1.shop_id = si2.shop_id and si1.fetch_index + 1 = si2.fetch_index and si1.name = si2.name and si1.price = si2.price
+                   left join (select shop_id, fetch_index, max(date) date from shop_items_aggr group by shop_id, fetch_index) fd on fd.shop_id = si1.shop_id and fd.fetch_index = si1.fetch_index + 1
+            where 1 = 1
+                   and fd.date is not null
+                   and (si2.count is null or si1.count > si2.count)
+                   and fd.date > (select ifnull(max(date_to), MAKEDATE(2000, 1)) from deal)
+            order by fd.date 
         `);
     }
 }
