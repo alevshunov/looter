@@ -13,8 +13,8 @@
 }
 
 .table-report tr.data-row:hover {
-    /*background-color: #ebedfb;*/
-    background-color: #d6540d36;
+    background-color: #ebedfb;
+    /*background-color: #d6540d36;*/
 }
 
 .table-report-cell.header  {
