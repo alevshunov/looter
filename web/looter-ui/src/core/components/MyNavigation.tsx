@@ -41,11 +41,11 @@ class MyNavigation extends React.Component {
                 title: 'Торговля',
                 url: '/shops/'
             },
-            {
-                icon: <i className="fab fa-fort-awesome"/>,
-                title: 'WoE',
-                url: '/woe/'
-            },
+            // {
+            //     icon: <i className="fab fa-fort-awesome"/>,
+            //     title: 'WoE',
+            //     url: '/woe/'
+            // },
             {
                 icon: <i className="fas fa-info"/>,
                 title: 'Статистика',
