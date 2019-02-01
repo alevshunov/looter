@@ -201,7 +201,7 @@ class ReportGenerator {
                 let data = await connection.query(`
                     select id, owner, name, location
                     from shops
-                    where fetch_count > 3 and date between ? and ? and type = 'sell'
+                    where last_fetch > adddate(date, interval 1 day) and date between ? and ? and type = 'sell'
                     order by rand()
                     limit 1
                 `, start, end);
@@ -213,7 +213,7 @@ class ReportGenerator {
                 let data = await connection.query(`
                     select s.id, si.name, s.owner, s.name shopName, s.location
                     from shops s inner join shop_items si on s.id = si.shop_id
-                    where s.fetch_count > 3 and si.date between ? and ? and s.type = 'sell'
+                    where s.last_fetch > adddate(s.date, interval 1 day) and si.date between ? and ? and s.type = 'sell'
                     order by rand()
                     limit 1
                 `, start, end);
@@ -228,11 +228,11 @@ class ReportGenerator {
                     (
                         select distinct s.owner
                         from shops s
-                        where s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
+                        where s.last_fetch > adddate(s.date, interval 1 day) and s.date between ? and ? and s.type = 'sell'
                     ) o inner join shops s on s.id = (
                         select s.id
                         from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-                        where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
+                        where s.owner = o.owner and s.last_fetch > adddate(s.date, interval 1 day) and s.date between ? and ? and s.type = 'sell'
                         group by s.id
                         order by sum(si.price * si.count) desc
                         limit 1
@@ -253,11 +253,11 @@ class ReportGenerator {
                     (
                         select distinct s.owner
                         from shops s
-                        where s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
+                        where s.last_fetch > adddate(s.date, interval 1 day) and s.date between ? and ? and s.type = 'sell'
                     ) o inner join shops s on s.id = (
                         select s.id
                         from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-                        where s.owner = o.owner and s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
+                        where s.owner = o.owner and s.last_fetch > adddate(s.date, interval 1 day) and s.date between ? and ? and s.type = 'sell'
                         group by s.id
                         order by sum(si.price * si.count) asc
                         limit 1
@@ -288,7 +288,7 @@ class ReportGenerator {
                 let data = await connection.query(`
                     select max(s.id) id, si.name, min(si.price) price
                     from shops s inner join shop_items si on s.id = si.shop_id and si.fetch_index = 1
-                    where s.fetch_count > 3 and s.date between ? and ? and s.type = 'sell'
+                    where s.last_fetch > adddate(s.date, interval 1 day) and s.date between ? and ? and s.type = 'sell'
                     group by si.name
                     order by price desc
                     limit ${limit}
