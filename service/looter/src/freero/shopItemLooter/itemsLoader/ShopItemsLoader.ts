@@ -61,9 +61,12 @@ export class ShopItemsLoader {
             this._logger.log(`${command} ${this._shop.owner}`);
 
             this._pmHub.onEvent().subscribe(this._pmEvent);
-            this._sayHub.say('FreeRO', `${command} ${this._shop.owner}`);
-
             setTimeout(this.success.bind(this), this.WAIT_TIME);
+
+            try {
+                this._sayHub.say('FreeRO', `${command} ${this._shop.owner}`);
+            } catch(e) {
+            }
         });
     }
 

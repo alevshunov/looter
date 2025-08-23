@@ -31,6 +31,8 @@ class Timer {
     private async tick() {
         try {
             await this._ticker();
+        } catch (e) {
+            // Do nothing
         } finally {
             this.waitNext();
         }
